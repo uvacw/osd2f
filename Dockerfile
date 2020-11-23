@@ -13,12 +13,13 @@ COPY ./ ./osd2f
 WORKDIR /osd2f
 
 # setup dependencies
-RUN pip install ./
+RUN pip install ./ 
+RUN pip install -r requirements.txt
 RUN pip install -r requirements_dev.txt
 
 # run tests
 RUN flake8 ./
-RUN mypy ./
+RUN mypy ./osd2f/
 RUN pytest ./
 
 # set the default command for the container (i.e. running production)
