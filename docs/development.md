@@ -45,7 +45,7 @@ pytest ./ # unittests
 You can opt to run `black` seperately to apply auto-formatting (`flake8-black` only checks, without corrections).
 
 ```bash
-black backend/
+black ./
 ```
 
 Note that most IDEs (e.g. PyCharms, VSCode, ...) allow you to automatically run these commands every time
