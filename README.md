@@ -1,3 +1,4 @@
+![Python application](https://github.com/uvacw/osd2f/workflows/Python%20application/badge.svg?branch=main)
 # OSD2F: Open Source Data Donation Framework
 
 ## Goal
