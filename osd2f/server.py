@@ -1,6 +1,6 @@
 from osd2f import config
 
-from quart import Quart
+from quart import Quart, render_template
 
 from .logger import logger
 
@@ -8,8 +8,18 @@ app = Quart(__name__)
 
 
 @app.route("/")
-async def hello():
-    return "hello worlds!"
+async def home():
+    return await render_template("home.html")
+
+
+@app.route("/privacy")
+async def privacy():
+    return await render_template("privacy.html")
+
+
+@app.route("/donate")
+async def donate():
+    return await render_template("donate.html")
 
 
 def start(mode: str = "Testing"):
