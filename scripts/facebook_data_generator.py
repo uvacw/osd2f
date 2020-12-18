@@ -167,6 +167,7 @@ def generate_bundle(
     include_zip_variant=False,
     include_tar_variant=False,
     include_targz_variant=False,
+    indents="",
 ):
     user = faker.Faker().user_name()
     user_dir = f"facebook-{user}-{random.randint(0,3)}"
@@ -189,20 +190,22 @@ def generate_bundle(
         posts_path = os.path.join(output_dir, user_dir, "posts")
         os.makedirs(name=posts_path, exist_ok=True)
         with open(os.path.join(posts_path, f"your_posts_{i}.json"), "w") as f:
-            json.dump(generate_posts(user=user, n=n_posts), f)
+            json.dump(generate_posts(user=user, n=n_posts), f, indent=indents)
 
     if n_comments:
         comments_path = os.path.join(output_dir, user_dir, "comments")
         os.makedirs(name=comments_path, exist_ok=True)
         with open(os.path.join(comments_path, "comments.json"), "w") as f:
-            json.dump(generate_comments(user=user, n=n_comments), f)
+            json.dump(generate_comments(user=user, n=n_comments), f, indent=indents)
 
     if n_page_reactions:
         page_reactions_path = os.path.join(output_dir, user_dir, "likes_and_reactions")
         os.makedirs(name=page_reactions_path)
         with open(os.path.join(page_reactions_path, "pages.json"), "w") as f:
             json.dump(
-                generate_likes_and_reactions_pages(user=user, n=n_page_reactions), f
+                generate_likes_and_reactions_pages(user=user, n=n_page_reactions),
+                f,
+                indent=indents,
             )
 
     if n_post_or_comments_reactions:
@@ -219,6 +222,7 @@ def generate_bundle(
                     user=user, n=n_post_or_comments_reactions
                 ),
                 f,
+                indent=indents,
             )
 
     if include_zip_variant:
@@ -307,6 +311,13 @@ if __name__ == "__main__":
         help="whether to generate a '.tar.gz' archive of the mock data",
         default=True,
     )
+    parser.add_argument(
+        "-i",
+        "--indents",
+        type=int,
+        help="the integer indentation level",
+        default=0,
+    )
 
     args = parser.parse_args()
     generate_bundle(
@@ -320,4 +331,5 @@ if __name__ == "__main__":
         include_zip_variant=args.include_zip,
         include_tar_variant=args.tar,
         include_targz_variant=args.tar_gz,
+        indents=args.indents,
     )
