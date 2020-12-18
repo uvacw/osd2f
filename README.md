@@ -1,4 +1,5 @@
 ![Python application](https://github.com/uvacw/osd2f/workflows/Python%20application/badge.svg?branch=main)
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 # OSD2F: Open Source Data Donation Framework
 
 ## Goal
