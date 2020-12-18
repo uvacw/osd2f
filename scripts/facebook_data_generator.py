@@ -5,13 +5,12 @@ Data structure was induced from examples provided in 2020.
 
 import argparse
 import datetime
-import os
 import json
+import os
 import random
 import shutil
 import tarfile
 import typing
-import zipfile
 
 import faker
 
@@ -44,7 +43,8 @@ def generate_comments(user: str, n: int = 10) -> typing.Dict:
             c["data"] = [
                 {
                     "comment": {
-                        # timestamp of comment does not appear to match that of upper context
+                        # timestamp of comment does not appear to match
+                        # that of upper context
                         "timestamp": f.unix_time(
                             start_datetime=datetime.datetime(2020, 1, 1)
                         ),
@@ -194,13 +194,13 @@ def generate_bundle(
     if n_comments:
         comments_path = os.path.join(output_dir, user_dir, "comments")
         os.makedirs(name=comments_path, exist_ok=True)
-        with open(os.path.join(comments_path, f"comments.json"), "w") as f:
+        with open(os.path.join(comments_path, "comments.json"), "w") as f:
             json.dump(generate_comments(user=user, n=n_comments), f)
 
     if n_page_reactions:
         page_reactions_path = os.path.join(output_dir, user_dir, "likes_and_reactions")
         os.makedirs(name=page_reactions_path)
-        with open(os.path.join(page_reactions_path, f"pages.json"), "w") as f:
+        with open(os.path.join(page_reactions_path, "pages.json"), "w") as f:
             json.dump(
                 generate_likes_and_reactions_pages(user=user, n=n_page_reactions), f
             )
@@ -211,7 +211,7 @@ def generate_bundle(
         )
         os.makedirs(name=post_or_comments_reactions_path, exist_ok=True)
         with open(
-            os.path.join(post_or_comments_reactions_path, f"posts_and_comments.json"),
+            os.path.join(post_or_comments_reactions_path, "posts_and_comments.json"),
             "w",
         ) as f:
             json.dump(
@@ -236,8 +236,9 @@ def generate_bundle(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        prog="Facebook data export mock data generator",
-        description="this tool generate mock data to test import functionality of facebook data exports. "
+        description="Facebook data export mock data generator "
+        "this tool generate mock data to test import "
+        "functionality of facebook data exports. "
         "Note that not all types of exports are currently supported.",
     )
 
@@ -249,7 +250,8 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--overwrite",
-        help="whether to overwrite the directory if it already exists. Removes *all* content before starting",
+        help="whether to overwrite the directory if it already exists. "
+        "Removes *all* content before starting",
         default=False,
         action="store_true",
     )
