@@ -30,6 +30,21 @@ them seperately:
 pip install -r requirements_dev.txt
 ```
 
+## About fake data
+
+Fake data was generated using the 'faker' package implementation in [scripts/facebook_data_generator.py](../scripts/facebook_data_generator.py),
+using the command:
+
+```bash
+python scripts/facebook_data_generator.py -o mockdata/facebook --overwrite -i 2
+```
+
+More information about how to use this script, consult the help:
+
+```bash
+python scripts/facebook_data_generator.py -h
+```
+
 ## Code style & checks
 
 There are a number of checks to run in order to guarantee all 

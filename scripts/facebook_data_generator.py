@@ -100,7 +100,7 @@ def generate_posts(user: str, n: int = 10) -> typing.Dict:
         # roughly 40 has a non-empty "data" field
         if random.randint(0, 4) == 1:
             # even when filled, data appears to be a single-item array
-            p["data"] = [{"post": f.texts()}]
+            p["data"] = [{"post": "\n".join(f.texts())}]
             # roughly 1% has an "update_timestamp", but to increase coverage
             # we raise the incidence rate here
             if random.randint(0, 9) == 1:
@@ -171,7 +171,7 @@ def generate_bundle(
 ):
     user = faker.Faker().user_name()
     user_dir = f"facebook-{user}-{random.randint(0,3)}"
-    if overwrite and output_dir in os.listdir("."):
+    if overwrite and os.path.exists(output_dir):
         shutil.rmtree(output_dir)
     os.makedirs(name=output_dir)
 
