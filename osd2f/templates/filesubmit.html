@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        #drop-area {
+      border: 2px dashed #ccc;
+      border-radius: 20px;
+      width: 480px;
+      font-family: sans-serif;
+      margin: 100px auto;
+      padding: 20px;
+    }
+    
+    #drop-area.highlight {
+      border-color: green;
+    }
+    
+    #progress-bar {
+      width: 100%;
+      height: 10px;
+    }    
+    </style>
+</head>
+
+<body>
+    <div id="drop-area">
+        <progress id="progress-bar" max=100 value=0></progress>
+        <form class="my-form">
+          <p>Upload multiple files with the file dialog or by dragging and dropping images onto the dashed region</p>
+          <input type="file" id="fileElem" multiple webkitdirectory allowdirs accept="*" onchange="handleSelect(this.files)">
+          <label class="button" for="fileElem">Select some files</label>
+        </form>
+        
+      </div>      
+</body>
+
+<script src="/static/js/file_upload.js"></script>
+<script>
+    let settings = {{ settings|tojson|safe }};
+    let dropArea = document.getElementById("drop-area");
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, preventDefaults, false)
+    })
+
+    function preventDefaults(e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropArea.addEventListener(eventName, highlight, false)
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, unhighlight, false)
+    })
+
+    function highlight(e) {
+    dropArea.classList.add('highlight')
+    }
+
+    function unhighlight(e) {
+    dropArea.classList.remove('highlight')
+    }
+
+    dropArea.addEventListener('drop', handleDrop, false)
+    
+    let fileobj
+
+    function handleSelect(files){
+      console.log([...files])
+      fileLoadController(settings, [...files])
+      fileobj = [...files]
+    }
+
+    // Drops are akward because of the nature of 
+    // webkitDirectories w.r.t. 'normal' file 
+    // selectors
+    async function handleDrop(e) {
+      let items = e.dataTransfer.items;
+      fileobj = items
+
+      var files = []
+      var wg = 1
+      extractFiles = function(wke){
+        console.log(wke.name)
+        if (wke.isDirectory){
+          wg++
+          console.log(wg)
+          r = wke.createReader()
+          r.readEntries(es => es.map(extractFiles))
+        } else {
+          wke.file(c => {
+            files.push(c)
+            wg--
+          })
+          console.log(wg)
+        }
+      }
+      for( i=0; i < items.length; i++){
+        extractFiles(items[i].webkitGetAsEntry())
+      }
+    
+      // this loop serves to make sure the
+      // asynchronous parsing in extractFiles
+      // is completed before passing the file-list
+      // msec is the total number of milliseconds to
+      // wait (unless parsing is completed in the meantime)
+      // and step the number of milliseconds to wait between
+      // polling whether the result is ready.
+      msec = 10000
+      step = 100
+      while (wg > 0 & msec >0){
+        await sleep(step)
+        msec-=step
+      }
+      
+      fileLoadController(settings, files)
+
+    }
+
+</script>
