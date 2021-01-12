@@ -1,0 +1,49 @@
+## THESE ARE DEFAULT SETTINGS
+## PLEASE COPY THIS FILE TO 'upload_settings.yaml'
+## AND CHANGE THEM TO SUIT YOUR PROJECT
+
+# Facebook upload settings
+files:
+    (^|/|\\)comments.json:
+      # in key is required when the initial level of data
+      # is not a list but an object (e.g. {} instead of [])
+      in_key : "comments"
+      # fields to include in the upload
+      # remove a field to filter it out
+      fields:
+        - timestamp
+        - title
+        - attachments.data.external_context.url
+        - attachments.media.uri
+        - data.comment.timestamp
+        - data.comment.comment
+        - data.comment.author
+        - data.comment.group
+
+    # posts can be split into multiple files
+    # that end in `_<number>`.
+    your_posts(_\d)?.json:
+      fields:
+        - timestamp
+        - title 
+        - attachments.data.external_context.url
+        - attachments.data.external_context.name
+        - attachments.data.external_context.source
+        - data.post
+        - data.update_timestamp
+
+    # these are the likes & reactions of pages
+    pages.json:
+      in_key : page_likes
+      fields:
+        - name
+        - timestamp
+
+    # these are the likes & reactions of posts & comments
+    posts_and_comments.json:
+      in_key: reactions
+      fields:
+        - timestamp
+        - data.reaction.reaction
+        - data.reaction.actor
+        - title
