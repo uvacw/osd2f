@@ -69,6 +69,7 @@ def generate_posts(user: str, n: int = 10) -> typing.Dict:
         p = {
             "timestamp": f.unix_time(start_datetime=datetime.datetime(2020, 1, 1)),
             "title": f"{user} wrote on {f.name()}'s timeline.",
+            "tags": [f.name() for _ in range(random.randint(0, 3))],
         }
         # roughly 40% has an attachment
         if random.randint(0, 9) < 4:
@@ -87,8 +88,51 @@ def generate_posts(user: str, n: int = 10) -> typing.Dict:
                     ]
                 }
             elif i == 2:
-                # TODO at 'item_for_sale' attachment generator
-                pass
+                # 'item_for_sale' attachment generator
+                loc = f.location_on_land()
+                ct = f.unix_time(start_datetime=datetime.datetime(2020, 1, 1))
+                p["attachments"] = {
+                    # here, data may have multiple items
+                    "data": [
+                        {
+                            "for_sale_item": {
+                                "title": f.catch_phrase(),
+                                "price": f"{f.currency_symbol()}{f.random_number(3)}",
+                                "seller": user,
+                                "created_timestamp": ct,
+                                "updated_timestamp": f.unix_time(
+                                    start_datetime=datetime.datetime(2020, 1, 1)
+                                ),
+                                "category": random.choice(
+                                    [
+                                        "Sports & outdoor",
+                                        "Health & Lifestyle",
+                                        "Electronics",
+                                    ]
+                                ),
+                                "marketplace": f.slug,
+                                "location": {
+                                    "coordinate": {
+                                        "lattitude": loc[0],
+                                        "longitude": loc[1],
+                                    }
+                                },
+                                "description": f.paragraph(),
+                            }
+                        }
+                    ]
+                }
+                for _ in range(random.randint(1, 3)):
+                    p["attachments"]["data"].append(
+                        {
+                            "media": {
+                                "uri": f.image_url(),
+                                "creation_timestamp": ct,
+                                "media_metadata": {"upload_ip": f.ipv4()},
+                                "title": "",
+                            }
+                        }
+                    )
             else:
                 p["attachments"] = {
                     # data seems to be a list of one
