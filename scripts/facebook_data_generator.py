@@ -69,11 +69,12 @@ def generate_posts(user: str, n: int = 10) -> typing.Dict:
         p = {
             "timestamp": f.unix_time(start_datetime=datetime.datetime(2020, 1, 1)),
             "title": f"{user} wrote on {f.name()}'s timeline.",
+            "tags": [f.name() for _ in range(random.randint(0, 3))],
         }
         # roughly 40% has an attachment
         if random.randint(0, 9) < 4:
 
-            if random.randint(0, 4) == 1:
+            if (i := random.randint(0, 4)) == 1:
                 p["attachments"] = {
                     # data seems to be a list of one
                     "data": [
@@ -86,6 +87,52 @@ def generate_posts(user: str, n: int = 10) -> typing.Dict:
                         }
                     ]
                 }
+            elif i == 2:
+                # 'item_for_sale' attachment generator
+                loc = f.location_on_land()
+                ct = f.unix_time(start_datetime=datetime.datetime(2020, 1, 1))
+                p["attachments"] = {
+                    # here, data may have multiple items
+                    "data": [
+                        {
+                            "for_sale_item": {
+                                "title": f.catch_phrase(),
+                                "price": f"{f.currency_symbol()}{f.random_number(3)}",
+                                "seller": user,
+                                "created_timestamp": ct,
+                                "updated_timestamp": f.unix_time(
+                                    start_datetime=datetime.datetime(2020, 1, 1)
+                                ),
+                                "category": random.choice(
+                                    [
+                                        "Sports & outdoor",
+                                        "Health & Lifestyle",
+                                        "Electronics",
+                                    ]
+                                ),
+                                "marketplace": f.slug(),
+                                "location": {
+                                    "coordinate": {
+                                        "lattitude": loc[0],
+                                        "longitude": loc[1],
+                                    }
+                                },
+                                "description": f.paragraph(),
+                            }
+                        }
+                    ]
+                }
+                for _ in range(random.randint(1, 3)):
+                    p["attachments"]["data"].append(
+                        {
+                            "media": {
+                                "uri": f.image_url(),
+                                "creation_timestamp": ct,
+                                "media_metadata": {"upload_ip": f.ipv4()},
+                                "title": "",
+                            }
+                        }
+                    )
             else:
                 p["attachments"] = {
                     # data seems to be a list of one
@@ -156,6 +203,32 @@ def generate_likes_and_reactions_posts_and_comments(user: str, n: int = 10):
     return reactions
 
 
+def generate_advertisers_youve_interacted_with(user: str, n: int = 10):
+    f = faker.Faker()
+    interactions = []
+    for _ in range(n):
+        interactions.append(
+            {
+                "title": f.catch_phrase(),
+                "action": "Clicked ad",
+                "timestamp": f.unix_time(start_datetime=datetime.datetime(2020, 1, 1)),
+            }
+        )
+    return {"history": interactions}
+
+
+def generate_advertisers_who_uploaded_a_contact_list_with_your_information(
+    user: str, n: int = 10
+):
+    f = faker.Faker()
+    return {"custom_audiences": [f.company() for _ in range(n)]}
+
+
+def generate_ads_interests(user: str, n: int = 10):
+    f = faker.Faker()
+    return {"topics": [f.catch_phrase() for _ in range(n)]}
+
+
 def generate_bundle(
     output_dir: str,
     overwrite: str,
@@ -163,6 +236,8 @@ def generate_bundle(
     n_comments: int,
     n_page_reactions: int,
     n_post_or_comments_reactions: int,
+    n_advertiser_interactions: int,
+    n_advertiser_uploads: int,
     n_post_files: int = 1,
     include_zip_variant=False,
     include_tar_variant=False,
@@ -220,6 +295,39 @@ def generate_bundle(
             json.dump(
                 generate_likes_and_reactions_posts_and_comments(
                     user=user, n=n_post_or_comments_reactions
+                ),
+                f,
+                indent=indents,
+            )
+    if n_advertiser_interactions:
+        advertiser_interactions_path = os.path.join(output_dir, user_dir)
+        os.makedirs(name=advertiser_interactions_path, exist_ok=True)
+        with open(
+            os.path.join(
+                advertiser_interactions_path, "advertisers_you've_interacted_with.json"
+            ),
+            "w",
+        ) as f:
+            json.dump(
+                generate_advertisers_youve_interacted_with(
+                    user=user, n=n_advertiser_interactions
+                ),
+                f,
+                indent=indents,
+            )
+    if n_advertiser_uploads:
+        advertiser_upload_path = os.path.join(output_dir, user_dir)
+        os.makedirs(advertiser_upload_path, exist_ok=True)
+        with open(
+            os.path.join(
+                advertiser_upload_path,
+                "advertisers_who_uploaded_a_contact_with_your_information.json",
+            ),
+            "w",
+        ) as f:
+            json.dump(
+                generate_advertisers_who_uploaded_a_contact_list_with_your_information(
+                    user=user, n=n_advertiser_uploads
                 ),
                 f,
                 indent=indents,
@@ -291,6 +399,20 @@ if __name__ == "__main__":
         default=2,
     )
     parser.add_argument(
+        "-ai",
+        "--advertisers-interactions",
+        type=int,
+        help="generate the `advertisers_you've_interacted_with.json` data",
+        default=10,
+    )
+    parser.add_argument(
+        "-au",
+        "--advertisers-upload",
+        type=int,
+        help="generate the advertisers who uploaded your info file",
+        default=10,
+    )
+    parser.add_argument(
         "-z",
         "--include-zip",
         type=bool,
@@ -327,6 +449,8 @@ if __name__ == "__main__":
         n_comments=args.n_comments,
         n_page_reactions=args.page_reactions,
         n_post_or_comments_reactions=args.post_comment_reactions,
+        n_advertiser_uploads=args.advertisers_upload,
+        n_advertiser_interactions=args.advertisers_interactions,
         n_post_files=args.n_post_files,
         include_zip_variant=args.include_zip,
         include_tar_variant=args.tar,
