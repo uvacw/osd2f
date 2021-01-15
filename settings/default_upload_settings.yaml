@@ -64,7 +64,7 @@ files:
 
     # Advertiser interactions file
     advertisers_you've_interacted_with.json:
-      in_key : "history"
+      in_key : history
       fields:
         - title
         - action
@@ -72,5 +72,5 @@ files:
 
     # Advertisers who uploaded user information
     advertisers_who_uploaded_a_contact_list_with_your_information.json:
-      fields:
-        - custom_audiences
+      in_key : custom_audiences
+      fields: ""
