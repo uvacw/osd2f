@@ -110,7 +110,7 @@ def generate_posts(user: str, n: int = 10) -> typing.Dict:
                                         "Electronics",
                                     ]
                                 ),
-                                "marketplace": f.slug,
+                                "marketplace": f.slug(),
                                 "location": {
                                     "coordinate": {
                                         "lattitude": loc[0],
@@ -406,7 +406,7 @@ if __name__ == "__main__":
         default=10,
     )
     parser.add_argument(
-        "--au",
+        "-au",
         "--advertisers-upload",
         type=int,
         help="generate the advertisers who uploaded your info file",
@@ -449,6 +449,8 @@ if __name__ == "__main__":
         n_comments=args.n_comments,
         n_page_reactions=args.page_reactions,
         n_post_or_comments_reactions=args.post_comment_reactions,
+        n_advertiser_uploads=args.advertisers_upload,
+        n_advertiser_interactions=args.advertisers_interactions,
         n_post_files=args.n_post_files,
         include_zip_variant=args.include_zip,
         include_tar_variant=args.tar,
