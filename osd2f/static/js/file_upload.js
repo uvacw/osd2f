@@ -28,8 +28,9 @@ const key_rest_split = function(p){
 const objReader = function(spec, o, prev){
   
     let flat_obj = {}
-  
+
     let options = spec.map(p=> p.split(".").shift(1))
+
     
     for (k of Object.keys(o)){
       if (options.filter(o=>o==k).length==0){
@@ -71,6 +72,12 @@ const fileReader = function(paths, objects, prepath, in_key){
     // rather than an array
     if ( typeof in_key !== 'undefined' ){
         return fileReader(paths, objects[in_key], prepath)
+    }
+
+    // in case the contents is just one array of values,
+    // instead of an array of values
+    if (Array.isArray(objects) && paths==""){
+      return [{"entries":objects}]
     }
 
     // extract the whitelisted paths from all objects
