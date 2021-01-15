@@ -1,6 +1,8 @@
-from osd2f import config
+import json
 
 from quart import Quart, render_template
+
+from osd2f import config, utils
 
 from .logger import logger
 
@@ -20,6 +22,12 @@ async def privacy():
 @app.route("/donate")
 async def donate():
     return await render_template("donate.html")
+
+
+@app.route("/upload")
+async def upload():
+    settings = utils.load_settings()
+    return await render_template("filesubmit.html", settings=settings)
 
 
 def start(mode: str = "Testing"):
