@@ -203,6 +203,20 @@ def generate_likes_and_reactions_posts_and_comments(user: str, n: int = 10):
     return reactions
 
 
+def generate_advertisers_youve_interacted_with(user: str, n: int = 10):
+    f = faker.Faker()
+    interactions = []
+    for _ in range(n):
+        interactions.append(
+            {
+                "title": f.catch_phrase(),
+                "action": "Clicked ad",
+                "timestamp": f.unix_time(start_datetime=datetime.datetime(2020, 1, 1)),
+            }
+        )
+    return {"history": interactions}
+
+
 def generate_bundle(
     output_dir: str,
     overwrite: str,
