@@ -321,7 +321,7 @@ def generate_bundle(
         with open(
             os.path.join(
                 advertiser_upload_path,
-                "advertisers_who_uploaded_a_contact_with_your_information.json",
+                "advertisers_who_uploaded_a_contact_list_with_your_information.json",
             ),
             "w",
         ) as f:
