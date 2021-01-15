@@ -29,6 +29,20 @@ files:
         - attachments.data.external_context.url
         - attachments.data.external_context.name
         - attachments.data.external_context.source
+        - attachments.data.for_sale_item.title
+        - attachments.data.for_sale_item.price
+        - attachments.data.for_sale_item.seller
+        - attachments.data.for_sale_item.created_timestamp
+        - attachments.data.for_sale_item.updated_timestamp
+        - attachments.data.for_sale_item.category
+        - attachments.data.for_sale_item.marketplace
+        - attachments.data.for_sale_item.location.coordinate.lattitude
+        - attachments.data.for_sale_item.location.coordinate.longitude
+        - attachments.data.for_sale_item.description
+        - attachments.data.media.uri
+        - attachments.data.media.creation_timestamp
+        - attachments.data.media.media_metadata.upload_ip
+        - attachments.data.media.title
         - data.post
         - data.update_timestamp
 
