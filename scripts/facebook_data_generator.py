@@ -217,6 +217,13 @@ def generate_advertisers_youve_interacted_with(user: str, n: int = 10):
     return {"history": interactions}
 
 
+def generate_advertisers_who_uploaded_a_contact_list_with_your_information(
+    user: str, n: int = 10
+):
+    f = faker.Faker()
+    return {"custom_audiences": [f.company() for _ in range(n)]}
+
+
 def generate_bundle(
     output_dir: str,
     overwrite: str,
