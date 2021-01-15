@@ -224,6 +224,11 @@ def generate_advertisers_who_uploaded_a_contact_list_with_your_information(
     return {"custom_audiences": [f.company() for _ in range(n)]}
 
 
+def generate_ads_interests(user: str, n: int = 10):
+    f = faker.Faker()
+    return {"topics": [f.catch_phrase() for _ in range(n)]}
+
+
 def generate_bundle(
     output_dir: str,
     overwrite: str,
@@ -231,6 +236,8 @@ def generate_bundle(
     n_comments: int,
     n_page_reactions: int,
     n_post_or_comments_reactions: int,
+    n_advertiser_interactions: int,
+    n_advertiser_uploads: int,
     n_post_files: int = 1,
     include_zip_variant=False,
     include_tar_variant=False,
@@ -288,6 +295,39 @@ def generate_bundle(
             json.dump(
                 generate_likes_and_reactions_posts_and_comments(
                     user=user, n=n_post_or_comments_reactions
+                ),
+                f,
+                indent=indents,
+            )
+    if n_advertiser_interactions:
+        advertiser_interactions_path = os.path.join(output_dir, user_dir)
+        os.makedirs(name=advertiser_interactions_path, exist_ok=True)
+        with open(
+            os.path.join(
+                advertiser_interactions_path, "advertisers_you've_interacted_with.json"
+            ),
+            "w",
+        ) as f:
+            json.dump(
+                generate_advertisers_youve_interacted_with(
+                    user=user, n=n_advertiser_interactions
+                ),
+                f,
+                indent=indents,
+            )
+    if n_advertiser_uploads:
+        advertiser_upload_path = os.path.join(output_dir, user_dir)
+        os.makedirs(advertiser_upload_path, exist_ok=True)
+        with open(
+            os.path.join(
+                advertiser_upload_path,
+                "advertisers_who_uploaded_a_contact_with_your_information.json",
+            ),
+            "w",
+        ) as f:
+            json.dump(
+                generate_advertisers_who_uploaded_a_contact_list_with_your_information(
+                    user=user, n=n_advertiser_uploads
                 ),
                 f,
                 indent=indents,
@@ -357,6 +397,20 @@ if __name__ == "__main__":
         type=int,
         help="the amount of separate files of posts to generate",
         default=2,
+    )
+    parser.add_argument(
+        "-ai",
+        "--advertisers-interactions",
+        type=int,
+        help="generate the `advertisers_you've_interacted_with.json` data",
+        default=10,
+    )
+    parser.add_argument(
+        "--au",
+        "--advertisers-upload",
+        type=int,
+        help="generate the advertisers who uploaded your info file",
+        default=10,
     )
     parser.add_argument(
         "-z",
