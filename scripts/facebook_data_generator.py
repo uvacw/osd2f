@@ -73,7 +73,7 @@ def generate_posts(user: str, n: int = 10) -> typing.Dict:
         # roughly 40% has an attachment
         if random.randint(0, 9) < 4:
 
-            if random.randint(0, 4) == 1:
+            if (i := random.randint(0, 4)) == 1:
                 p["attachments"] = {
                     # data seems to be a list of one
                     "data": [
@@ -86,6 +86,9 @@ def generate_posts(user: str, n: int = 10) -> typing.Dict:
                         }
                     ]
                 }
+            elif i == 2:
+                # TODO at 'item_for_sale' attachment generator
+                pass
             else:
                 p["attachments"] = {
                     # data seems to be a list of one
