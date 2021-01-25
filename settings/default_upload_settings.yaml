@@ -23,6 +23,12 @@ files:
     # posts can be split into multiple files
     # that end in `_<number>`.
     your_posts(_\d)?.json:
+      # anonymizers are functions applied on the server
+      # that can inspect the content of a potential donation
+      # and apply anonymization accordingly.
+      # the KEY is the function to apply, the VALUE a string-argument
+      anonymizers:
+        - fb_redact_posts_usernames_based_on_title : ""
       fields:
         - timestamp
         - title 
