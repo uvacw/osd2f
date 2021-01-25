@@ -1,6 +1,7 @@
-import json
+from osd2f.definitions import Submission
 
-from quart import Quart, render_template
+from quart import Quart, render_template, request
+from quart.json import jsonify
 
 from osd2f import config, utils
 
@@ -26,8 +27,26 @@ async def donate():
 
 @app.route("/upload")
 async def upload():
-    settings = utils.load_settings()
+
+    settings = utils.load_settings(force_disk=app.debug)
     return await render_template("filesubmit.html", settings=settings)
+
+
+@app.route("/anonymize", methods=["POST"])
+async def anonymize():
+    data = await request.get_data()
+    logger.debug(f"[anonymization] received: {data}")
+    if len(data) == 0:
+        return jsonify({"error": "no data received"}), 400
+
+    settings = utils.load_settings(force_disk=app.debug)
+    try:
+        submission = Submission.parse_raw(data)
+    except ValueError as e:
+        logger.debug(f"[anonymization] could not parse: {e}")
+        return jsonify({"error": "incorrect submission format"}), 400
+
+    return jsonify({"error": "", "data": data})
 
 
 def start(mode: str = "Testing"):
