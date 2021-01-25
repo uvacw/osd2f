@@ -26,7 +26,7 @@
         <progress id="progress-bar" max=100 value=0></progress>
         <form class="my-form">
           <p>Upload multiple files with the file dialog or by dragging and dropping images onto the dashed region</p>
-          <input type="file" id="fileElem"  webkitdirectory allowdirs onchange="handleSelect(this.files)">
+          <input type="file" id="fileElem"  onchange="handleSelect(this.files)">
           <label class="button" for="fileElem">Select some files</label>
         </form>
         
@@ -68,8 +68,26 @@
     
     let fileobj
 
-    function handleSelect(files){
+    async function handleSelect(files){
       console.log([...files])
+      // if there is one file, which is an archive
+      if (files.length==1 && RegExp(".*.zip$").exec(files[0].name) != null){
+        let done = false 
+
+        loadArchiveFormats(["zip"], (r,e)=>{console.log(e)})
+        await sleep(100)
+        archiveOpenFile(files[0], "", (r,e)=>{
+          fileobj = r 
+          files = r.entries
+          console.log(e)
+          done = true
+        })
+        wait = 1000
+        while (!done && wait>0){
+          await sleep(100)
+          wait -= 100
+        }
+      }
       fileLoadController(settings, [...files])
       fileobj = [...files]
     }
