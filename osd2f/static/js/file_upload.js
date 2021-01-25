@@ -129,7 +129,6 @@ const fileLoadController = async function(settings, files){
                     await sleep(100)
                     wait -= 100
                   }
-                  console.log("content",JSON.parse(content))
                 }
                 fileob = new Object;
                 fileob[f.name] = fileReader(
