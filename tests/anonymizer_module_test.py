@@ -1,4 +1,3 @@
-from osd2f import anonymizers
 from aiounittest import AsyncTestCase
 
 
@@ -7,7 +6,10 @@ class test_anonymizer_package_interface(AsyncTestCase):
         from osd2f import anonymizers
 
         # register a mock pass-through function as an anonymizer
-        anonymizers.options["testfunc"] = lambda e, _: e
+        async def testfunc(e, _):
+            return e
+
+        anonymizers.options["testfunc"] = testfunc
 
         entries = [{"title": f"entry {i}"} for i in range(100)]
 
@@ -22,3 +24,29 @@ class test_anonymizer_package_interface(AsyncTestCase):
 
         for k, v in anonymizers.options.items():
             self.assertEqual(k, v.__name__)
+
+    async def test_submission_list_anonymization(self):
+        from osd2f import anonymizers
+        from osd2f.definitions import Settings, SubmissionList, Submission
+
+        async def testfunc(e, a):
+            e[a] = a
+            return e
+
+        anonymizers.options["testfunc"] = testfunc
+
+        settings = Settings(
+            files={
+                "file(_\\d)?.json": {
+                    "accepted_fields": [],
+                    "anonymizers": [{"testfunc": "a"}, {"testfunc": "b"}],
+                }
+            }
+        )
+        submission_list = SubmissionList(
+            __root__=[Submission(entries=[{}], filename="file_2.json", submission_id=1)]
+        )
+        await anonymizers.anonymize_submission_list(
+            submission_list=submission_list, settings=settings
+        )
+        self.assertEqual(submission_list.__root__[0].entries[0], {"a": "a", "b": "b"})
