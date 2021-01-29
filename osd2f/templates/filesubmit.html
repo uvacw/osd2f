@@ -138,7 +138,10 @@
     
     // output will be the container for the donation data
     let output
+    // track whether the donation has been completed for the prevent close dialogue
     let noDonationYet=true
+    // because the unzip lib loads plugins with a callback, this var signals availability of the necessary plugin
+    let zipReady=false 
 
     function appendFile(fileobj){
       document.getElementById("files")
@@ -151,14 +154,22 @@
       document.getElementById("donatebutton").classList.remove("disabled")
     }
 
+    // convenience function to await callback function results
+    async function waitUntilTrue(waitTime, expression){
+      while (!expression() && waitTime>0){
+        await sleep(5)
+        waitTime -= 5
+      }
+    }
+
     async function handleSelect(files){
       console.log([...files])
       // if there is one file, which is an archive
       if (files.length==1 && RegExp(".*.zip$").exec(files[0].name) != null){
         let done = false 
 
-        loadArchiveFormats(["zip"], (r,e)=>{if(e!==null){console.log(e)}})
-        await sleep(100)
+        loadArchiveFormats(["zip"], (r,e)=>{if(e!==null){console.log(e)} else {zipReady=true}})
+        await waitUntilTrue(1000, ()=>{zipReady})
         archiveOpenFile(files[0], "", (r,e)=>{
           fileobj = r 
           files = r.entries
@@ -222,8 +233,8 @@
       if (files.length==1 && RegExp(".*.zip$").exec(files[0].name) != null){
         let done = false 
 
-        loadArchiveFormats(["zip"], (r,e)=>{console.log(e)})
-        await sleep(100), 
+        loadArchiveFormats(["zip"], (r,e)=>{if(e!==null){console.log(e)} else {zipReady=true}})
+        await waitUntilTrue(1000, ()=>{zipReady})
         archiveOpenFile(files[0], "", (r,e)=>{
           fileobj = r 
           files = r.entries
