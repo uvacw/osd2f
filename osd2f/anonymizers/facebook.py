@@ -2,7 +2,7 @@ import typing
 
 
 async def fb_redact_posts_usernames_based_on_title(
-    entry: typing.Dict[str, typing.Dict], _: str = "unused_optional_string"
+    entry: typing.Dict[str, typing.Any], _: str = "unused_optional_string"
 ) -> typing.Dict[str, typing.Any]:
     """Anonymization of posts based on the post title.
 

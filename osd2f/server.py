@@ -1,10 +1,11 @@
-from osd2f.definitions import Submission
+from osd2f import config, utils
+from osd2f.definitions import SubmissionList
 
 from quart import Quart, render_template, request
 from quart.json import jsonify
 
-from osd2f import config, utils
 
+from .anonymizers import anonymize_submission_list
 from .logger import logger
 
 app = Quart(__name__)
@@ -25,11 +26,24 @@ async def donate():
     return await render_template("donate.html")
 
 
-@app.route("/upload")
+@app.route("/upload", methods=["GET", "POST"])
 async def upload():
-
-    settings = utils.load_settings(force_disk=app.debug)
-    return await render_template("filesubmit.html", settings=settings)
+    if request.method == "GET":
+        # sid is an ID by which a referrer may identify
+        # a user. This could for instance be the id that
+        # a survey tool uses to match the survey response
+        # to the submitted donation.
+        sid = request.args.get("sid", "test")
+        settings = utils.load_settings(force_disk=app.debug)
+        return await render_template(
+            "filesubmit.html", settings=settings.dict(), sid=sid
+        )
+    elif request.method == "POST":
+        # TODO actually do something with the uploaded data
+        data = await request.get_data()
+        SubmissionList.parse_raw(data)
+        logger.info("Received the donation!")
+        return jsonify({"error": "", "data": ""}), 200
 
 
 @app.route("/anonymize", methods=["POST"])
@@ -41,12 +55,16 @@ async def anonymize():
 
     settings = utils.load_settings(force_disk=app.debug)
     try:
-        submission = Submission.parse_raw(data)
+        submission_list = SubmissionList.parse_raw(data)
     except ValueError as e:
         logger.debug(f"[anonymization] could not parse: {e}")
         return jsonify({"error": "incorrect submission format"}), 400
 
-    return jsonify({"error": "", "data": data})
+    submission_list = await anonymize_submission_list(
+        submission_list=submission_list, settings=settings
+    )
+
+    return jsonify({"error": "", "data": submission_list.dict()["__root__"]}), 200
 
 
 def start(mode: str = "Testing"):

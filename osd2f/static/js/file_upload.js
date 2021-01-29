@@ -70,13 +70,13 @@ const objReader = function(spec, o, prev){
 const fileReader = function(paths, objects, prepath, in_key){
     // in case the data is nested in an object
     // rather than an array
-    if ( typeof in_key !== 'undefined' ){
+    if ( typeof in_key !== 'undefined' && in_key!==null){
         return fileReader(paths, objects[in_key], prepath)
     }
 
     // in case the contents is just one array of values,
     // instead of an array of values
-    if (Array.isArray(objects) && paths==""){
+    if (Array.isArray(objects) && paths.length==0){
       return [{"entries":objects}]
     }
 
@@ -86,11 +86,17 @@ const fileReader = function(paths, objects, prepath, in_key){
 
 }
 
-// 3. controller
-const fileLoadController = async function(settings, files){
+// 3. anonymization (via server, but not stored there)
+const anonymize = function(data, callback){
+  // 
+
+
+}
+
+// 4. controller
+const fileLoadController = async function(sid, settings, files, callback){
     // we map filenames to the regex format filenames in
     // provided settings
-    console.log("files:", files)
     setmatch = Object.fromEntries(
       files.map(file => {
         for (nameRegex of Object.keys(settings.files)){
@@ -107,7 +113,7 @@ const fileLoadController = async function(settings, files){
 
     acceptedFiles = files.filter(f => setmatch[f.name]!==undefined)
 
-    let output = [];
+    let data = [];
 
     acceptedFiles.map(
         async f => {
@@ -131,19 +137,21 @@ const fileLoadController = async function(settings, files){
                   }
                 }
                 fileob = new Object;
-                fileob[f.name] = fileReader(
-                  paths=settings['files'][setmatch[f.name]].fields, 
+                fileob["filename"] = f.name;
+                fileob["submission_id"] = sid;
+                fileob["entries"] = fileReader(
+                  paths=settings['files'][setmatch[f.name]].accepted_fields, 
                   objects=JSON.parse(content),
                   prepath=null,
                   in_key = settings['files'][setmatch[f.name]].in_key
                   )
-                output.push(fileob);
+                data.push(fileob);
                 }
             
         );
     bar = document.getElementById("progress-bar");
-    while (output.length < acceptedFiles.length){
-      pos = (output.length / acceptedFiles.length) *100
+    while (data.length < acceptedFiles.length){
+      pos = (data.length / acceptedFiles.length) *100
 
       if (pos!==bar.value){
         bar.value = pos 
@@ -151,9 +159,25 @@ const fileLoadController = async function(settings, files){
       await sleep(500);
     }
     bar.value = 100;
-    
-    console.log("output is: ",output)
+
+    // Finally, we submit the filtered submission data to
+    // the server for more complex anonymization (WITHOUT STORING)
+    fetch(
+      "/anonymize", 
+    {
+      method: "POST",
+      mode: "same-origin",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }
+    ).then(response => response.json())
+    .then(filtered => {callback(filtered)})
+    .catch((error)=>{console.log("Error",error)})
 }
+
 
 // as per https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
 function sleep(ms){
