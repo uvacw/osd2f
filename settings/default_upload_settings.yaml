@@ -8,9 +8,9 @@ files:
       # in key is required when the initial level of data
       # is not a list but an object (e.g. {} instead of [])
       in_key : "comments"
-      # fields to include in the upload
+      # accepted_fields to include in the upload
       # remove a field to filter it out
-      fields:
+      accepted_fields:
         - timestamp
         - title
         - attachments.data.external_context.url
@@ -29,7 +29,7 @@ files:
       # the KEY is the function to apply, the VALUE a string-argument
       anonymizers:
         - fb_redact_posts_usernames_based_on_title : ""
-      fields:
+      accepted_fields:
         - timestamp
         - title 
         - attachments.data.external_context.url
@@ -55,14 +55,14 @@ files:
     # these are the likes & reactions of pages
     pages.json:
       in_key : page_likes
-      fields:
+      accepted_fields:
         - name
         - timestamp
 
     # these are the likes & reactions of posts & comments
     posts_and_comments.json:
       in_key: reactions
-      fields:
+      accepted_fields:
         - timestamp
         - data.reaction.reaction
         - data.reaction.actor
@@ -71,7 +71,7 @@ files:
     # Advertiser interactions file
     advertisers_you've_interacted_with.json:
       in_key : history
-      fields:
+      accepted_fields:
         - title
         - action
         - timestamp
@@ -79,4 +79,4 @@ files:
     # Advertisers who uploaded user information
     advertisers_who_uploaded_a_contact_list_with_your_information.json:
       in_key : custom_audiences
-      fields: ""
+      accepted_fields: []
