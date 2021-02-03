@@ -98,10 +98,17 @@ def start(mode: str = "Testing", database_url_override: str = ""):
     # Check to make sure the application is never in production with a vacant key
     in_production_mode = mode == "Production"
     key_is_set = app.config["SECRET_KEY"] is not None
+    db_is_set = app.config["DB_URL"] is not None
     if in_production_mode:
         logger.info("Starting app in production mode")
         assert key_is_set, ValueError(
             "To run OSD2F in production, the `OSD2F_SECRET` environment "
             "variable MUST be set."
         )
+
+        assert db_is_set, ValueError(
+            "To run OSD2F in production, a database url should be specified "
+            "either as an env variabel (OSD2f_DB_URL) or via the CLI."
+        )
+
     app.run()
