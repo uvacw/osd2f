@@ -11,7 +11,7 @@ exports from major online platforms (generally based on participants rights to t
 data under GDPR).
 
 Currently supported donations: 
-* None
+* Facebook exports
 
 ## Using OSD2F locally
 
@@ -20,6 +20,16 @@ VCS. However, we recommend local installation only in cases in which you want to
 with OSD2F and **never for production (real data collection) purposes**. 
 
 ### Installation
+
+OSD2F requires python 3.9 or up, check your version by running:
+
+```bash
+python --version
+```
+should say something like:
+> Python 3.9.0
+
+*Note: it's recommended to use a virtual environment, please consult de [development docs](docs/development.md) for more information.*
 
 ```bash
 pip install git+https://github.com/uvacw/osd2f
