@@ -1,5 +1,20 @@
 # Development
 
+## Core assumptions
+
+Choices in this codebase are based on some assumptions as to the uses of the
+framework. Because of these assumptions some things are simple, whereas others
+are harder. When contributing code, please make sure you keep these assumptions
+in mind:
+
+- **Functionality should be generic over many kinds of donation formats**. 
+This means that the frontend, endpoints, anonymizers and configurations should be able to handle pretty arbitrary JSON*. Assumptions about existing fields, datatypes etcetera should be limited to
+  - the default configuration file example
+  - export source specific anonymizers
+- **Configuration targets users with low technical expertise**, 
+which means the selection of fields to include and anonymizers to use should be relatively easy to infer from the example configuration. It also means that we want to avoid making content decisions in code.
+- **This framework is for collection, *not* analysis**. 
+The intended use of this framework is to provide a participant facing data submission interface with good privacy guarantees. The researchers who administer the deployment can download the data to do analysis in their own environment. The entries submitted can therefore be treated as a 'black box'. This helps maintain flexibility (no database migrations for new donation types) and maintainability (changes in export formats can be upgraded via configuration only).
 ## Installation for development
 
 You can install this Python Package for local development purposes. To do 
@@ -35,8 +50,7 @@ pip install -r requirements_dev.txt
 
 ## About fake data
 
-Fake data was generated using the 'faker' package implementation in [scripts/facebook_data_generator.py](../scripts/facebook_data_generator.py),
-using the command:
+Fake data was generated using the 'faker' package implementation in [scripts/facebook_data_generator.py](../scripts/facebook_data_generator.py), using the command:
 
 ```bash
 python scripts/facebook_data_generator.py -o mockdata/facebook --overwrite -i 2
@@ -50,9 +64,7 @@ python scripts/facebook_data_generator.py -h
 
 ## Code style & checks
 
-There are a number of checks to run in order to guarantee all 
-tests pass, formatting is correct and typing is properly applied. 
-You can run these manually:
+There are a number of checks to run in order to guarantee all tests pass, formatting is correct and typing is properly applied. You can run these manually:
 
 ```bash
 flake8 ./ # formatting analysis
@@ -66,5 +78,4 @@ You can opt to run `black` seperately to apply auto-formatting (`flake8-black` o
 black ./
 ```
 
-Note that most IDEs (e.g. PyCharms, VSCode, ...) allow you to automatically run these commands every time
-you save, commit or attempt to push the code. We especially advice you to run black on every save. 
+Note that most IDEs (e.g. PyCharms, VSCode, ...) allow you to automatically run these commands every time you save, commit or attempt to push the code. We especially advice you to run black on every save. 
