@@ -19,11 +19,21 @@ def generate_comments(user: str, n: int = 10) -> typing.Dict:
     f = faker.Faker()
 
     def make_comment():
+        tt = random.randint(0, 5)
+        if tt == 1:
+            title = f"{user} replied to {f.name()}'s comment."
+        elif tt == 2:
+            title = f"{user} commented on her own post."
+        elif tt == 3:
+            title = f"{user} commented on {f.name()}'s post."
+        elif tt == 4:
+            title = f"{user} commented on {f.name()}'s video."
+        else:
+            title = f"{user} commented on {f.name()}'s photo."
+
         c = {
             "timestamp": f.unix_time(start_datetime=datetime.datetime(2020, 1, 1)),
-            "title": f"{user} replied to {f.name()}'s comment."
-            if random.randint(0, 1)
-            else f"{user} commented on her own post.",
+            "title": title,
         }
 
         if random.randint(0, 4) == 4:
@@ -300,7 +310,11 @@ def generate_bundle(
                 indent=indents,
             )
     if n_advertiser_interactions:
-        advertiser_interactions_path = os.path.join(output_dir, user_dir)
+        advertiser_interactions_path = os.path.join(
+            output_dir,
+            user_dir,
+            "ads_and_businesses",
+        )
         os.makedirs(name=advertiser_interactions_path, exist_ok=True)
         with open(
             os.path.join(
@@ -316,7 +330,9 @@ def generate_bundle(
                 indent=indents,
             )
     if n_advertiser_uploads:
-        advertiser_upload_path = os.path.join(output_dir, user_dir)
+        advertiser_upload_path = os.path.join(
+            output_dir, user_dir, "ads_and_businesses"
+        )
         os.makedirs(advertiser_upload_path, exist_ok=True)
         with open(
             os.path.join(
