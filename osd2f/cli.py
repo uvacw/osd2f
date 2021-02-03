@@ -33,6 +33,13 @@ parser.add_argument(
     "v=WARNING, vv=INFO, vvv=DEBUG",
 )
 
+parser.add_argument(
+    "-db",
+    "--database-url",
+    type=str,
+    help="The database URL to use, overrides the `OSD2F` environment variable.",
+)
+
 
 def parse_and_run():
     args = parser.parse_args()
@@ -56,4 +63,4 @@ def parse_and_run():
         "DO NOT DO THIS IN PRODUCTION."
     )
 
-    start(mode=args.mode)
+    start(mode=args.mode, database_url_override=args.database_url)
