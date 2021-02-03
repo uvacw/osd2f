@@ -19,13 +19,17 @@ def generate_comments(user: str, n: int = 10) -> typing.Dict:
     f = faker.Faker()
 
     def make_comment():
-        tt = random.randint(0, 3)
+        tt = random.randint(0, 5)
         if tt == 1:
             title = f"{user} replied to {f.name()}'s comment."
         elif tt == 2:
             title = f"{user} commented on her own post."
-        else:
+        elif tt == 3:
             title = f"{user} commented on {f.name()}'s post."
+        elif tt == 4:
+            title = f"{user} commented on {f.name()}'s video."
+        else:
+            title = f"{user} commented on {f.name()}'s photo."
 
         c = {
             "timestamp": f.unix_time(start_datetime=datetime.datetime(2020, 1, 1)),
