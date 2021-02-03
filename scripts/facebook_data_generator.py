@@ -300,7 +300,11 @@ def generate_bundle(
                 indent=indents,
             )
     if n_advertiser_interactions:
-        advertiser_interactions_path = os.path.join(output_dir, user_dir)
+        advertiser_interactions_path = os.path.join(
+            output_dir,
+            user_dir,
+            "ads_and_businesses",
+        )
         os.makedirs(name=advertiser_interactions_path, exist_ok=True)
         with open(
             os.path.join(
@@ -316,7 +320,9 @@ def generate_bundle(
                 indent=indents,
             )
     if n_advertiser_uploads:
-        advertiser_upload_path = os.path.join(output_dir, user_dir)
+        advertiser_upload_path = os.path.join(
+            output_dir, user_dir, "ads_and_businesses"
+        )
         os.makedirs(advertiser_upload_path, exist_ok=True)
         with open(
             os.path.join(
