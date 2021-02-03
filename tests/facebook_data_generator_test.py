@@ -1,9 +1,8 @@
 import glob
 import os
+import pathlib
 import re
 import shutil
-import pathlib
-
 from unittest import TestCase
 
 
@@ -23,7 +22,7 @@ class MinimalFacebookGeneratorTest(TestCase):
     """
 
     def test_facebook_generator_import(self):
-        from scripts import facebook_data_generator
+        from scripts import facebook_data_generator  # noqa
 
     def test_facebook_generator_output(self):
         from scripts.facebook_data_generator import generate_bundle
@@ -63,12 +62,14 @@ class MinimalFacebookGeneratorTest(TestCase):
         self.assertTrue(glob.glob("temp_test_data/facebook-*/comments/comments.json"))
         self.assertTrue(
             glob.glob(
-                "temp_test_data/facebook-*/ads_and_businesses/advertisers_you've_interacted_with.json"
+                "temp_test_data/facebook-*/ads_and_businesses/advertisers_you've"
+                "_interacted_with.json"
             )
         )
         self.assertTrue(
             glob.glob(
-                "temp_test_data/facebook-*/ads_and_businesses/advertisers_who_uploaded_a_contact_list_with_your_information.json"
+                "temp_test_data/facebook-*/ads_and_businesses/advertisers_who_uploaded"
+                "_a_contact_list_with_your_information.json"
             )
         )
 
@@ -100,7 +101,9 @@ class MinimalFacebookGeneratorTest(TestCase):
         testdir_paths = glob.glob(os.path.join(testdir, "**"), recursive=True)
 
         gp = re.compile("(facebook-[A-z-0-9]*)")
-        generalized = lambda ps: [gp.sub("facebook-*/", p).split("/", 1)[1] for p in ps]
+
+        def generalized(ps):
+            return [gp.sub("facebook-*/", p).split("/", 1)[1] for p in ps]
 
         self.assertListEqual(
             sorted(generalized(facebook_mockdata_paths)),
