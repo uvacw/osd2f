@@ -5,6 +5,8 @@
 #    pip-compile
 #
 aiofiles==0.6.0           # via quart
+aiosqlite==0.16.1         # via tortoise-orm
+asyncpg==0.21.0           # via OSD2F (setup.py)
 blinker==1.4              # via quart
 click==7.1.2              # via quart
 h11==0.11.0               # via hypercorn, wsproto
@@ -12,13 +14,18 @@ h2==4.0.0                 # via hypercorn
 hpack==4.0.0              # via h2
 hypercorn==0.11.1         # via quart
 hyperframe==6.0.0         # via h2
+iso8601==0.1.13           # via tortoise-orm
 itsdangerous==1.1.0       # via quart
 jinja2==2.11.2            # via quart
 markupsafe==1.1.1         # via jinja2
 priority==1.3.0           # via hypercorn
 pydantic==1.7.3           # via OSD2F (setup.py)
+pypika==0.44.1            # via tortoise-orm
+pytz==2020.5              # via tortoise-orm
 pyyaml==5.4.1             # via OSD2F (setup.py)
 quart==0.13.1             # via OSD2F (setup.py)
 toml==0.10.2              # via hypercorn, quart
+tortoise-orm==0.16.21     # via OSD2F (setup.py)
+typing-extensions==3.7.4.3  # via aiosqlite
 werkzeug==1.0.1           # via quart
 wsproto==1.0.0            # via hypercorn
