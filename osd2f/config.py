@@ -10,12 +10,12 @@ class Config:
 
 class Testing(Config):
     TESTING = True
-    DB_URL = "sqlite://"
+    DB_URL = "sqlite://:memory:"
 
 
 class Development(Config):
     DEBUG = True
-    DB_URL = _os.environ.get("OSD2F_DB_URL", "sqlite:memory")
+    DB_URL = _os.environ.get("OSD2F_DB_URL", "sqlite://:memory:")
 
 
 class Production(Config):
