@@ -13,5 +13,5 @@ setup(
     url="https://github.com/uvacw/osd2f",
     packages=["osd2f"],
     scripts=["bin/osd2f"],
-    install_requires=["quart", "pyyaml", "pydantic"],
+    install_requires=["quart", "pyyaml", "pydantic", "tortoise-orm", "asyncpg"],
 )
