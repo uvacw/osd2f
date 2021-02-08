@@ -139,13 +139,20 @@ const fileLoadController = async function(sid, settings, files, callback){
                 fileob = new Object;
                 fileob["filename"] = f.name;
                 fileob["submission_id"] = sid;
-                fileob["entries"] = fileReader(
-                  paths=settings['files'][setmatch[f.name]].accepted_fields, 
-                  objects=JSON.parse(content),
-                  prepath=null,
-                  in_key = settings['files'][setmatch[f.name]].in_key
-                  )
-                data.push(fileob);
+                try {
+                  fileob["entries"] = fileReader(
+                    paths=settings['files'][setmatch[f.name]].accepted_fields, 
+                    objects=JSON.parse(content),
+                    prepath=null,
+                    in_key = settings['files'][setmatch[f.name]].in_key
+                    )
+                  data.push(fileob);
+                } catch (error) {
+                  // log failed files, for instance OSX metadata
+                  // files.
+                  console.log("Invalid JSON file:",f.name)
+                  data.push(false)
+                }
                 }
             
         );
@@ -158,6 +165,10 @@ const fileLoadController = async function(sid, settings, files, callback){
       }
       await sleep(500);
     }
+
+    // filter failed files
+    data = data.filter(x=>x)
+    
     bar.value = 100;
 
     // Finally, we submit the filtered submission data to
