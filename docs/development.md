@@ -50,6 +50,10 @@ pip install -r requirements_dev.txt
 
 ## About fake data
 
+Fake data is part of this repository to demonstrate potential donations. It allows you to play around with data
+that on it's service should be similar to real donations when testing your deployment, developing new anonymizes or
+visualizations. 
+
 Fake data was generated using the 'faker' package implementation in [scripts/facebook_data_generator.py](../scripts/facebook_data_generator.py), using the command:
 
 ```bash
