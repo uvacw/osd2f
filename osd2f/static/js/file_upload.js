@@ -1,10 +1,9 @@
-"use strict"
 // This is the javascript to handle folder loading &
 // client-side filtering
+"use strict"
 
 // 1. submit handlers
 const folderScanner = function(webkitEntry, files){
-    
     if (webkitEntry.isDirectory){
         let dir = webkitEntry.createReader();
         dir.readEntries( entries => 
@@ -76,7 +75,7 @@ const fileReader = function(paths, objects, prepath, in_key){
     }
 
     // in case the contents is just one array of values,
-    // instead of an array of values
+    // instead of an array of objects
     if (Array.isArray(objects) && paths.length==0){
       return [{"entries":objects}]
     }
@@ -87,15 +86,9 @@ const fileReader = function(paths, objects, prepath, in_key){
 
 }
 
-// 3. anonymization (via server, but not stored there)
-const anonymize = function(data, callback){
-  // 
-
-
-}
-
-// 4. controller
+// 3. controller
 const fileLoadController = async function(sid, settings, files, callback){
+    document.getElementById("processing").classList.remove("invisible")
     // we map filenames to the regex format filenames in
     // provided settings
     var setmatch
@@ -135,7 +128,7 @@ const fileLoadController = async function(sid, settings, files, callback){
                     console.log(e)
                     done = true
                   })
-                  wait = 1000
+                  wait = 10000
                   while (!done || wait>0){
                     await sleep(100)
                     wait -= 100
@@ -194,8 +187,12 @@ const fileLoadController = async function(sid, settings, files, callback){
       },
       body: JSON.stringify(data)
     }
-    ).then(response => response.json())
-    .then(filtered => {callback(filtered)})
+    ).then(response => {
+      document.getElementById("processing").classList.add("invisible");
+      return response.json()
+    })
+    .then(filtered => {callback(filtered)
+    })
     .catch((error)=>{console.log("Error",error)})
 }
 
