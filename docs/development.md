@@ -57,7 +57,7 @@ visualizations.
 Fake data was generated using the 'faker' package implementation in [scripts/facebook_data_generator.py](../scripts/facebook_data_generator.py), using the command:
 
 ```bash
-python scripts/facebook_data_generator.py -o mockdata/facebook --overwrite -i 2
+python scripts/facebook_data_generator.py -o mockdata/facebook --overwrite -i 2 -z -tz -t
 ```
 
 More information about how to use this script, consult the help:
