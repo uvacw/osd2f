@@ -431,23 +431,23 @@ if __name__ == "__main__":
     parser.add_argument(
         "-z",
         "--include-zip",
-        type=bool,
+        action="store_true",
         help="whether to generate a zipped version of the mock data",
-        default=True,
+        default=False,
     )
     parser.add_argument(
         "-t",
         "--tar",
-        type=bool,
+        action="store_true",
         help="whether to generate a '.tar' archive of the mock data",
-        default=True,
+        default=False,
     )
     parser.add_argument(
         "-tz",
         "--tar-gz",
-        type=bool,
+        action="store_true",
         help="whether to generate a '.tar.gz' archive of the mock data",
-        default=True,
+        default=False,
     )
     parser.add_argument(
         "-i",
