@@ -281,9 +281,8 @@
       },
       body: JSON.stringify(output.data)
     }
-    ).then(response => response.json())
-    .then(filtered => {
-      document.getElementById("donatespinner").classList.add("invisible")
+    ).then(() => {
+      document.getElementById("donatespinner").classList.add("invisible");
       document.getElementById("donatebutton").classList.add("disabled");
       document.getElementById("thankyou").classList.remove("invisible");
       noDonationYet = false;
