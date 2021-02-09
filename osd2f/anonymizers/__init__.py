@@ -34,11 +34,20 @@ async def apply(
             f"Available anonymizers: {options}."
         )
         return []
-    anonymized_entries = [
-        await options[anonymizer](entry, optional_str_param)
-        for entry in file_entries
-        if entry is not None
-    ]
+
+    anonymized_entries = []
+    for entry in file_entries:
+        if entry is None:
+            continue
+        try:
+            processed_entry = await options[anonymizer](entry, optional_str_param)
+            anonymized_entries.append(processed_entry)
+        except:
+            logger.warning(
+                f"anonymizer `{anonymizer}` threw an error while parsing an entry"
+            )
+            continue
+
     return anonymized_entries
 
 
