@@ -50,3 +50,36 @@ class test_anonymizer_package_interface(AsyncTestCase):
             submission_list=submission_list, settings=settings
         )
         self.assertEqual(submission_list.__root__[0].entries[0], {"a": "a", "b": "b"})
+
+    async def test_broken_anonymizer(self):
+        from osd2f import anonymizers
+        from osd2f.definitions import Settings, SubmissionList, Submission
+
+        async def brokenanonymizer(s: dict, arg: str = None):
+            if s.get("title") == "weird entry":
+                raise ValueError("Help, I'm broken")
+            return s
+
+        entries = [{"title": t} for t in ["normal entry"] * 10 + ["weird entry"]]
+
+        anonymizers.options["brokenanonymizer"] = brokenanonymizer
+
+        settings = Settings(
+            files={
+                "file(_\\d)?.json": {
+                    "accepted_fields": [],
+                    "anonymizers": [{"brokenanonymizer": "a"}],
+                }
+            }
+        )
+        submission_list = SubmissionList(
+            __root__=[
+                Submission(entries=entries, filename="file_2.json", submission_id=1)
+            ]
+        )
+        await anonymizers.anonymize_submission_list(
+            submission_list=submission_list, settings=settings
+        )
+
+        # check that all but one entry remains
+        self.assertEqual(len(submission_list.__root__[0].entries), 10)
