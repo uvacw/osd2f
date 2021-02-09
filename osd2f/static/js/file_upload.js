@@ -1,3 +1,4 @@
+"use strict"
 // This is the javascript to handle folder loading &
 // client-side filtering
 
@@ -31,7 +32,7 @@ const objReader = function(spec, o, prev){
 
     let options = spec.map(p=> p.split(".").shift(1))
 
-    
+    let k
     for (k of Object.keys(o)){
       if (options.filter(o=>o==k).length==0){
         continue
@@ -97,8 +98,10 @@ const anonymize = function(data, callback){
 const fileLoadController = async function(sid, settings, files, callback){
     // we map filenames to the regex format filenames in
     // provided settings
+    var setmatch
     setmatch = Object.fromEntries(
       files.map(file => {
+        let nameRegex
         for (nameRegex of Object.keys(settings.files)){
           if (RegExp(nameRegex).exec(file.name)){
             return [file.name, nameRegex]
@@ -110,7 +113,7 @@ const fileLoadController = async function(sid, settings, files, callback){
     // remove undefined keys, i.e. files that do not match any RegEx
     Object.keys(setmatch).map(k=> {if (k==="undefined") {delete setmatch[k]}})
     
-
+    let acceptedFiles
     acceptedFiles = files.filter(f => setmatch[f.name]!==undefined)
 
     let data = [];
@@ -126,7 +129,9 @@ const fileLoadController = async function(sid, settings, files, callback){
                 else {
                   let done = false
                   f.readData((r,e)=>{
-                    content = String.fromCharCode.apply(null, new Uint8Array(r))
+                    let t
+                    t = new TextDecoder()
+                    content = t.decode(r)
                     console.log(e)
                     done = true
                   })
@@ -136,28 +141,33 @@ const fileLoadController = async function(sid, settings, files, callback){
                     wait -= 100
                   }
                 }
-                fileob = new Object;
+
+                let fileob
+                fileob = new Object();
                 fileob["filename"] = f.name;
                 fileob["submission_id"] = sid;
                 try {
                   fileob["entries"] = fileReader(
-                    paths=settings['files'][setmatch[f.name]].accepted_fields, 
-                    objects=JSON.parse(content),
-                    prepath=null,
-                    in_key = settings['files'][setmatch[f.name]].in_key
+                    settings['files'][setmatch[f.name]].accepted_fields, 
+                    JSON.parse(content),
+                    null,
+                    settings['files'][setmatch[f.name]].in_key
                     )
                   data.push(fileob);
                 } catch (error) {
                   // log failed files, for instance OSX metadata
                   // files.
                   console.log("Invalid JSON file:",f.name)
+                  console.log(error)
                   data.push(false)
                 }
                 }
             
         );
+    let bar
     bar = document.getElementById("progress-bar");
     while (data.length < acceptedFiles.length){
+      let pos
       pos = (data.length / acceptedFiles.length) *100
 
       if (pos!==bar.value){
