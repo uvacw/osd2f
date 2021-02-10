@@ -1,6 +1,9 @@
 // This is the javascript to handle folder loading &
 // client-side filtering
 "use strict"
+import {sleep} from "./utils.js"
+export {sleep as sleep} from "./utils"
+
 
 // 1. submit handlers
 const folderScanner = function(webkitEntry, files){
@@ -18,13 +21,6 @@ const folderScanner = function(webkitEntry, files){
 };
 
 // 2. file-reader
-const key_rest_split = function(p){
-    let key
-    sa = p.split(".")
-    key = sa.shift(1)
-    return [key, sa.join('.')]
-  }
-
 const objReader = function(spec, o, prev){
   
     let flat_obj = {}
@@ -87,7 +83,7 @@ const fileReader = function(paths, objects, prepath, in_key){
 }
 
 // 3. controller
-const fileLoadController = async function(sid, settings, files, callback){
+export const fileLoadController = async function(sid, settings, files, callback){
     document.getElementById("processing").classList.remove("invisible")
     // we map filenames to the regex format filenames in
     // provided settings
@@ -128,8 +124,9 @@ const fileLoadController = async function(sid, settings, files, callback){
                     console.log(e)
                     done = true
                   })
-                  wait = 10000
-                  while (!done || wait>0){
+                  
+                  let wait = 10000
+                  while (!done && wait>0){
                     await sleep(100)
                     wait -= 100
                   }
@@ -196,8 +193,3 @@ const fileLoadController = async function(sid, settings, files, callback){
     .catch((error)=>{console.log("Error",error)})
 }
 
-
-// as per https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
-function sleep(ms){
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
