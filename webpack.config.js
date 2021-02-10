@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './osd2f/static/js/file_upload.js',
+  entry: './osd2f/javascript/file_upload.js',
   output: {
     filename: 'main.js',
     library: 'file_upload',
