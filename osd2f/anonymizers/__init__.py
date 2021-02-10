@@ -42,7 +42,7 @@ async def apply(
         try:
             processed_entry = await options[anonymizer](entry, optional_str_param)
             anonymized_entries.append(processed_entry)
-        except:
+        except:  # noqa
             logger.warning(
                 f"anonymizer `{anonymizer}` threw an error while parsing an entry"
             )
