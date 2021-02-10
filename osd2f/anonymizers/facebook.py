@@ -41,6 +41,7 @@ async def fb_redact_posts_usernames_based_on_title(
                 if post := data_item.get("post"):
                     post = post.replace(ego.strip(), "<user>")
                     data_item["post"] = post
+        return entry
 
     else:
         logger.warn("FB post title doesn't match known format.")
