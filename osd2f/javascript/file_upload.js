@@ -139,7 +139,7 @@ export const fileLoadController = async function(sid, settings, files, callback)
         fileob = await apply_adv_anonymization(fileob)
         data.push(fileob);
       } catch (e) {
-        console.log("Unable to parse file", e)
+        console.log("Unable to parse file because it's not real JSON")
       }
 
       // update the loading
