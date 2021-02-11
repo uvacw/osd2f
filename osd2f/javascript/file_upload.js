@@ -129,15 +129,18 @@ export const fileLoadController = async function(sid, settings, files, callback)
       fileob = new Object();
       fileob["filename"] = f.name;
       fileob["submission_id"] = sid;
-      // try {
+      try {
         fileob["entries"] = fileReader(
           settings['files'][setmatch[f.name]].accepted_fields, 
           JSON.parse(content),
           null,
           settings['files'][setmatch[f.name]].in_key
           )
-      fileob = await apply_adv_anonymization(fileob)
-      data.push(fileob);
+        fileob = await apply_adv_anonymization(fileob)
+        data.push(fileob);
+      } catch (e) {
+        console.log("Unable to parse file", e)
+      }
 
       // update the loading
       let pos
@@ -164,8 +167,9 @@ export const fileLoadController = async function(sid, settings, files, callback)
 }
 
 export async function fileSelectHandler(e){
-  let filesSelected = e.files
+  var filesSelected = e.target.files
   if (filesSelected === undefined) {
+    console.log("no files",e)
     return // no files selected yet
   }
 
@@ -181,7 +185,7 @@ export async function fileSelectHandler(e){
   }
   
 }
-document.getElementById("fileElem").addEventListener("change",fileSelectHandler, false)
+document.getElementById("fileElem").onchange = fileSelectHandler
 
 async function fileDropHandler(e){
 
