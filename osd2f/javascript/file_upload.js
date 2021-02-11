@@ -1,9 +1,15 @@
 // This is the javascript to handle folder loading &
 // client-side filtering
 "use strict"
-import {sleep} from "./utils.js"
-export {sleep as sleep} from "./utils"
+import { Archive } from "libarchive.js"
+import {apply_adv_anonymization} from "./server_interaction"
+import {visualize} from "./visualize"
+import {Donation} from "./utils"
+import {getFilesFromDataTransferItems} from "datatransfer-files-promise"
 
+
+
+Archive.init({"workerUrl": "/static/js/libarchive/worker-bundle.js"})
 
 // 1. submit handlers
 const folderScanner = function(webkitEntry, files){
@@ -106,90 +112,91 @@ export const fileLoadController = async function(sid, settings, files, callback)
     acceptedFiles = files.filter(f => setmatch[f.name]!==undefined)
 
     let data = [];
+    
+    let bar = document.getElementById("progress-bar");
+    bar.value = 0
+    let f
+    for (f of acceptedFiles){
+      let content
+      // normal files
+      if (f.text != null){
+          content = await f.text()
+        } else {
+          let extractedFile = await f.extract()
+          content = await extractedFile.text()        
+        }
+      let fileob
+      fileob = new Object();
+      fileob["filename"] = f.name;
+      fileob["submission_id"] = sid;
+      // try {
+        fileob["entries"] = fileReader(
+          settings['files'][setmatch[f.name]].accepted_fields, 
+          JSON.parse(content),
+          null,
+          settings['files'][setmatch[f.name]].in_key
+          )
+      fileob = await apply_adv_anonymization(fileob)
+      data.push(fileob);
 
-    acceptedFiles.map(
-        async f => {
-                let content
-                // normal files
-                if (f.text != null){
-                  content = await f.text()
-                } 
-                // files from archive
-                else {
-                  let done = false
-                  f.readData((r,e)=>{
-                    let t
-                    t = new TextDecoder()
-                    content = t.decode(r)
-                    console.log(e)
-                    done = true
-                  })
-                  
-                  let wait = 10000
-                  while (!done && wait>0){
-                    await sleep(100)
-                    wait -= 100
-                  }
-                }
-
-                let fileob
-                fileob = new Object();
-                fileob["filename"] = f.name;
-                fileob["submission_id"] = sid;
-                try {
-                  fileob["entries"] = fileReader(
-                    settings['files'][setmatch[f.name]].accepted_fields, 
-                    JSON.parse(content),
-                    null,
-                    settings['files'][setmatch[f.name]].in_key
-                    )
-                  data.push(fileob);
-                } catch (error) {
-                  // log failed files, for instance OSX metadata
-                  // files.
-                  console.log("Invalid JSON file:",f.name)
-                  console.log(error)
-                  data.push(false)
-                }
-                }
-            
-        );
-    let bar
-    bar = document.getElementById("progress-bar");
-    while (data.length < acceptedFiles.length){
+      // update the loading
       let pos
       pos = (data.length / acceptedFiles.length) *100
-
+  
       if (pos!==bar.value){
         bar.value = pos 
       }
-      await sleep(500);
     }
 
     // filter failed files
     data = data.filter(x=>x)
     
-    bar.value = 100;
+    Donation.prototype.SetData(data)
 
-    // Finally, we submit the filtered submission data to
-    // the server for more complex anonymization (WITHOUT STORING)
-    fetch(
-      "/anonymize", 
-    {
-      method: "POST",
-      mode: "same-origin",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    }
-    ).then(response => {
-      document.getElementById("processing").classList.add("invisible");
-      return response.json()
-    })
-    .then(filtered => {callback(filtered)
-    })
-    .catch((error)=>{console.log("Error",error)})
+    // show users that processing has completed
+    bar.value = 100;
+    document.getElementById("processing").classList.add("invisible"); 
+    document.getElementById("donatebutton").classList.remove("disabled")
+    document.getElementById("donatebutton").attributes.removeNamedItem("disabled")
+    
+    visualize(data)
+
 }
 
+export async function fileSelectHandler(e){
+  let filesSelected = e.files
+  if (filesSelected === undefined) {
+    return // no files selected yet
+  }
+
+  // if there is one file, which is an archive
+  if (RegExp(".*.zip$").exec(filesSelected[0].name) != null){
+    let archiveContent = await Archive.open(filesSelected[0])
+    let contentList = await archiveContent.getFilesArray()
+    let fl = contentList.map(c=>c.file)
+    
+    fileLoadController(sid, settings, fl)
+  } else {
+    fileLoadController(sid, settings, Array(filesSelected[0]))
+  }
+  
+}
+document.getElementById("fileElem").addEventListener("change",fileSelectHandler, false)
+
+async function fileDropHandler(e){
+
+  let filesSelected = await getFilesFromDataTransferItems(e.dataTransfer.items)
+
+  // if there is one file, which is an archive
+  if (filesSelected.length==1 && RegExp(".*.zip$").exec(filesSelected[0].name) != null){
+    let archiveContent = await Archive.open(filesSelected[0])
+    let contentList = await archiveContent.getFilesArray()
+    let fl = contentList.map(c=>c.file)
+    
+    fileLoadController(sid, settings, fl)
+  } else {
+    fileLoadController(sid, settings, filesSelected)
+  }
+  
+}
+document.getElementById("drop-area").addEventListener("drop", fileDropHandler,false)

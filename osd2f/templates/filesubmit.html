@@ -17,7 +17,7 @@
       }
       
       #drop-area.highlight {
-        border-color: green;
+        border-color: cornflowerblue;
       }
       
       #progress-bar {
@@ -69,7 +69,7 @@
         <progress id="progress-bar" max=100 value=0></progress>
         <form class="my-form">
           <p>Upload the zipfile with the file dialog or by dragging and dropping the zipfile or extracted folder onto the dashed region</p>
-          <input type="file" id="fileElem"  onchange="handleSelect(this.files)">
+          <input type="file" id="fileElem">
           <label class="button" for="fileElem">Select some files</label>
         </form>
         
@@ -97,7 +97,7 @@
     
     <div class="row justify-content-center p-4">
       <div class="text-center">
-        <button type="button" class="btn btn-primary disabled pr-4" id="donatebutton" disabled>
+        <button type="button" class="btn btn-primary disabled pr-4" id="donatebutton" disabled autocomplete="off">
           <span id="donatespinner" class="spinner-border spinner-border-sm invisible" role="status" aria-hidden="true"></span>
           Donate This Data!
         </button>
@@ -115,7 +115,6 @@
 </footer>
 
 
-<script src="/static/js/uncompress.js"></script>
 <script src="/static/js/main.js"></script>
 <script>
     let settings = {{ settings|tojson|safe }};
@@ -150,153 +149,9 @@
     }
     
     
-    // output will be the container for the donation data
-    let output
+
     // track whether the donation has been completed for the prevent close dialogue
     let noDonationYet=true
-    // because the unzip lib loads plugins with a callback, this var signals availability of the necessary plugin
-    let zipReady=false 
-
-    function appendFile(fileobj){
-      document.getElementById("files")
-      .innerHTML += `<p>${fileobj.filename} : <b> ${fileobj.entries.length} </b> datapoints</p>`
-    }
-
-    function resultHandler(d){
-      output=d; 
-      d.data.forEach(appendFile);
-      document.getElementById("donatebutton").classList.remove("disabled")
-      document.getElementById("donatebutton").attributes.removeNamedItem("disabled")
-    }
-
-    // Drops are akward because of the nature of 
-    // webkitDirectories w.r.t. 'normal' file 
-    // selectors
-    async function handleDrop(e) {
-        let items = e.dataTransfer.items;
-        let fileobj
-        fileobj = items
-
-        var files = []
-        var wg = 1
-        extractFiles = function(wke){
-            console.log(wke.name)
-            if (wke.isDirectory){
-            wg++
-            console.log(wg)
-            r = wke.createReader()
-            r.readEntries(es => es.map(extractFiles))
-            } else {
-            wke.file(c => {
-                files.push(c)
-                wg--
-            })
-            console.log(wg)
-            }
-        }
-        if (items.length>0 && items[0]){}
-        let i
-        for( i=0; i < items.length; i++){
-            extractFiles(items[i].webkitGetAsEntry())
-        }
-        
-        // this loop serves to make sure the
-        // asynchronous parsing in extractFiles
-        // is completed before passing the file-list.
-        // msec is the total number of milliseconds to
-        // wait (unless parsing is completed in the meantime)
-        // and step the number of milliseconds to wait between
-        // polling whether the result is ready.
-        let msec, step
-        msec = 10000
-        step = 100
-        while (wg > 0 & msec >0){
-            await file_upload.sleep(step)
-            msec-=step
-        }
-        // if there is one file, which is an archive
-        if (files.length==1 && RegExp(".*.zip$").exec(files[0].name) != null){
-            let done = false 
-
-            loadArchiveFormats(["zip"], (r,e)=>{
-                if(e!==null&&e!==undefined){
-                    console.log("unable to load zip script", e)
-                } else {
-                    archiveOpenFile(files[0], "", (r,e)=>{
-                      console.log("fs",files)
-                      fileobj = r 
-                      files = r.entries
-                      done = true
-                    })
-                }})
-            
-            let wait = 1000
-            while (!done && wait>0){
-              await file_upload.sleep(100)
-              wait -= 100
-            }
-        }
-        
-        file_upload.fileLoadController(sid, settings, files, resultHandler)
-
-        }
-    dropArea.addEventListener('drop', handleDrop, false)
-
-    async function handleSelect(files){
-      console.log([...files])
-      // if there is one file, which is an archive
-      if (files.length==1 && RegExp(".*.zip$").exec(files[0].name) != null){
-        let done = false 
-
-        loadArchiveFormats(["zip"], (r,e)=>{
-          if(e!==null&&e!==undefined){
-            console.log("unable to load script", e)            
-          } else {
-            archiveOpenFile(files[0], "", (r,e)=>{
-              fileobj = r 
-              files = r.entries
-              if (e!==null){
-                console.log(e)
-              }
-              done = true
-            })
-          }})
-        
-        wait = 1000
-        while (!done && wait>0){
-          await file_upload.sleep(100)
-          wait -= 100
-        }
-      }
-      file_upload.fileLoadController(sid, settings, [...files], resultHandler)
-    }
-
-
-
-    function donate(){
-      document.getElementById("donatespinner").classList.remove("invisible")
-
-      fetch(
-      "/upload", 
-    {
-      method: "POST",
-      mode: "same-origin",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(output.data)
-    }
-    ).then(() => {
-      document.getElementById("donatespinner").classList.add("invisible");
-      document.getElementById("donatebutton").classList.add("disabled");
-      document.getElementById("thankyou").classList.remove("invisible");
-      noDonationYet = false;
-    })
-    .catch((error)=>{console.log("Error",error)})
-    }
-
-    document.getElementById("donatebutton").addEventListener("click",donate)
 
     // prevent accidentally leaving before donating
     window.onbeforeunload = confirmExit;
