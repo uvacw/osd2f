@@ -75,6 +75,7 @@ async def adv_anonymize_file():
     try:
         submission = Submission.parse_raw(data)
     except ValueError as e:
+        logger.debug(f"file anonymization failed: {e}")
         return jsonify({"error": "incorrect format"}), 400
 
     submission = await anonymize_submission(submission=submission, settings=settings)
