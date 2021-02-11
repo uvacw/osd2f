@@ -30,6 +30,28 @@ conda create -n osd2f python=3.9 # only required once
 conda activate osd2f # run at the start of each osd2f development session
 ```
 
+While developing, it's probably nice to use development mode *and* set the
+log level to DEBUG. You can do so by:
+
+```bash
+osd2f -m Development -vvv 
+```
+The server will now automatically reload when changes are detected. In addition, the settings `yaml` file will be reloaded for each request so
+you can quickly iterate on it. 
+
+### javascript
+
+If you are planning to touch the javascript part of the application, you
+are recommended to install the npm packages
+
+```bash
+npm i --also=dev
+```
+
+During development, it's probably nice to have human readable javascript in the
+browser (so you can use the build-in debuggers). Use `npm run development` to have webpack watch the javascript files and re-generate a human-readable `main.js` while you work. Once your javascript works well, use `npm run build` to generate the proper minified `main.js` to check in. 
+
+
 #### Setting up 
 
 For development purposes, you should install the package using the `-e` pip flag 
