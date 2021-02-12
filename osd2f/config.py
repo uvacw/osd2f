@@ -6,6 +6,12 @@ class Config:
     DEBUG: bool = False
     TESTING: bool = False
     SECRET_KEY: _typing.Optional[str] = None
+    # Allow for BIG submissions 4*16mb for
+    # in-memory anonymization.
+    # NOTE: protect POST endpoints with
+    #       xsrf tokens to avoid memory
+    #       based ddos attacks
+    MAX_CONTENT_LENGTH: int = 16777216 * 4
 
 
 class Testing(Config):

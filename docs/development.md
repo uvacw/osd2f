@@ -30,6 +30,28 @@ conda create -n osd2f python=3.9 # only required once
 conda activate osd2f # run at the start of each osd2f development session
 ```
 
+While developing, it's probably nice to use development mode *and* set the
+log level to DEBUG. You can do so by:
+
+```bash
+osd2f -m Development -vvv 
+```
+The server will now automatically reload when changes are detected. In addition, the settings `yaml` file will be reloaded for each request so
+you can quickly iterate on it. 
+
+### javascript
+
+If you are planning to touch the javascript part of the application, you
+are recommended to install the npm packages
+
+```bash
+npm i --also=dev
+```
+
+During development, it's probably nice to have human readable javascript in the
+browser (so you can use the build-in debuggers). Use `npm run development` to have webpack watch the javascript files and re-generate a human-readable `main.js` while you work. Once your javascript works well, use `npm run build` to generate the proper minified `main.js` to check in. 
+
+
 #### Setting up 
 
 For development purposes, you should install the package using the `-e` pip flag 
@@ -50,10 +72,14 @@ pip install -r requirements_dev.txt
 
 ## About fake data
 
+Fake data is part of this repository to demonstrate potential donations. It allows you to play around with data
+that on it's service should be similar to real donations when testing your deployment, developing new anonymizes or
+visualizations. 
+
 Fake data was generated using the 'faker' package implementation in [scripts/facebook_data_generator.py](../scripts/facebook_data_generator.py), using the command:
 
 ```bash
-python scripts/facebook_data_generator.py -o mockdata/facebook --overwrite -i 2
+python scripts/facebook_data_generator.py -o mockdata/facebook --overwrite -i 2 -z -tz -t
 ```
 
 More information about how to use this script, consult the help:

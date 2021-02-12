@@ -1,5 +1,7 @@
 import typing
 
+from osd2f.logger import logger
+
 
 async def fb_redact_posts_usernames_based_on_title(
     entry: typing.Dict[str, typing.Any], _: str = "unused_optional_string"
@@ -13,16 +15,35 @@ async def fb_redact_posts_usernames_based_on_title(
     """
     if "title" not in entry:
         return entry
-    ego, rest = entry["title"].split("wrote on")
-    alter = rest.replace("'s timeline.", "")
 
-    entry["title"] = "<user> wrote on <alter>'s timeline."
+    if "wrote on" in entry["title"]:
+        ego, rest = entry["title"].split("wrote on")
 
-    if "data" in entry:
-        for data_item in entry["data"]:
-            if post := data_item.get("post"):
-                post = post.replace(ego.strip(), "<user>")
-                post = post.replace(alter.strip(), "<alter>")
-                data_item["post"] = post
+        alter = rest.replace("'s timeline.", "")
 
-    return entry
+        entry["title"] = "<user> wrote on <alter>'s timeline."
+
+        if "data" in entry:
+            for data_item in entry["data"]:
+                if post := data_item.get("post"):
+                    post = post.replace(ego.strip(), "<user>")
+                    post = post.replace(alter.strip(), "<alter>")
+                    data_item["post"] = post
+
+        return entry
+
+    if "posted in" in entry["title"]:
+        ego, rest = entry["title"].split("posted in")
+        entry["title"] = f"<user> posted in {rest}"
+
+        if "data" in entry:
+            for data_item in entry["data"]:
+                if post := data_item.get("post"):
+                    post = post.replace(ego.strip(), "<user>")
+                    data_item["post"] = post
+        return entry
+
+    else:
+        logger.warn("FB post title doesn't match known format.")
+        logger.debug(f"post: {entry}")
+        return entry
