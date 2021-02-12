@@ -1,6 +1,6 @@
 import argparse
-import logging
 import asyncio
+import logging
 
 from osd2f import config
 
@@ -37,7 +37,8 @@ parser.add_argument(
 parser.add_argument(
     "--dry-run",
     action="store_true",
-    help="test whether endpoints provide 200 code responses, just to make sure nothing broke.",
+    help="test whether endpoints provide 200 code responses,"
+    " just to make sure nothing broke.",
 )
 
 
