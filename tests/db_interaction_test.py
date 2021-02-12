@@ -8,6 +8,7 @@ import os
 from aiounittest.case import AsyncTestCase
 from unittest.mock import AsyncMock, patch
 
+import json
 import sqlite3
 
 
@@ -16,6 +17,7 @@ class DatabaseStartStopTest(AsyncTestCase):
         from osd2f.database import initialize_database
 
         # we use a file simply because we want to access the same database
+        # in the test as in the app context
         db_file = "test_temp"
         db_url = f"sqlite://{db_file}"
 
@@ -70,3 +72,34 @@ class DatabaseInsertTest(AsyncTestCase):
         self.assertEqual(await DBSubmission.all().count(), nfiles * nentries)
 
         await stop_database()
+
+
+class UploadSubmissionTest(AsyncTestCase):
+    async def test_upload_submission(self):
+        from osd2f.definitions import Submission, SubmissionList
+        from osd2f.utils import load_settings
+
+        sublist_db_mock = AsyncMock()
+
+        nfiles = 10
+        nentries = 10
+
+        submissions = SubmissionList(
+            __root__=[
+                Submission(
+                    submission_id=f"testing-{i}",
+                    filename=f"testing_{i}.json",
+                    entries=[{"entry": ii, "text": "here"} for ii in range(nentries)],
+                )
+                for i in range(nfiles)
+            ]
+        )
+
+        with patch("osd2f.server.database.insert_submission_list", sublist_db_mock):
+            from osd2f import server
+
+            testclient = server.app.test_client()
+            r = await testclient.post("/upload", data=submissions.json())
+            assert r.status_code == 200
+
+            sublist_db_mock.assert_called_once_with(submissionlist=submissions)
