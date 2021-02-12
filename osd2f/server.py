@@ -1,11 +1,11 @@
 from osd2f import database, config, utils
-from osd2f.definitions import SubmissionList
+from osd2f.definitions import Submission, SubmissionList
 
 from quart import Quart, render_template, request
 from quart.json import jsonify
 
 
-from .anonymizers import anonymize_submission_list
+from .anonymizers import anonymize_submission, anonymize_submission_list
 from .logger import logger
 
 app = Quart(__name__)
@@ -88,7 +88,22 @@ async def anonymize():
     return jsonify({"error": "", "data": submission_list.dict()["__root__"]}), 200
 
 
-def start(mode: str = "Testing", database_url_override: str = ""):
+@app.route("/adv_anonymize_file", methods=["POST"])
+async def adv_anonymize_file():
+    data = await request.get_data()
+    logger.debug(f"[anonymization] received: {data}")
+    settings = utils.load_settings(force_disk=app.debug)
+    try:
+        submission = Submission.parse_raw(data)
+    except ValueError as e:
+        logger.debug(f"file anonymization failed: {e}")
+        return jsonify({"error": "incorrect format"}), 400
+
+    submission = await anonymize_submission(submission=submission, settings=settings)
+    return jsonify({"error": "", "data": submission.dict()}), 200
+
+
+def start(mode: str = "Testing"):
     app.config.from_object(getattr(config, mode))
 
     if database_url_override:
