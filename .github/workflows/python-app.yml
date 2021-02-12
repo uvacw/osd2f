@@ -45,5 +45,5 @@ jobs:
         python-version: 3.9
     - name: Install with plain pip
       run: |
-        pip install ./
+        pip install ./osd2f/
         osd2f --dry-run
