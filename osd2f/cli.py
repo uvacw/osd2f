@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import json
 import logging
 
 from osd2f import config
@@ -71,4 +72,26 @@ def parse_and_run():
         assert asyncio.run(tp.get("/")).status_code == 200
         assert asyncio.run(tp.get("/privacy")).status_code == 200
         assert asyncio.run(tp.get("/upload")).status_code == 200
-        assert asyncio.run(tp.get("/adv_anonymize_file")).status_code == 200
+        assert asyncio.run(tp.get("/adv_anonymize_file")).status_code == 405
+        assert (
+            asyncio.run(
+                tp.post(
+                    "/adv_anonymize_file",
+                    data=json.dumps(
+                        {"filename": "fn", "submission_id": "sid", "entries": [{}]}
+                    ),
+                )
+            ).status_code
+            == 200
+        )
+        assert (
+            asyncio.run(
+                tp.post(
+                    "/upload",
+                    data=json.dumps(
+                        [{"filename": "fn", "submission_id": "sid", "entries": [{}]}]
+                    ),
+                )
+            ).status_code
+            == 200
+        )
