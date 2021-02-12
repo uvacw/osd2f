@@ -23,11 +23,29 @@ so, we *strongly* advice using a virtual environment context.
 In addition, please note that OSD2F was written for Python `3.9.0` and up. Using
 a virtual environment should make it easy to install this version without impacting your other Python projects.
 
+----
 ##### Example using the popular [anaconda distribution of python](https://www.anaconda.com/)
 
 ```bash 
 conda create -n osd2f python=3.9 # only required once
 conda activate osd2f # run at the start of each osd2f development session
+```
+----
+
+For development purposes, you should install the package using the `-e` pip flag 
+to ensure it is available in 'editable' mode ([see the docs](https://pip.pypa.io/en/stable/reference/pip_install/)).
+
+```bash
+# at the repository root (OSD2F/)
+pip install -e ./
+```
+
+There are additional requirements for development purposes that 
+mainly serve to ensure proper formatting and static analysis. Install
+them seperately:
+
+```bash
+pip install -r requirements_dev.txt
 ```
 
 While developing, it's probably nice to use development mode *and* set the
@@ -51,24 +69,6 @@ npm i --also=dev
 During development, it's probably nice to have human readable javascript in the
 browser (so you can use the build-in debuggers). Use `npm run development` to have webpack watch the javascript files and re-generate a human-readable `main.js` while you work. Once your javascript works well, use `npm run build` to generate the proper minified `main.js` to check in. 
 
-
-#### Setting up 
-
-For development purposes, you should install the package using the `-e` pip flag 
-to ensure it is available in 'editable' mode ([see the docs](https://pip.pypa.io/en/stable/reference/pip_install/)).
-
-```bash
-# at the repository root (OSD2F/)
-pip install -e backend/
-```
-
-There are additional requirements for development purposes that 
-mainly serve to ensure proper formatting and static analysis. Install
-them seperately:
-
-```bash
-pip install -r requirements_dev.txt
-```
 
 ## About fake data
 
