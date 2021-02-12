@@ -2,7 +2,7 @@ from tortoise.models import Model
 from tortoise import Tortoise, fields
 
 
-from .definitions import Submission
+from .definitions import Submission, SubmissionList
 from .logger import logger
 
 
@@ -35,6 +35,26 @@ async def insert_submission(submission: Submission):
             filename=submission.filename,
             entry=entry,
         )
+
+
+async def insert_submission_list(submissionlist: SubmissionList):
+    if len(submissionlist.__root__) < 1:
+        logger.info("Empty submissionlist")
+        return
+
+    logger.debug(
+        f"Inserting {len(submissionlist.__root__)} files of data for submission "
+        f"'{submissionlist.__root__[0].submission_id}'"
+    )
+
+    def subgenerator():
+        for sub in submissionlist.__root__:
+            for entry in sub.entries:
+                yield DBSubmission(
+                    submission_id=sub.submission_id, filename=sub.filename, entry=entry
+                )
+
+    await DBSubmission.bulk_create(objects=subgenerator())
 
 
 async def count_submissions():

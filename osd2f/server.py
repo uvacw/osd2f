@@ -1,3 +1,4 @@
+from quart import json
 from osd2f import database, config, utils
 from osd2f.definitions import Submission, SubmissionList
 
@@ -51,12 +52,14 @@ async def upload():
             "filesubmit.html", settings=settings.dict(), sid=sid
         )
     elif request.method == "POST":
-        # TODO actually do something with the uploaded data
         data = await request.get_data()
-        submissionlist = SubmissionList.parse_raw(data)
-        logger.info("Received the donation!")
-        for submission in submissionlist.__root__:
-            await database.insert_submission(submission=submission)
+        try:
+            submissionlist = SubmissionList.parse_raw(data)
+            logger.info("Received the donation!")
+            await database.insert_submission_list(submissionlist=submissionlist)
+        except ValueError:
+            logger.info("Invallid submission format received")
+            return jsonify({"error": "incorrect submission format", "data": {}}), 400
         return jsonify({"error": "", "data": ""}), 200
 
 
