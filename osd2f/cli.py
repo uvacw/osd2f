@@ -91,14 +91,3 @@ def parse_and_run():
             ).status_code
             == 200
         )
-        assert (
-            asyncio.run(
-                tp.post(
-                    "/upload",
-                    data=json.dumps(
-                        [{"filename": "fn", "submission_id": "sid", "entries": [{}]}]
-                    ),
-                )
-            ).status_code
-            == 200
-        )
