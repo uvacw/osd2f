@@ -72,6 +72,7 @@ def parse_and_run():
         assert asyncio.run(tp.get("/")).status_code == 200
         assert asyncio.run(tp.get("/privacy")).status_code == 200
         assert asyncio.run(tp.get("/upload")).status_code == 200
+        assert asyncio.run(tp.get("/static/js/main.js")).status_code == 200
         assert asyncio.run(tp.get("/adv_anonymize_file")).status_code == 405
         assert (
             asyncio.run(
