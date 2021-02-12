@@ -1,10 +1,12 @@
 import argparse
+import asyncio
+import json
 import logging
 
 from osd2f import config
 
 from .logger import logger
-from .server import start
+from .server import app, start
 
 LOGFORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
@@ -40,6 +42,13 @@ parser.add_argument(
     help="The database URL to use, overrides the `OSD2F` environment variable.",
 )
 
+parser.add_argument(
+    "--dry-run",
+    action="store_true",
+    help="test whether endpoints provide 200 code responses,"
+    " just to make sure nothing broke.",
+)
+
 
 def parse_and_run():
     args = parser.parse_args()
@@ -63,4 +72,33 @@ def parse_and_run():
         "DO NOT DO THIS IN PRODUCTION."
     )
 
-    start(mode=args.mode, database_url_override=args.database_url)
+    if not args.dry_run:
+        start(mode=args.mode, database_url_override=args.database_url)
+    else:
+        tp = app.test_client()
+        assert asyncio.run(tp.get("/")).status_code == 200
+        assert asyncio.run(tp.get("/privacy")).status_code == 200
+        assert asyncio.run(tp.get("/upload")).status_code == 200
+        assert asyncio.run(tp.get("/adv_anonymize_file")).status_code == 405
+        assert (
+            asyncio.run(
+                tp.post(
+                    "/adv_anonymize_file",
+                    data=json.dumps(
+                        {"filename": "fn", "submission_id": "sid", "entries": [{}]}
+                    ),
+                )
+            ).status_code
+            == 200
+        )
+        assert (
+            asyncio.run(
+                tp.post(
+                    "/upload",
+                    data=json.dumps(
+                        [{"filename": "fn", "submission_id": "sid", "entries": [{}]}]
+                    ),
+                )
+            ).status_code
+            == 200
+        )

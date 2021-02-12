@@ -13,7 +13,7 @@ def _cached_load_settings() -> Settings:
 
 
 def _load_settings_from_disk() -> Settings:
-    settings_dir = pathlib.Path(__file__).parent.parent.joinpath("settings")
+    settings_dir = pathlib.Path(__file__).parent.joinpath("settings")
     try:
         settings = Settings.parse_obj(
             yaml.safe_load(open(settings_dir.joinpath("upload_settings.yaml")))
