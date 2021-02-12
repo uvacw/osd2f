@@ -4,23 +4,19 @@ export function sleep(ms){
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
+// Data could be too big for sessionStorage (>10mb)
+// so instead, we park it into a private variable
+// accessible via the Donation class 
+var donation
 export class Donation {
 
-  getKey(){
-    return "donations"
-  }
-
   SetData(data){
-    window.sessionStorage.setItem(this.getKey(), JSON.stringify(data))
+    donation = data;
   }
   GetRaw(){
-    return window.sessionStorage.getItem(this.getKey())
+    return JSON.stringify(donation)
   }
   GetObj(){
-    let serialized = window.sessionStorage.getItem(this.getKey())
-    if (serialized===null){
-      return null
-    }
-    return JSON.parse(serialized)
+    return null
   }
 }
