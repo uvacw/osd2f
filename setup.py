@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name="OSD2F",
@@ -11,7 +11,7 @@ setup(
     author_email="osd2f@bob-as-a-service.com",
     license="TODO",
     url="https://github.com/uvacw/osd2f",
-    packages=["osd2f"],
+    packages=find_packages(),
     scripts=["bin/osd2f"],
     install_requires=["quart", "pyyaml", "pydantic"],
 )
