@@ -31,8 +31,10 @@ jobs:
       run: mypy ./osd2f/
     - name: Test with pytest
       run: pytest ./
-    - name: Do a dry run
-      run: osd2f --dry-run
+    - name: Install & do a dry run
+      run: |
+        pip install -e ./
+        osd2f --dry-run
 
   release_build:
 
