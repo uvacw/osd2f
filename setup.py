@@ -12,7 +12,7 @@ setup(
     license="TODO",
     url="https://github.com/uvacw/osd2f",
     packages=find_packages(),
-    package_data={"osd2f": ["static/*", "templates/*", "settings/*"]},
+    package_data={"osd2f": ["static/*", "templates/*", "settings/*", "static/js/*"]},
     scripts=["bin/osd2f"],
     install_requires=["quart", "pyyaml", "pydantic"],
 )
