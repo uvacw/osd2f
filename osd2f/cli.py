@@ -65,7 +65,7 @@ def parse_and_run():
         start(mode=args.mode)
     else:
         tp = app.test_client()
-        asyncio.run(tp.get("/"))
-        asyncio.run(tp.get("/privacy"))
-        asyncio.run(tp.get("/upload"))
-        asyncio.run(tp.get("/adv_anonymize_file"))
+        assert asyncio.run(tp.get("/")) == 200
+        asyncio.run(tp.get("/privacy")) == 200
+        asyncio.run(tp.get("/upload")) == 200
+        asyncio.run(tp.get("/adv_anonymize_file")) == 200
