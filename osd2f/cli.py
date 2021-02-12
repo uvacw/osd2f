@@ -35,7 +35,9 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--dry-run", action="store_true", help="parse args but not start the server"
+    "--dry-run",
+    action="store_true",
+    help="test whether endpoints provide 200 code responses, just to make sure nothing broke.",
 )
 
 
@@ -65,7 +67,7 @@ def parse_and_run():
         start(mode=args.mode)
     else:
         tp = app.test_client()
-        assert asyncio.run(tp.get("/")) == 200
-        asyncio.run(tp.get("/privacy")) == 200
-        asyncio.run(tp.get("/upload")) == 200
-        asyncio.run(tp.get("/adv_anonymize_file")) == 200
+        assert asyncio.run(tp.get("/")).status_code == 200
+        assert asyncio.run(tp.get("/privacy")).status_code == 200
+        assert asyncio.run(tp.get("/upload")).status_code == 200
+        assert asyncio.run(tp.get("/adv_anonymize_file")).status_code == 200
