@@ -1,10 +1,11 @@
 import argparse
 import logging
+import asyncio
 
 from osd2f import config
 
 from .logger import logger
-from .server import start
+from .server import app, start
 
 LOGFORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
@@ -62,3 +63,9 @@ def parse_and_run():
 
     if not args.dry_run:
         start(mode=args.mode)
+    else:
+        tp = app.test_client()
+        asyncio.run(tp.get("/"))
+        asyncio.run(tp.get("/privacy"))
+        asyncio.run(tp.get("/upload"))
+        asyncio.run(tp.get("/adv_anonymize_file"))
