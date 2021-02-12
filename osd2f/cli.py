@@ -33,6 +33,10 @@ parser.add_argument(
     "v=WARNING, vv=INFO, vvv=DEBUG",
 )
 
+parser.add_argument(
+    "--dry-run", action="store_true", help="parse args but not start the server"
+)
+
 
 def parse_and_run():
     args = parser.parse_args()
@@ -56,4 +60,5 @@ def parse_and_run():
         "DO NOT DO THIS IN PRODUCTION."
     )
 
-    start(mode=args.mode)
+    if not args.dry_run:
+        start(mode=args.mode)
