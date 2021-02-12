@@ -103,7 +103,7 @@ async def adv_anonymize_file():
     return jsonify({"error": "", "data": submission.dict()}), 200
 
 
-def start(mode: str = "Testing"):
+def start(mode: str = "Testing", database_url_override: str = ""):
     app.config.from_object(getattr(config, mode))
 
     if database_url_override:
