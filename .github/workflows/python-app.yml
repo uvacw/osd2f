@@ -26,13 +26,13 @@ jobs:
         pip install -r requirements.txt
         pip install -r requirements_dev.txt
     - name: Lint with flake8
-      run: |
-        flake8 ./
+      run: flake8 ./
     - name: mypy
       run: mypy ./osd2f/
     - name: Test with pytest
-      run: |
-        pytest ./
+      run: pytest ./
+    - name: Do a dry run
+      run: osd2f --dry-run
 
   release_build:
 
@@ -45,6 +45,6 @@ jobs:
       with:
         python-version: 3.9
     - name: Install with plain pip
-      run: |
-        pip install ./
-        osd2f --dry-run
+      run: pip install ./
+    - name: Do a dry run
+      run:  osd2f --dry-run
