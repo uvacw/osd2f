@@ -4,12 +4,10 @@ We don't want to test our ORM package, so these tests target the convenvience
 functions used.
 """
 import os
-
-from aiounittest.case import AsyncTestCase
+import sqlite3
 from unittest.mock import AsyncMock, patch
 
-import json
-import sqlite3
+from aiounittest.case import AsyncTestCase
 
 
 class DatabaseStartStopTest(AsyncTestCase):
@@ -77,7 +75,6 @@ class DatabaseInsertTest(AsyncTestCase):
 class UploadSubmissionTest(AsyncTestCase):
     async def test_upload_submission(self):
         from osd2f.definitions import Submission, SubmissionList
-        from osd2f.utils import load_settings
 
         sublist_db_mock = AsyncMock()
 

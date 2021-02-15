@@ -1,5 +1,4 @@
-from quart import json
-from osd2f import database, config, utils
+from osd2f import config, database, utils
 from osd2f.definitions import Submission, SubmissionList
 
 from quart import Quart, render_template, request
@@ -110,7 +109,7 @@ def start(mode: str = "Testing", database_url_override: str = ""):
     app.config.from_object(getattr(config, mode))
 
     if database_url_override:
-        logger.debug(f"Using CLI specified DB URL instead of ENV VAR")
+        logger.debug("Using CLI specified DB URL instead of ENV VAR")
         app.config["DB_URL"] = database_url_override
 
     # Check to make sure the application is never in production with a vacant key
