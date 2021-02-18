@@ -2,7 +2,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
 
@@ -104,6 +104,21 @@
       </div>
     </div>
   </div>
+
+  <div class="row justify-content-center p-4">
+    <div id="visualization">
+      <!-- <donation-table 
+        v-bind:filedata="filedata" 
+        v-bind:fields="fields"
+        >
+      </donation-table> -->
+      <donation-container
+        v-bind:donations="donations"
+      >
+      </donation-container>
+    </div>
+  </div>
+
   <div class="row justify-content-center invisible" id="thankyou">
     <h1>Thank you for your donation!</h1>
   </div>

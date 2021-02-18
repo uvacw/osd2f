@@ -7,6 +7,8 @@ import { visualize } from './visualize'
 import { Donation } from './utils'
 import { getFilesFromDataTransferItems } from 'datatransfer-files-promise'
 
+export { visualize as vis } from './visualize'
+
 Archive.init({ workerUrl: '/static/js/libarchive/worker-bundle.js' })
 
 // 1. submit handlers
