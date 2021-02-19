@@ -26,13 +26,5 @@ var app = new Vue({
 
 // Placeholder visualization
 export function visualize (d) {
-  //d.forEach(appendFile);
-  //app.filedata = mockdata[0]
   app.donations = d
-}
-
-function appendFile (fileobj) {
-  document.getElementById(
-    'files'
-  ).innerHTML += `<p>${fileobj.filename} : <b> ${fileobj.entries.length} </b> datapoints</p>`
 }
