@@ -6,6 +6,7 @@ from pydantic import BaseModel
 class Submission(BaseModel):
     submission_id: str
     filename: str
+    n_deleted: int
     entries: List[Dict[str, Any]]
 
 

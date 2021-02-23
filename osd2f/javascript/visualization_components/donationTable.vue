@@ -1,51 +1,62 @@
 <template>
  <div>
-     <h5> File to donate: {{ filedata.filename }} </h5>
-    <span class="p-2">There are: <b> {{ this.rows }} </b> entries in this file selected for donation</span>
-    <b-input-group>
-        <b-form-input
-            id="filter-input"
-            v-model="filter"
-            type="search"
-            placeholder="Type to Search"
-        ></b-form-input>
+     <h5> File: {{ filedata.filename }} </h5>
 
-        <b-button
-            variant="danger"
-            @click="removeSelection"
-            small
-        >Remove selection</b-button>
-    </b-input-group>
+    <span>There are: <b> {{ this.rows }} </b> entries in this file selected for donation</span>
+    
+    <div class="row">
+        <b-input-group prepend="Search this file:" class="mt-3">
+            
+            <b-form-input
+                id="filter-input"
+                v-model="filter"
+                type="search"
+                placeholder="Type to Search"
+            ></b-form-input>
 
-     <b-table 
-        id="file-table"
-        small
-        responsive
-        sticky-header="1200px"
-        thClass="col-2"
-        hover 
-        selectable
-        :items="items" 
-        :fields="showfields" 
-        :per-page="perPage" 
-        :current-page="currentPage"
-        :filter="filter"
-        @row-selected="onRowSelected"
-        @filtered="onFilterApply"
-    >
-    </b-table>
-     <b-pagination 
+            <b-input-group-append>
+                <b-button
+                    variant="danger"
+                    @click="removeSelection"
+                    small
+                >Remove selected rows</b-button>
+            </b-input-group-append>
+        </b-input-group>
+    </div>
+    <div class="row">
+        <div class="col-10">
+            <b-table 
+                id="file-table"
+                small
+                responsive
+                sticky-header="1200px"
+                thClass="col-2"
+                hover 
+                selectable
+                :items="items" 
+                :fields="showfields" 
+                :per-page="perPage" 
+                :current-page="currentPage"
+                :filter="filter"
+                @row-selected="onRowSelected"
+                @filtered="onFilterApply"
+            >
+            </b-table>
+        </div>
+    </div>
+
+    <b-pagination 
         v-model="currentPage" 
         aria-controls="file-table"
         :total-rows="rows"
         :per-page="perPage"
     ></b-pagination>
 
+
 </div>
 </template>
 
 <script>
-
 export default {
     props: {
         fields: Array,
@@ -62,7 +73,7 @@ export default {
     },
     data(){
         return {
-            perPage: 15,
+            perPage: 5,
             currentPage: 1,
             filter: null,
             selected : null
@@ -91,6 +102,7 @@ export default {
         },
         removeSelection(){
             if(this.selected==null){return}
+            this.filedata.n_deleted += this.selected.length
             this.filedata.entries = this.filedata.entries.filter(e => !this.selected.includes(e))
             this.selected = null
         },

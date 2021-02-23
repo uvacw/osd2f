@@ -4,7 +4,6 @@
 import { Archive } from 'libarchive.js'
 import { apply_adv_anonymization } from './server_interaction'
 import { visualize } from './visualize'
-import { Donation } from './utils'
 import { getFilesFromDataTransferItems } from 'datatransfer-files-promise'
 
 export { visualize as vis } from './visualize'
@@ -66,7 +65,16 @@ const fileReader = function (paths, objects, prepath, in_key) {
   // in case the contents is just one array of values,
   // instead of an array of objects
   if (Array.isArray(objects) && paths.length == 0) {
-    return [{ entries: objects }]
+    let entries = []
+    let i = 0
+    while (i < objects.length) {
+      entries.push({
+        index: i,
+        value: objects[i]
+      })
+      i++
+    }
+    return entries
   }
 
   // extract the whitelisted paths from all objects
@@ -124,18 +132,19 @@ export const fileLoadController = async function (
     fileob = new Object()
     fileob['filename'] = f.name
     fileob['submission_id'] = sid
-    try {
-      fileob['entries'] = fileReader(
-        settings['files'][setmatch[f.name]].accepted_fields,
-        JSON.parse(content),
-        null,
-        settings['files'][setmatch[f.name]].in_key
-      )
-      fileob = await apply_adv_anonymization(fileob)
-      data.push(fileob)
-    } catch (e) {
-      console.log("Unable to parse file because it's not real JSON")
-    }
+    fileob['n_deleted'] = 0
+    // try {
+    fileob['entries'] = fileReader(
+      settings['files'][setmatch[f.name]].accepted_fields,
+      JSON.parse(content),
+      null,
+      settings['files'][setmatch[f.name]].in_key
+    )
+    fileob = await apply_adv_anonymization(fileob)
+    data.push(fileob)
+    // } catch (e) {
+    //   console.log("Unable to parse file because it's not real JSON")
+    // }
 
     // update the loading
     let pos
@@ -149,17 +158,9 @@ export const fileLoadController = async function (
   // filter failed files
   data = data.filter(x => x)
 
-  Donation.prototype.SetData(data)
-
   // show users that processing has completed
   bar.value = 100
   document.getElementById('processing').classList.add('invisible')
-  document.getElementById('donatebutton').classList.remove('disabled')
-  try {
-    document
-      .getElementById('donatebutton')
-      .attributes.removeNamedItem('disabled')
-  } catch {}
 
   visualize(data)
 }

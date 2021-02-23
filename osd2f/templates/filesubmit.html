@@ -63,7 +63,7 @@
 
 
 
-  <div class="container-fluid">
+  <div class="container-fluid min-vh-100">
     <div class="row m-2">
     <div id="drop-area">
         <progress id="progress-bar" max=100 value=0></progress>
@@ -75,59 +75,42 @@
         
       </div>      
     </div>
-
-    <div class="row m-2 justify-content-center p-1">
-      <div>
-        <h1 class="text-center">Your donation:</h1>
-        <div id="files" class="p-2"></div>
-      </div>
-    </div>
-
-    <div id="processing" class="invisible">
-      <div class="row p-2 justify-content-center">
-          <h2 class="text-center">Processing....</h2>
-      </div>
-      <div class="row p-2 justify-content-center">
-        <div class="spinner-border text-primary" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
-    </div>
     
+    <div class="row justify-content-center invisible" id="thankyou">
+      <h1>Thank you for your donation!</h1>
+    </div>
     
     <div class="row justify-content-center p-4">
-      <div class="text-center">
-        <button type="button" class="btn btn-primary disabled pr-4" id="donatebutton" disabled autocomplete="off">
-          <span id="donatespinner" class="spinner-border spinner-border-sm invisible" role="status" aria-hidden="true"></span>
-          Donate This Data!
-        </button>
+      <div id="visualization">
+  
+        <donation-container
+        v-bind:donations="donations"
+        >
+        </donation-container>
       </div>
     </div>
-  </div>
-
-  <div class="row justify-content-center p-4">
-    <div id="visualization">
-      <!-- <donation-table 
-        v-bind:filedata="filedata" 
-        v-bind:fields="fields"
-        >
-      </donation-table> -->
-      <donation-container
-        v-bind:donations="donations"
-      >
-      </donation-container>
+  
+  
+  
+      <div id="processing" class="invisible">
+        <div class="row p-2 justify-content-center">
+            <h2 class="text-center">Processing....</h2>
+        </div>
+        <div class="row p-2 justify-content-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+      
+  
     </div>
-  </div>
+    <footer>
+      <div class="bg-dark m-0 pt-2 pb-2 text-center text-white text-bold">
+          <p style="font-size: x-small;" class="m-0">Contact us at: osd2f@uva.nl</p>
+      </div>
+    </footer>
 
-  <div class="row justify-content-center invisible" id="thankyou">
-    <h1>Thank you for your donation!</h1>
-  </div>
-
-  <footer>
-    <div class="container-fluid bg-dark m-0 pt-2 pb-2 text-center text-white text-bold">
-        <p style="font-size: x-small;" class="m-0">Contact us at: osd2f@uva.nl</p>
-    </div>
-</footer>
 
 
 <script src="/static/js/main.js"></script>
