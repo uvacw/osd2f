@@ -64,13 +64,14 @@
 
 
   <div class="container-fluid min-vh-100">
-    <div class="row m-2">
-    <div id="drop-area">
+    <div class="row mb-0 pb-0">
+      <div id="drop-area" class="col-xl-5 col-lg-6 col-md-8 col-sm-10 p-6 mb-1">
+        <h3 class="text-center"> Select file(s) to Donate </h3>
         <progress id="progress-bar" max=100 value=0></progress>
         <form class="my-form">
           <p>Upload the zipfile with the file dialog or by dragging and dropping the zipfile or extracted folder onto the dashed region</p>
           <input type="file" id="fileElem">
-          <label class="button" for="fileElem">Select some files</label>
+          <label class="button" for="fileElem"></label>
         </form>
         
       </div>      
