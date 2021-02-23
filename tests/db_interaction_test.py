@@ -59,6 +59,7 @@ class DatabaseInsertTest(AsyncTestCase):
             Submission(
                 submission_id=f"testing-{i}",
                 filename=f"testing_{i}.json",
+                n_deleted=2,
                 entries=[{"entry": ii, "text": "here"} for ii in range(nentries)],
             )
             for i in range(nfiles)
@@ -68,6 +69,9 @@ class DatabaseInsertTest(AsyncTestCase):
             await insert_submission(sub)
 
         self.assertEqual(await DBSubmission.all().count(), nfiles * nentries)
+        self.assertEqual(
+            await DBSubmission.filter(n_deleted=2).count(), nfiles * nentries
+        )
 
         await stop_database()
 
@@ -86,6 +90,7 @@ class UploadSubmissionTest(AsyncTestCase):
                 Submission(
                     submission_id=f"testing-{i}",
                     filename=f"testing_{i}.json",
+                    n_deleted=10,
                     entries=[{"entry": ii, "text": "here"} for ii in range(nentries)],
                 )
                 for i in range(nfiles)
