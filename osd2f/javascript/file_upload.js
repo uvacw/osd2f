@@ -3,6 +3,7 @@
 'use strict'
 import { Archive } from 'libarchive.js'
 import { apply_adv_anonymization } from './server_interaction'
+import { readDb, readJson } from './read_file'
 import { visualize } from './visualize'
 import { getFilesFromDataTransferItems } from 'datatransfer-files-promise'
 
@@ -10,7 +11,7 @@ export { visualize as vis } from './visualize'
 
 Archive.init({ workerUrl: '/static/js/libarchive/worker-bundle.js' })
 
-// 1. submit handlers
+// (NOTE to Bob: Is this actually still used?)
 const folderScanner = function (webkitEntry, files) {
   if (webkitEntry.isDirectory) {
     let dir = webkitEntry.createReader()
@@ -22,67 +23,6 @@ const folderScanner = function (webkitEntry, files) {
   }
 }
 
-// 2. file-reader
-const objReader = function (spec, o, prev) {
-  let flat_obj = {}
-
-  let options = spec.map(p => p.split('.').shift(1))
-
-  let k
-  for (k of Object.keys(o)) {
-    if (options.filter(o => o == k).length == 0) {
-      continue
-    }
-    let newkey = [prev, k].filter(e => typeof e != 'undefined').join('.')
-
-    let val = o[k]
-    let sub_spec = spec
-      .filter(s => s.startsWith(k))
-      .map(s => s.substring(k.length + 1, s.length))
-
-    if (Array.isArray(val)) {
-      flat_obj[newkey] = val.map(c => objReader(sub_spec, c))
-      continue
-    }
-
-    if (typeof val == 'object' && val != null) {
-      flat_obj = Object.assign(flat_obj, objReader(sub_spec, val, k))
-      continue
-    }
-
-    flat_obj[newkey] = val
-  }
-  return flat_obj
-}
-
-const fileReader = function (paths, objects, prepath, in_key) {
-  // in case the data is nested in an object
-  // rather than an array
-  if (typeof in_key !== 'undefined' && in_key !== null) {
-    return fileReader(paths, objects[in_key], prepath)
-  }
-
-  // in case the contents is just one array of values,
-  // instead of an array of objects
-  if (Array.isArray(objects) && paths.length == 0) {
-    let entries = []
-    let i = 0
-    while (i < objects.length) {
-      entries.push({
-        index: i,
-        value: objects[i]
-      })
-      i++
-    }
-    return entries
-  }
-
-  // extract the whitelisted paths from all objects
-  // in the array contained in the file
-  return objects.map(obj => objReader(paths, obj))
-}
-
-// 3. controller
 export const fileLoadController = async function (
   sid,
   settings,
@@ -118,40 +58,40 @@ export const fileLoadController = async function (
 
   let bar = document.getElementById('progress-bar')
   bar.value = 0
-  let f
-  for (f of acceptedFiles) {
-    let content
-    // normal files
-    if (f.text != null) {
-      content = await f.text()
+  
+  for (const f of acceptedFiles) {
+    const setting = settings["files"][setmatch[f.name]];
+    
+    // parse data according to file_type in YAML (default is JSON)
+    let entries;
+    if (setting.file_type === "db") {
+      entries = await readDb(f, setting)
+        .then((entries) => entries)
+        .catch((e) => console.log("Could not parse DB: " + e.message));
     } else {
-      let extractedFile = await f.extract()
-      content = await extractedFile.text()
+      // default is JSON
+      entries = await readJson(f, setting)
+        .then((entries) => entries)
+        .catch((e) => console.log("Could not parse JSON: " + e.message));
     }
-    let fileob
-    fileob = new Object()
-    fileob['filename'] = f.name
-    fileob['submission_id'] = sid
-    fileob['n_deleted'] = 0
-    // try {
-    fileob['entries'] = fileReader(
-      settings['files'][setmatch[f.name]].accepted_fields,
-      JSON.parse(content),
-      null,
-      settings['files'][setmatch[f.name]].in_key
-    )
-    fileob = await apply_adv_anonymization(fileob)
-    data.push(fileob)
-    // } catch (e) {
-    //   console.log("Unable to parse file because it's not real JSON")
-    // }
 
+    if (entries) {
+      let fileob = new Object();
+      fileob["filename"] = f.name;
+      fileob["submission_id"] = sid;
+      fileob["entries"] = entries;
+      fileob["n_deleted"] = 0;
+      fileob = await apply_adv_anonymization(fileob);
+      data.push(fileob);
+    }
+
+    console.log(data);
     // update the loading
-    let pos
-    pos = (data.length / acceptedFiles.length) * 100
+    let pos;
+    pos = (data.length / acceptedFiles.length) * 100;
 
     if (pos !== bar.value) {
-      bar.value = pos
+      bar.value = pos;
     }
   }
 

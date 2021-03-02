@@ -18,6 +18,7 @@ class SubmissionList(BaseModel):
 
 class FileSetting(BaseModel):
     in_key: Optional[str]
+    file_type: Optional[str]
     accepted_fields: List[str]
     anonymizers: Optional[List[Dict[str, str]]]
 

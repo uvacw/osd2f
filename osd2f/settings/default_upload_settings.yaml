@@ -2,8 +2,24 @@
 ## PLEASE COPY THIS FILE TO 'upload_settings.yaml'
 ## AND CHANGE THEM TO SUIT YOUR PROJECT
 
-# Facebook upload settings
 files:
+    ############################# CHROME HISTORY UPLOAD SETTINGS ##############################
+
+    # Chrome  (location: https://www.foxtonforensics.com/browser-history-examiner/chrome-history-location)
+    History:
+      # If filetype is not JSON, specify it here
+      file_type: db
+      # If file_type is db, in_key refers to the table, and accepted_fields to the table columns
+      in_key: urls
+      accepted_fields:
+        - url
+        - title
+        - last_visit_time
+        - visit_count
+        - typed_count
+        
+
+    ############################# FACEBOOK UPLOAD SETTINGS ##############################
     (^|/|\\)comments.json:
       # in key is required when the initial level of data
       # is not a list but an object (e.g. {} instead of [])
@@ -80,3 +96,4 @@ files:
     advertisers_who_uploaded_a_contact_list_with_your_information.json:
       in_key : custom_audiences
       accepted_fields: []
+

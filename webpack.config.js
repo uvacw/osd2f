@@ -29,7 +29,15 @@ module.exports = {
     alias: {
       vue$: 'vue/dist/vue.esm.js'
     },
-    extensions: ['*', '.js', '.vue', '.json']
+    extensions: ['*', '.js', '.vue', '.json'],
+    // sql.js requires a bunch of polyfilling
+    fallback: {
+      crypto: require.resolve("crypto-browserify"),
+      stream: require.resolve("stream-browserify"),
+      buffer: require.resolve("buffer/"),
+      path: require.resolve("path-browserify"),
+      fs: false,
+    }
   },
 
   plugins: [
@@ -46,6 +54,17 @@ module.exports = {
             'dist'
           ),
           to: path.resolve(__dirname, 'osd2f', 'static', 'js', 'libarchive')
+        },
+        {
+          // sql.js requires sql-wasm.wasm
+          from: path.resolve(
+            __dirname,
+            "node_modules",
+            "sql.js",
+            "dist",
+            "sql-wasm.wasm"
+          ),
+          to: path.resolve(__dirname, "osd2f", "static", "js"),
         }
       ]
     })
