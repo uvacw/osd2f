@@ -67,6 +67,7 @@ async def status():
     if app.debug:
         count = await database.count_submissions()
         return f"Received: {count} submissions"
+    return "Page Unavailable", 404
 
 
 @app.route("/anonymize", methods=["POST"])
