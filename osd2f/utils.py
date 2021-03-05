@@ -7,7 +7,7 @@ from .definitions import Settings
 from .logger import logger
 
 
-@functools.cache
+@functools.lru_cache
 def _cached_load_settings() -> Settings:
     return _load_settings_from_disk()
 
