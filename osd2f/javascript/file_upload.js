@@ -47,11 +47,13 @@ const objReader = function (spec, o, prev) {
 
     if (typeof val == 'object' && val != null) {
       flat_obj = Object.assign(flat_obj, objReader(sub_spec, val, k))
+
       continue
     }
 
     flat_obj[newkey] = val
   }
+
   return flat_obj
 }
 
@@ -83,12 +85,7 @@ const fileReader = function (paths, objects, prepath, in_key) {
 }
 
 // 3. controller
-export const fileLoadController = async function (
-  sid,
-  settings,
-  files,
-  callback
-) {
+export const fileLoadController = async function (sid, settings, files) {
   document.getElementById('processing').classList.remove('invisible')
   // we map filenames to the regex format filenames in
   // provided settings
@@ -133,18 +130,18 @@ export const fileLoadController = async function (
     fileob['filename'] = f.name
     fileob['submission_id'] = sid
     fileob['n_deleted'] = 0
-    // try {
-    fileob['entries'] = fileReader(
-      settings['files'][setmatch[f.name]].accepted_fields,
-      JSON.parse(content),
-      null,
-      settings['files'][setmatch[f.name]].in_key
-    )
-    fileob = await apply_adv_anonymization(fileob)
-    data.push(fileob)
-    // } catch (e) {
-    //   console.log("Unable to parse file because it's not real JSON")
-    // }
+    try {
+      fileob['entries'] = fileReader(
+        settings['files'][setmatch[f.name]].accepted_fields,
+        JSON.parse(content),
+        null,
+        settings['files'][setmatch[f.name]].in_key
+      )
+      fileob = await apply_adv_anonymization(fileob)
+      data.push(fileob)
+    } catch (e) {
+      console.log("Unable to parse file because it's not real JSON")
+    }
 
     // update the loading
     let pos
