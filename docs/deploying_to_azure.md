@@ -1,8 +1,27 @@
 # Deploying OSD2F to azure
 
-Make sure you azure CLI client is logged in
+Make sure you azure CLI client is logged in and selected the appropriate subscription. 
+
 ```bash
 az login
+```
+
+Doublecheck with:
+```bash
+az account show
+```
+
+## creating the webapp
+
+```bash
+export WEBAPPNAME="osd2f-demo"
+
+az webapp create \
+    --name $WEBAPPNAME \
+    --plan F1
+
+az webapp identity assign --name $WEBAPPNAME
+
 ```
 
 ## setting up config
@@ -10,7 +29,9 @@ az login
 Setup desired settings:
 
 ```bash
-az webapp config appsettings set --name  "osd2f-demo"\
+export WEBAPPNAME="osd2f-demo"
+
+az webapp config appsettings set --name  $WEBAPPNAME\
     --settings \
         OSD2F_SECRET=$RANDOM$RANDOM$RANDOM$RANDOM \
         OSD2F_DB_URL="sqlite://:memory:"  \
@@ -41,9 +62,10 @@ az webapp config set \
 Deploying the app uploads the source code and provisions the application. If you want changes to the code to go live, this is the command to run. 
 
 ```bash
+export WEBAPPNAME="osd2f-demo"
+
 az webapp up  \
     --runtime 'python|3.8' \
-    --resource-group ICTS-automation-RG \
     --location "West Europe" \
-    --name osd2f-demo
+    --name $WEBAPPNAME
 ```
