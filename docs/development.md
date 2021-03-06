@@ -15,6 +15,13 @@ This means that the frontend, endpoints, anonymizers and configurations should b
 which means the selection of fields to include and anonymizers to use should be relatively easy to infer from the example configuration. It also means that we want to avoid making content decisions in code.
 - **This framework is for collection, *not* analysis**. 
 The intended use of this framework is to provide a participant facing data submission interface with good privacy guarantees. The researchers who administer the deployment can download the data to do analysis in their own environment. The entries submitted can therefore be treated as a 'black box'. This helps maintain flexibility (no database migrations for new donation types) and maintainability (changes in export formats can be upgraded via configuration only).
+- **All content data is sensitive** and should never be in any logs or 
+  (disk) storage UNLESS after the explicit consent step. This also means
+  that AT NO POINT any of the JSON fields or values should be in a 
+  `print()`, `logger.info()`, `logger.warning()`, `logger.critical()` or any other stdout/stderr statement. For local development and testing purposes,
+  you can use `logger.debug()` to contain content information.
+
+
 ## Installation for development
 
 You can install this Python Package for local development purposes. To do 
@@ -23,12 +30,51 @@ so, we *strongly* advice using a virtual environment context.
 In addition, please note that OSD2F was written for Python `3.9.0` and up. Using
 a virtual environment should make it easy to install this version without impacting your other Python projects.
 
+----
 ##### Example using the popular [anaconda distribution of python](https://www.anaconda.com/)
 
 ```bash 
 conda create -n osd2f python=3.9 # only required once
 conda activate osd2f # run at the start of each osd2f development session
 ```
+----
+
+### 1. Clone the repository
+
+You can clone the git repository so you can easily switch between branches.
+
+```bash
+# get the repository
+git clone git@github.com:uvacw/osd2f.git
+# move to project ROOT
+cd osd2f
+# you know you're in the right place if it contains setup.py
+ls setup.py
+# shows: `setup.py`, if it says 'cannot access' you in the wrong place
+```
+
+### 2. Install the package in editable mode
+
+For development purposes, you should install the package using the `-e` pip flag 
+to ensure it is available in 'editable' mode ([see the docs](https://pip.pypa.io/en/stable/reference/pip_install/)).
+
+```bash
+# at the repository root (osd2f/)
+pip install -e ./
+```
+
+### 3. Install development requirements 
+
+There are additional requirements for development purposes that 
+mainly serve to ensure proper formatting and static analysis. Install
+them seperately:
+
+```bash
+# at the repository root (osd2f/)
+pip install -r requirements_dev.txt
+```
+
+### 4. Run the code in development mode
 
 While developing, it's probably nice to use development mode *and* set the
 log level to DEBUG. You can do so by:
@@ -51,24 +97,6 @@ npm i --also=dev
 During development, it's probably nice to have human readable javascript in the
 browser (so you can use the build-in debuggers). Use `npm run development` to have webpack watch the javascript files and re-generate a human-readable `main.js` while you work. Once your javascript works well, use `npm run build` to generate the proper minified `main.js` to check in. 
 
-
-#### Setting up 
-
-For development purposes, you should install the package using the `-e` pip flag 
-to ensure it is available in 'editable' mode ([see the docs](https://pip.pypa.io/en/stable/reference/pip_install/)).
-
-```bash
-# at the repository root (OSD2F/)
-pip install -e backend/
-```
-
-There are additional requirements for development purposes that 
-mainly serve to ensure proper formatting and static analysis. Install
-them seperately:
-
-```bash
-pip install -r requirements_dev.txt
-```
 
 ## About fake data
 

@@ -36,6 +36,13 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    "-db",
+    "--database-url",
+    type=str,
+    help="The database URL to use, overrides the `OSD2F` environment variable.",
+)
+
+parser.add_argument(
     "--dry-run",
     action="store_true",
     help="test whether endpoints provide 200 code responses,"
@@ -66,7 +73,7 @@ def parse_and_run():
     )
 
     if not args.dry_run:
-        start(mode=args.mode)
+        start(mode=args.mode, database_url_override=args.database_url)
     else:
         tp = app.test_client()
         assert asyncio.run(tp.get("/")).status_code == 200
@@ -80,17 +87,6 @@ def parse_and_run():
                     "/adv_anonymize_file",
                     data=json.dumps(
                         {"filename": "fn", "submission_id": "sid", "entries": [{}]}
-                    ),
-                )
-            ).status_code
-            == 200
-        )
-        assert (
-            asyncio.run(
-                tp.post(
-                    "/upload",
-                    data=json.dumps(
-                        [{"filename": "fn", "submission_id": "sid", "entries": [{}]}]
                     ),
                 )
             ).status_code

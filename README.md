@@ -19,7 +19,9 @@ Installing the OSD2F locally is relatively simple by using pip's support for ins
 VCS. However, we recommend local installation only in cases in which you want to familiarize yourself
 with OSD2F and **never for production (real data collection) purposes**. 
 
-### Installation
+***Note:** There is a different set of instructions for development purposes in the [development docs](docs/development.md)*
+
+### Installation (not for development)
 
 OSD2F requires python 3.9 or up, check your version by running:
 
