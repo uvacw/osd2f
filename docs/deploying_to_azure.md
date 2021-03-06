@@ -1,5 +1,11 @@
 # Deploying OSD2F to azure
 
+## disclaimer
+
+This documentation is intended to demonstrate how to set up OSD2F as an Azure webapp service. It is oriented towards putting an interface out there to see, but is not set up for actual data collection. The needs and conditions of your specific project may impact the way the app should be configured. Consult you cloud engineer before applying the below steps to understand how to adapt them to your project.
+
+## setting up
+
 Make sure you azure CLI client is logged in and selected the appropriate subscription. 
 
 ```bash
