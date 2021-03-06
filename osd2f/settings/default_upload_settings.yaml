@@ -22,7 +22,7 @@ files:
 
     # posts can be split into multiple files
     # that end in `_<number>`.
-    your_posts(_\d)?.json:
+    your_posts(_(\d)+).json:
       # anonymizers are functions applied on the server
       # that can inspect the content of a potential donation
       # and apply anonymization accordingly.
