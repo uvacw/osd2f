@@ -69,7 +69,18 @@ export default {
       for (let i=0; i<this.filedata.entries.length; i++){
           Object.keys(this.filedata.entries[i]).forEach((f)=>fields.add(f))
       }
-      this.showfields = Array(...fields)
+      let showfields = new Array
+      fields.forEach(f => {
+          let o = new Object
+          o[f] = { 
+              "label": f, 
+              "tdClass":"colClass",
+              "sortable" : true
+              } 
+          showfields.push(o)}
+          )
+      console.log(showfields)
+      this.showfields = showfields
     },
     data(){
         return {
