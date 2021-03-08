@@ -44,7 +44,11 @@ class test_anonymizer_package_interface(AsyncTestCase):
             }
         )
         submission_list = SubmissionList(
-            __root__=[Submission(entries=[{}], filename="file_2.json", submission_id=1)]
+            __root__=[
+                Submission(
+                    entries=[{}], filename="file_2.json", submission_id=1, n_deleted=2
+                )
+            ]
         )
         await anonymizers.anonymize_submission_list(
             submission_list=submission_list, settings=settings
@@ -74,7 +78,12 @@ class test_anonymizer_package_interface(AsyncTestCase):
         )
         submission_list = SubmissionList(
             __root__=[
-                Submission(entries=entries, filename="file_2.json", submission_id=1)
+                Submission(
+                    entries=entries,
+                    filename="file_2.json",
+                    submission_id=1,
+                    n_deleted=6,
+                )
             ]
         )
         await anonymizers.anonymize_submission_list(

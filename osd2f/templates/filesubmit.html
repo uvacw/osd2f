@@ -2,7 +2,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
 
@@ -23,6 +23,11 @@
       #progress-bar {
         width: 100%;
         height: 15px;
+
+      }
+      .colClass {
+       word-wrap: break-word; 
+       max-width: 500px;
       }    
     </style>
 </head>
@@ -63,56 +68,55 @@
 
 
 
-  <div class="container-fluid">
-    <div class="row m-2">
-    <div id="drop-area">
+  <div class="container-fluid min-vh-100">
+    <div class="row mb-0 pb-0">
+      <div id="drop-area" class="col-xl-5 col-lg-6 col-md-8 col-sm-10 p-6 mb-1">
+        <h3 class="text-center"> Select file(s) to Donate </h3>
         <progress id="progress-bar" max=100 value=0></progress>
         <form class="my-form">
           <p>Upload the zipfile with the file dialog or by dragging and dropping the zipfile or extracted folder onto the dashed region</p>
           <input type="file" id="fileElem">
-          <label class="button" for="fileElem">Select some files</label>
+          <label class="button" for="fileElem"></label>
         </form>
         
       </div>      
     </div>
-
-    <div class="row m-2 justify-content-center p-1">
-      <div>
-        <h1 class="text-center">Your donation:</h1>
-        <div id="files" class="p-2"></div>
-      </div>
-    </div>
-
-    <div id="processing" class="invisible">
-      <div class="row p-2 justify-content-center">
-          <h2 class="text-center">Processing....</h2>
-      </div>
-      <div class="row p-2 justify-content-center">
-        <div class="spinner-border text-primary" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
-    </div>
     
+    <div class="row justify-content-center invisible" id="thankyou">
+      <h1>Thank you for your donation!</h1>
+    </div>
     
     <div class="row justify-content-center p-4">
-      <div class="text-center">
-        <button type="button" class="btn btn-primary disabled pr-4" id="donatebutton" disabled autocomplete="off">
-          <span id="donatespinner" class="spinner-border spinner-border-sm invisible" role="status" aria-hidden="true"></span>
-          Donate This Data!
-        </button>
+      <div id="visualization">
+  
+        <donation-container
+        v-bind:donations="donations"
+        >
+        </donation-container>
       </div>
     </div>
-  </div>
-  <div class="row justify-content-center invisible" id="thankyou">
-    <h1>Thank you for your donation!</h1>
-  </div>
-
-  <footer>
-    <div class="container-fluid bg-dark m-0 pt-2 pb-2 text-center text-white text-bold">
-        <p style="font-size: x-small;" class="m-0">Contact us at: osd2f@uva.nl</p>
+  
+  
+  
+      <div id="processing" class="invisible">
+        <div class="row p-2 justify-content-center">
+            <h2 class="text-center">Processing....</h2>
+        </div>
+        <div class="row p-2 justify-content-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+      
+  
     </div>
-</footer>
+    <footer>
+      <div class="bg-dark m-0 pt-2 pb-2 text-center text-white text-bold">
+          <p style="font-size: x-small;" class="m-0">Contact us at: osd2f@uva.nl</p>
+      </div>
+    </footer>
+
 
 
 <script src="/static/js/main.js"></script>

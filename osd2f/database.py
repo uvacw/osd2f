@@ -10,6 +10,7 @@ class DBSubmission(Model):
     id = fields.IntField(pk=True)
     submission_id = fields.CharField(index=True, max_length=100)
     filename = fields.CharField(index=True, max_length=5000)
+    n_deleted = fields.IntField()
     insert_timestamp = fields.DatetimeField(auto_now_add=True)
     update_timestamp = fields.DatetimeField(auto_now=True)
     entry = fields.JSONField()
@@ -34,6 +35,7 @@ async def insert_submission(submission: Submission):
             submission_id=submission.submission_id,
             filename=submission.filename,
             entry=entry,
+            n_deleted=submission.n_deleted,
         )
 
 
@@ -51,7 +53,10 @@ async def insert_submission_list(submissionlist: SubmissionList):
         for sub in submissionlist.__root__:
             for entry in sub.entries:
                 yield DBSubmission(
-                    submission_id=sub.submission_id, filename=sub.filename, entry=entry
+                    submission_id=sub.submission_id,
+                    filename=sub.filename,
+                    entry=entry,
+                    n_deleted=sub.n_deleted,
                 )
 
     await DBSubmission.bulk_create(objects=subgenerator())

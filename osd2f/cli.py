@@ -86,7 +86,12 @@ def parse_and_run():
                 tp.post(
                     "/adv_anonymize_file",
                     data=json.dumps(
-                        {"filename": "fn", "submission_id": "sid", "entries": [{}]}
+                        {
+                            "filename": "fn",
+                            "submission_id": "sid",
+                            "entries": [{}],
+                            "n_deleted": 0,
+                        }
                     ),
                 )
             ).status_code
