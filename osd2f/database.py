@@ -1,12 +1,10 @@
 import typing
+
 from tortoise import Tortoise, fields
 from tortoise.models import Model
 
-
 from .definitions import Submission, SubmissionList
 from .logger import logger
-
-import asyncio
 
 
 class DBSubmission(Model):
@@ -51,19 +49,15 @@ async def insert_log(
     log_sid: typing.Optional[str] = None,
     entry: typing.Dict = None,
 ):
-    # we wrap the log insert in an 'asyncio.create_task'
-    # so it runs in the background without a blocking
-    # await expression. Logs should not slow down
-    # other tasks.
-    asyncio.create_task(
-        DBLog(
-            log_source=log_source,
-            log_level=log_level,
-            log_position=log_position,
-            log_sid=log_sid,
-            entry=entry,
-        ).save()
-    )
+
+    await DBLog(
+        log_source=log_source,
+        log_level=log_level,
+        log_position=log_position,
+        log_sid=log_sid,
+        log_entry=entry,
+    ).save()
+
     return
 
 

@@ -1,14 +1,13 @@
+import json
+
 from osd2f import config, database, utils
 from osd2f.definitions import Submission, SubmissionList
 
 from quart import Quart, render_template, request
 from quart.json import jsonify
 
-
-from .anonymizers import anonymize_submission, anonymize_submission_list
+from .anonymizers import anonymize_submission
 from .logger import logger
-
-import json
 
 app = Quart(__name__)
 
