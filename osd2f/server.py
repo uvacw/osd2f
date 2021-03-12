@@ -1,4 +1,9 @@
+import datetime
 import json
+import io
+
+import quart
+from quart.wrappers.response import Response
 
 from osd2f import config, database, utils
 from osd2f.definitions import Submission, SubmissionList
@@ -101,6 +106,24 @@ async def status():
         count = await database.count_submissions()
         return f"Received: {count} submissions"
     return "Page Unavailable", 404
+
+
+@app.route("/collector/<items>.json")
+@app.route("/collector", strict_slashes=False)
+async def collector(items=None):
+    if not items:
+        return await render_template("download.html")
+    elif items == "submissions":
+        data = await database.get_submissions()
+    elif items == "pending_participants":
+        data = await database.get_pending_participants()
+    elif items == "logs":
+        data = await database.get_activity_logs()
+    else:
+        return "Unknown export", 404
+
+    fs = json.dumps(data)
+    return Response(fs, 200, {"Content-type": "application/text; charset=utf-8"})
 
 
 @app.route("/adv_anonymize_file", methods=["POST"])
