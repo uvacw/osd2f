@@ -8,6 +8,8 @@ from quart.json import jsonify
 from .anonymizers import anonymize_submission, anonymize_submission_list
 from .logger import logger
 
+import json
+
 app = Quart(__name__)
 
 
@@ -25,16 +27,19 @@ async def stop_database():
 
 @app.route("/")
 async def home():
+    await database.insert_log("server", "INFO", "home visited")
     return await render_template("home.html")
 
 
 @app.route("/privacy")
 async def privacy():
+    await database.insert_log("server", "INFO", "privacy visited")
     return await render_template("privacy.html")
 
 
 @app.route("/donate")
 async def donate():
+    await database.insert_log("server", "INFO", "donation info visited")
     return await render_template("donate.html")
 
 
@@ -46,6 +51,7 @@ async def upload():
         # a survey tool uses to match the survey response
         # to the submitted donation.
         sid = request.args.get("sid", "test")
+        await database.insert_log("server", "INFO", "upload page visited", sid)
         settings = utils.load_settings(force_disk=app.debug)
         return await render_template(
             "filesubmit.html", settings=settings.dict(), sid=sid
@@ -70,27 +76,6 @@ async def status():
     return "Page Unavailable", 404
 
 
-@app.route("/anonymize", methods=["POST"])
-async def anonymize():
-    data = await request.get_data()
-    logger.debug(f"[anonymization] received: {data}")
-    if len(data) == 0:
-        return jsonify({"error": "no data received"}), 400
-
-    settings = utils.load_settings(force_disk=app.debug)
-    try:
-        submission_list = SubmissionList.parse_raw(data)
-    except ValueError as e:
-        logger.debug(f"[anonymization] could not parse: {e}")
-        return jsonify({"error": "incorrect submission format"}), 400
-
-    submission_list = await anonymize_submission_list(
-        submission_list=submission_list, settings=settings
-    )
-
-    return jsonify({"error": "", "data": submission_list.dict()["__root__"]}), 200
-
-
 @app.route("/adv_anonymize_file", methods=["POST"])
 async def adv_anonymize_file():
     data = await request.get_data()
@@ -100,10 +85,31 @@ async def adv_anonymize_file():
         submission = Submission.parse_raw(data)
     except ValueError as e:
         logger.debug(f"file anonymization failed: {e}")
+        await database.insert_log(
+            "server", "ERROR", "anonymization received unparsable file"
+        )
         return jsonify({"error": "incorrect format"}), 400
 
+    await database.insert_log(
+        "server", "INFO", "anonymization received file", submission.submission_id
+    )
     submission = await anonymize_submission(submission=submission, settings=settings)
     return jsonify({"error": "", "data": submission.dict()}), 200
+
+
+@app.route("/log")
+async def log():
+    position = request.args.get("position")
+    level = request.args.get("level")
+    sid = request.args.get("sid")
+    entry = json.loads(request.args.get("entry")) if request.args.get("entry") else None
+    source = "client"
+    if app.debug:
+        logger.info(f"Received: {level}-{position}({sid}): {entry}")
+    await database.insert_log(
+        log_level=level, log_position=position, log_sid=sid, log_source=source
+    )
+    return "", 200
 
 
 def start(mode: str = "Testing", database_url_override: str = "", run: bool = True):

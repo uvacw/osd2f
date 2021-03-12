@@ -27,6 +27,7 @@
     </div>
 </template>
 <script>
+import {server} from "../server_interaction"
 
 export default {
     props:{
@@ -51,6 +52,8 @@ export default {
             this.show = true
             this.processing = true
 
+            server.log("INFO", "consent given, uploading file")
+
             fetch('/upload', {
                 method: 'POST',
                 mode: 'same-origin',
@@ -71,6 +74,7 @@ export default {
             })
             .catch(error => {
             console.log('Error', error)
+            server.log("ERROR", "failed to upload file")
             })
 
         }

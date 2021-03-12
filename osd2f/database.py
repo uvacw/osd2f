@@ -1,9 +1,12 @@
+import typing
 from tortoise import Tortoise, fields
 from tortoise.models import Model
 
 
 from .definitions import Submission, SubmissionList
 from .logger import logger
+
+import asyncio
 
 
 class DBSubmission(Model):
@@ -19,6 +22,19 @@ class DBSubmission(Model):
         table = "submissions"
 
 
+class DBLog(Model):
+    id = fields.IntField(pk=True)
+    insert_timestamp = fields.DatetimeField(auto_now_add=True)
+    log_level = fields.CharField(index=True, max_length=100, null=False)
+    log_source = fields.CharField(index=True, max_length=100, null=False)
+    log_position = fields.CharField(index=True, max_length=100, null=False)
+    log_sid = fields.CharField(index=True, max_length=100, null=True)
+    log_entry = fields.JSONField(null=True)
+
+    class Meta:
+        table = "osd2f_logs"
+
+
 async def initialize_database(db_url: str):
     await Tortoise.init(db_url=db_url, modules={"models": ["osd2f.database"]})
     await Tortoise.generate_schemas(safe=True)
@@ -26,6 +42,29 @@ async def initialize_database(db_url: str):
 
 async def stop_database():
     await Tortoise.close_connections()
+
+
+async def insert_log(
+    log_source: str,
+    log_level: str,
+    log_position: str,
+    log_sid: typing.Optional[str] = None,
+    entry: typing.Dict = None,
+):
+    # we wrap the log insert in an 'asyncio.create_task'
+    # so it runs in the background without a blocking
+    # await expression. Logs should not slow down
+    # other tasks.
+    asyncio.create_task(
+        DBLog(
+            log_source=log_source,
+            log_level=log_level,
+            log_position=log_position,
+            log_sid=log_sid,
+            entry=entry,
+        ).save()
+    )
+    return
 
 
 async def insert_submission(submission: Submission):
