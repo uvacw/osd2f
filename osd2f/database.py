@@ -27,6 +27,7 @@ class DBLog(Model):
     log_source = fields.CharField(index=True, max_length=100, null=False)
     log_position = fields.CharField(index=True, max_length=100, null=False)
     log_sid = fields.CharField(index=True, max_length=100, null=True)
+    user_agent_string = fields.CharField(max_length=5000, null=True)
     log_entry = fields.JSONField(null=True)
 
     class Meta:
@@ -48,6 +49,7 @@ async def insert_log(
     log_position: str,
     log_sid: typing.Optional[str] = None,
     entry: typing.Dict = None,
+    user_agent_string: typing.Optional[str] = None,
 ):
 
     await DBLog(
@@ -56,6 +58,7 @@ async def insert_log(
         log_position=log_position,
         log_sid=log_sid,
         log_entry=entry,
+        user_agent_string=user_agent_string,
     ).save()
 
     return

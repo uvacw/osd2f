@@ -26,19 +26,34 @@ async def stop_database():
 
 @app.route("/")
 async def home():
-    await database.insert_log("server", "INFO", "home visited")
+    await database.insert_log(
+        "server",
+        "INFO",
+        "home visited",
+        user_agent_string=request.headers["User-Agent"],
+    )
     return await render_template("home.html")
 
 
 @app.route("/privacy")
 async def privacy():
-    await database.insert_log("server", "INFO", "privacy visited")
+    await database.insert_log(
+        "server",
+        "INFO",
+        "privacy visited",
+        user_agent_string=request.headers["User-Agent"],
+    )
     return await render_template("privacy.html")
 
 
 @app.route("/donate")
 async def donate():
-    await database.insert_log("server", "INFO", "donation info visited")
+    await database.insert_log(
+        "server",
+        "INFO",
+        "donation info visited",
+        user_agent_string=request.headers["User-Agent"],
+    )
     return await render_template("donate.html")
 
 
@@ -50,7 +65,14 @@ async def upload():
         # a survey tool uses to match the survey response
         # to the submitted donation.
         sid = request.args.get("sid", "test")
-        await database.insert_log("server", "INFO", "upload page visited", sid)
+
+        await database.insert_log(
+            "server",
+            "INFO",
+            "upload page visited",
+            sid,
+            user_agent_string=request.headers["User-Agent"],
+        )
         settings = utils.load_settings(force_disk=app.debug)
         return await render_template(
             "filesubmit.html", settings=settings.dict(), sid=sid
@@ -63,6 +85,12 @@ async def upload():
             await database.insert_submission_list(submissionlist=submissionlist)
         except ValueError:
             logger.info("Invallid submission format received")
+            await database.insert_log(
+                "server",
+                "ERROR",
+                "unparsable submission received",
+                user_agent_string=request.headers["User-Agent"],
+            )
             return jsonify({"error": "incorrect submission format", "data": {}}), 400
         return jsonify({"error": "", "data": ""}), 200
 
@@ -85,12 +113,19 @@ async def adv_anonymize_file():
     except ValueError as e:
         logger.debug(f"file anonymization failed: {e}")
         await database.insert_log(
-            "server", "ERROR", "anonymization received unparsable file"
+            "server",
+            "ERROR",
+            "anonymization received unparsable file",
+            user_agent_string=request.headers["User-Agent"],
         )
         return jsonify({"error": "incorrect format"}), 400
 
     await database.insert_log(
-        "server", "INFO", "anonymization received file", submission.submission_id
+        "server",
+        "INFO",
+        "anonymization received file",
+        submission.submission_id,
+        user_agent_string=request.headers["User-Agent"],
     )
     submission = await anonymize_submission(submission=submission, settings=settings)
     return jsonify({"error": "", "data": submission.dict()}), 200
@@ -106,7 +141,11 @@ async def log():
     if app.debug:
         logger.info(f"Received: {level}-{position}({sid}): {entry}")
     await database.insert_log(
-        log_level=level, log_position=position, log_sid=sid, log_source=source
+        log_level=level,
+        log_position=position,
+        log_sid=sid,
+        log_source=source,
+        user_agent_string=request.headers["User-Agent"],
     )
     return "", 200
 
