@@ -4,12 +4,13 @@ We don't want to test our ORM package, so these tests target the convenvience
 functions used.
 """
 import os
-from osd2f.database import stop_database
 import sqlite3
 import time
 from unittest.mock import AsyncMock, patch
 
 from aiounittest.case import AsyncTestCase
+
+from osd2f.database import stop_database
 
 
 class DatabaseStartStopTest(AsyncTestCase):
