@@ -6,9 +6,9 @@ import logging
 from osd2f import config
 
 from .config import Testing
+from .database import initialize_database, stop_database
 from .logger import logger
 from .server import start
-from .database import initialize_database, stop_database
 
 LOGFORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
