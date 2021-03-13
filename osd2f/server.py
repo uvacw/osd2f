@@ -1,15 +1,14 @@
-import datetime
-import json
+import csv
 import io
+import json
 
-import quart
-from quart.wrappers.response import Response
 
 from osd2f import config, database, utils
 from osd2f.definitions import Submission, SubmissionList
 
 from quart import Quart, render_template, request
 from quart.json import jsonify
+from quart.wrappers.response import Response
 
 from .anonymizers import anonymize_submission
 from .logger import logger
@@ -108,21 +107,32 @@ async def status():
     return "Page Unavailable", 404
 
 
-@app.route("/collector/<items>.json")
-@app.route("/collector", strict_slashes=False)
-async def collector(items=None):
+@app.route("/researcher/<items>.<filetype>")
+@app.route("/researcher", strict_slashes=False)
+async def collector(items=None, filetype=None):
     if not items:
         return await render_template("download.html")
-    elif items == "submissions":
+    elif items == "osd2f_completed_submissions":
         data = await database.get_submissions()
-    elif items == "pending_participants":
+    elif items == "osd2f_pending_participants":
         data = await database.get_pending_participants()
-    elif items == "logs":
+    elif items == "osd2f_activity_logs":
         data = await database.get_activity_logs()
     else:
         return "Unknown export", 404
 
-    fs = json.dumps(data)
+    if filetype == "json":
+        fs = json.dumps(data)
+    elif filetype == "csv":
+        st = io.StringIO()
+        fields = {key for item in data for key in item}
+        dw = csv.DictWriter(st, fieldnames=sorted(fields))
+        dw.writeheader()
+        dw.writerows(data)
+        fs = st.getvalue()
+    else:
+        return "Unknown filetype", 404
+
     return Response(fs, 200, {"Content-type": "application/text; charset=utf-8"})
 
 
