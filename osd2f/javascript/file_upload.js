@@ -1,6 +1,8 @@
 // This is the javascript to handle folder loading &
 // client-side filtering
 'use strict'
+import 'blob-polyfill' // for safari File handling
+
 import { Archive } from 'libarchive.js'
 import { apply_adv_anonymization } from './server_interaction'
 import { visualize } from './visualize'
