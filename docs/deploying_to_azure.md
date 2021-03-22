@@ -21,7 +21,7 @@ az account show
 
 ## creating the webapp
 
-Using webapp up will setup the webapp, the appservice and the plan required. The app won't work before we also apply the other commands.
+Using webapp up will setup the webapp, the appservice and the plan required. The app won't work before we also apply the other commands. Make sure to be inside the OSD2F folder (locally) when running this command.
 
 ```bash
 az webapp up  \
