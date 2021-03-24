@@ -18,6 +18,16 @@ files:
         - visit_count
         - typed_count
         
+        # Firefox  (location: https://www.foxtonforensics.com/browser-history-examiner/firefox-history-location)
+    History:
+      file_type: db
+      in_key: moz_places
+      accepted_fields:
+        - url
+        - title
+        - last_visit_date
+        - visit_count
+        - typed
 
     ############################# FACEBOOK UPLOAD SETTINGS ##############################
     (^|/|\\)comments.json:
