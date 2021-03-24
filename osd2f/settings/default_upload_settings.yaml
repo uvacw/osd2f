@@ -18,6 +18,7 @@ files:
         - visit_count
         - typed_count
         
+<<<<<<< HEAD
         # Firefox  (location: https://www.foxtonforensics.com/browser-history-examiner/firefox-history-location)
     History:
       file_type: db
@@ -28,6 +29,8 @@ files:
         - last_visit_date
         - visit_count
         - typed
+=======
+>>>>>>> allow multiple file types, added db type, added chrome history mock data and generator
 
     ############################# FACEBOOK UPLOAD SETTINGS ##############################
     (^|/|\\)comments.json:
@@ -48,7 +51,7 @@ files:
 
     # posts can be split into multiple files
     # that end in `_<number>`.
-    your_posts(_\d)?.json:
+    your_posts(_(\d)+).json:
       # anonymizers are functions applied on the server
       # that can inspect the content of a potential donation
       # and apply anonymization accordingly.

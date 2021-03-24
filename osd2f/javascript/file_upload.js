@@ -1,67 +1,69 @@
 // This is the javascript to handle folder loading &
 // client-side filtering
-'use strict'
-import { Archive } from 'libarchive.js'
-import { apply_adv_anonymization } from './server_interaction'
-import { readDb, readJson } from './read_file'
-import { visualize } from './visualize'
-import { getFilesFromDataTransferItems } from 'datatransfer-files-promise'
+"use strict";
+import "blob-polyfill"; // for safari File handling
 
-export { visualize as vis } from './visualize'
+import { Archive } from "libarchive.js";
+import { apply_adv_anonymization } from "./server_interaction";
+import { readDb, readJson } from "./read_file";
+import { visualize } from "./visualize";
+import { getFilesFromDataTransferItems } from "datatransfer-files-promise";
 
-Archive.init({ workerUrl: '/static/js/libarchive/worker-bundle.js' })
+export { visualize as vis } from "./visualize";
+
+Archive.init({ workerUrl: "/static/js/libarchive/worker-bundle.js" });
 
 // (NOTE to Bob: Is this actually still used?)
-const folderScanner = function (webkitEntry, files) {
+const folderScanner = function(webkitEntry, files) {
   if (webkitEntry.isDirectory) {
-    let dir = webkitEntry.createReader()
-    dir.readEntries(entries =>
-      entries.forEach(entry => folderScanner(entry, files))
-    )
+    let dir = webkitEntry.createReader();
+    dir.readEntries((entries) =>
+      entries.forEach((entry) => folderScanner(entry, files))
+    );
   } else {
-    files.push(webkitEntry)
+    files.push(webkitEntry);
   }
-}
+};
 
-export const fileLoadController = async function (
+export const fileLoadController = async function(
   sid,
   settings,
   files,
   callback
 ) {
-  document.getElementById('processing').classList.remove('invisible')
+  document.getElementById("processing").classList.remove("invisible");
   // we map filenames to the regex format filenames in
   // provided settings
-  var setmatch
+  var setmatch;
   setmatch = Object.fromEntries(
-    files.map(file => {
-      let nameRegex
+    files.map((file) => {
+      let nameRegex;
       for (nameRegex of Object.keys(settings.files)) {
         if (RegExp(nameRegex).exec(file.name)) {
-          return [file.name, nameRegex]
+          return [file.name, nameRegex];
         }
       }
-      return []
+      return [];
     })
-  )
+  );
   // remove undefined keys, i.e. files that do not match any RegEx
-  Object.keys(setmatch).map(k => {
-    if (k === 'undefined') {
-      delete setmatch[k]
+  Object.keys(setmatch).map((k) => {
+    if (k === "undefined") {
+      delete setmatch[k];
     }
-  })
+  });
 
-  let acceptedFiles
-  acceptedFiles = files.filter(f => setmatch[f.name] !== undefined)
+  let acceptedFiles;
+  acceptedFiles = files.filter((f) => setmatch[f.name] !== undefined);
 
-  let data = []
+  let data = [];
 
-  let bar = document.getElementById('progress-bar')
-  bar.value = 0
-  
+  let bar = document.getElementById("progress-bar");
+  bar.value = 0;
+
   for (const f of acceptedFiles) {
     const setting = settings["files"][setmatch[f.name]];
-    
+
     // parse data according to file_type in YAML (default is JSON)
     let entries;
     if (setting.file_type === "db") {
@@ -96,52 +98,52 @@ export const fileLoadController = async function (
   }
 
   // filter failed files
-  data = data.filter(x => x)
+  data = data.filter((x) => x);
 
   // show users that processing has completed
-  bar.value = 100
-  document.getElementById('processing').classList.add('invisible')
+  bar.value = 100;
+  document.getElementById("processing").classList.add("invisible");
 
-  visualize(data)
-}
+  visualize(data);
+};
 
-export async function fileSelectHandler (e) {
-  var filesSelected = e.target.files
+export async function fileSelectHandler(e) {
+  var filesSelected = e.target.files;
   if (filesSelected === undefined) {
-    console.log('no files', e)
-    return // no files selected yet
+    console.log("no files", e);
+    return; // no files selected yet
   }
 
   // if there is one file, which is an archive
-  if (RegExp('.*.zip$').exec(filesSelected[0].name) != null) {
-    let archiveContent = await Archive.open(filesSelected[0])
-    let contentList = await archiveContent.getFilesArray()
-    let fl = contentList.map(c => c.file)
+  if (RegExp(".*.zip$").exec(filesSelected[0].name) != null) {
+    let archiveContent = await Archive.open(filesSelected[0]);
+    let contentList = await archiveContent.getFilesArray();
+    let fl = contentList.map((c) => c.file);
 
-    fileLoadController(sid, settings, fl)
+    fileLoadController(sid, settings, fl);
   } else {
-    fileLoadController(sid, settings, Array(filesSelected[0]))
+    fileLoadController(sid, settings, Array(filesSelected[0]));
   }
 }
-document.getElementById('fileElem').onchange = fileSelectHandler
+document.getElementById("fileElem").onchange = fileSelectHandler;
 
-async function fileDropHandler (e) {
-  let filesSelected = await getFilesFromDataTransferItems(e.dataTransfer.items)
+async function fileDropHandler(e) {
+  let filesSelected = await getFilesFromDataTransferItems(e.dataTransfer.items);
 
   // if there is one file, which is an archive
   if (
     filesSelected.length == 1 &&
-    RegExp('.*.zip$').exec(filesSelected[0].name) != null
+    RegExp(".*.zip$").exec(filesSelected[0].name) != null
   ) {
-    let archiveContent = await Archive.open(filesSelected[0])
-    let contentList = await archiveContent.getFilesArray()
-    let fl = contentList.map(c => c.file)
+    let archiveContent = await Archive.open(filesSelected[0]);
+    let contentList = await archiveContent.getFilesArray();
+    let fl = contentList.map((c) => c.file);
 
-    fileLoadController(sid, settings, fl)
+    fileLoadController(sid, settings, fl);
   } else {
-    fileLoadController(sid, settings, filesSelected)
+    fileLoadController(sid, settings, filesSelected);
   }
 }
 document
-  .getElementById('drop-area')
-  .addEventListener('drop', fileDropHandler, false)
+  .getElementById("drop-area")
+  .addEventListener("drop", fileDropHandler, false);

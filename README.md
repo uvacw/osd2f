@@ -23,13 +23,13 @@ with OSD2F and **never for production (real data collection) purposes**.
 
 ### Installation (not for development)
 
-OSD2F requires python 3.9 or up, check your version by running:
+OSD2F requires python 3.8 or up, check your version by running:
 
 ```bash
 python --version
 ```
 should say something like:
-> Python 3.9.0
+> Python 3.8.0
 
 *Note: it's recommended to use a virtual environment, please consult de [development docs](docs/development.md) for more information.*
 
@@ -50,3 +50,4 @@ osd2f -m Testing # to run a testing instance
 ## See also:
 
 1. [how to develop](docs/development.md)
+2. [Deploying to Azure](docs/deploying_to_azure.md)

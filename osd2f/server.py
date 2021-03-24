@@ -67,6 +67,7 @@ async def status():
     if app.debug:
         count = await database.count_submissions()
         return f"Received: {count} submissions"
+    return "Page Unavailable", 404
 
 
 @app.route("/anonymize", methods=["POST"])
@@ -105,7 +106,7 @@ async def adv_anonymize_file():
     return jsonify({"error": "", "data": submission.dict()}), 200
 
 
-def start(mode: str = "Testing", database_url_override: str = ""):
+def start(mode: str = "Testing", database_url_override: str = "", run: bool = True):
     app.config.from_object(getattr(config, mode))
 
     if database_url_override:
@@ -127,5 +128,10 @@ def start(mode: str = "Testing", database_url_override: str = ""):
             "To run OSD2F in production, a database url should be specified "
             "either as an env variabel (OSD2f_DB_URL) or via the CLI."
         )
-
-    app.run()
+    logger.debug(app.config)
+    if run:
+        app.run(
+            host=app.config["BIND"], port=app.config["PORT"], debug=app.config["DEBUG"]
+        )
+    else:
+        return app
