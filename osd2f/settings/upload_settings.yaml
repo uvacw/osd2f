@@ -1,0 +1,26 @@
+files:
+    # Chrome  (location: https://www.foxtonforensics.com/browser-history-examiner/chrome-history-location)
+    History:
+      # If filetype is not JSON, specify it here
+      file_type: db
+      # If file_type is db, in_key refers to the table, and accepted_fields to the table columns
+      in_key: urls
+      accepted_fields:
+        - url
+        - title
+        - last_visit_time
+        - visit_count
+        - typed_count
+        
+        # Firefox  (location: https://www.foxtonforensics.com/browser-history-examiner/firefox-history-location)
+    History:
+      file_type: db
+      in_key: moz_places
+      accepted_fields:
+        - url
+        - title
+        - last_visit_date
+        - visit_count
+        - typed
+
+    
