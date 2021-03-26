@@ -57,6 +57,21 @@ async def donate():
     return await render_template("donate.html")
 
 
+@app.route("/instructions")
+async def instructions():
+    return await render_template("instructions/fb_instructions.html")
+
+
+@app.route("/faq")
+async def faq():
+    return await render_template("faq.html")
+
+
+@app.route("/help")
+async def help():
+    return await render_template("help.html")
+
+
 @app.route("/upload", methods=["GET", "POST"])
 async def upload():
     if request.method == "GET":
@@ -75,7 +90,7 @@ async def upload():
         )
         settings = utils.load_settings(force_disk=app.debug)
         return await render_template(
-            "filesubmit.html", settings=settings.dict(), sid=sid
+            "filesubmit_vu.html", settings=settings.dict(), sid=sid
         )
     elif request.method == "POST":
         data = await request.get_data()
