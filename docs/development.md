@@ -27,14 +27,14 @@ The intended use of this framework is to provide a participant facing data submi
 You can install this Python Package for local development purposes. To do 
 so, we *strongly* advice using a virtual environment context. 
 
-In addition, please note that OSD2F was written for Python `3.9.0` and up. Using
+In addition, please note that OSD2F was written for Python `3.8.0`. Using
 a virtual environment should make it easy to install this version without impacting your other Python projects.
 
 ----
 ##### Example using the popular [anaconda distribution of python](https://www.anaconda.com/)
 
 ```bash 
-conda create -n osd2f python=3.9 # only required once
+conda create -n osd2f python=3.8 # only required once
 conda activate osd2f # run at the start of each osd2f development session
 ```
 ----

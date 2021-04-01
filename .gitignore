@@ -142,3 +142,6 @@ cython_debug/
 
 # frontend dependencies
 node_modules/
+
+# Azure configs
+.azure/

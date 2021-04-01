@@ -5,6 +5,8 @@ import typing as _typing
 class Config:
     DEBUG: bool = False
     TESTING: bool = False
+    BIND: str = "127.0.0.1"
+    PORT: int = 5000
     SECRET_KEY: _typing.Optional[str] = None
     # Allow for BIG submissions 4*16mb for
     # in-memory anonymization.
@@ -28,6 +30,7 @@ class Production(Config):
     DEBUG = False
     TESTING = False
     BIND = "0.0.0.0"
+    PORT = 8000
     SECRET_KEY = _os.environ.get("OSD2F_SECRET")
     DB_URL = _os.environ.get("OSD2F_DB_URL")
 
