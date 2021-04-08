@@ -82,7 +82,8 @@ class MSALAuthTest(AsyncTestCase):
             "client_id": "f4k3-1D",
             "secret": "53CR37",
             "tenant_id": "73N4N7",
-            "allowed_users": "testuser@yourdirectory.com ; anotheruser@yourdirectory.com",
+            "allowed_users": "testuser@yourdirectory.com ;"
+            " anotheruser@yourdirectory.com",
         }
         os.environ["MSAL_CONFIG"] = json.dumps(mock_config)
 
