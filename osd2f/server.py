@@ -2,8 +2,7 @@ import csv
 import io
 import json
 
-
-from osd2f import config, database, utils
+from osd2f import config, database, security, utils
 from osd2f.definitions import Submission, SubmissionList
 
 from quart import Quart, render_template, request
@@ -109,7 +108,8 @@ async def status():
 
 @app.route("/researcher/<items>.<filetype>")
 @app.route("/researcher", strict_slashes=False)
-async def collector(items=None, filetype=None):
+@security.authorization_required
+async def researcher(items=None, filetype=None):
     if not items:
         return await render_template("download.html")
     elif items == "osd2f_completed_submissions":
@@ -205,6 +205,7 @@ def start(mode: str = "Testing", database_url_override: str = "", run: bool = Tr
             "To run OSD2F in production, a database url should be specified "
             "either as an env variabel (OSD2f_DB_URL) or via the CLI."
         )
+
     logger.debug(app.config)
     if run:
         app.run(
