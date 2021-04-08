@@ -15,6 +15,9 @@ class Config:
     #       based ddos attacks
     MAX_CONTENT_LENGTH: int = 16777216 * 4
 
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+
 
 class Testing(Config):
     TESTING = True
@@ -22,8 +25,10 @@ class Testing(Config):
 
 
 class Development(Config):
+    SESSION_COOKIE_SECURE = False
     DEBUG = True
     DB_URL = _os.environ.get("OSD2F_DB_URL", "sqlite://:memory:")
+    SECRET_KEY = "do not use in production"
 
 
 class Production(Config):
@@ -33,6 +38,7 @@ class Production(Config):
     PORT = 8000
     SECRET_KEY = _os.environ.get("OSD2F_SECRET")
     DB_URL = _os.environ.get("OSD2F_DB_URL")
+    SESSION_COOKIE_SECURE = True  # required HTTPS server
 
 
 # hypercorn
