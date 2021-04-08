@@ -36,6 +36,7 @@ class MSALAuthTest(AsyncTestCase):
             "secret": "53CR37",
             "tenant_id": "73N4N7",
             "allowed_users": "testuser@yourdirectory.com",
+            "redirect_url": "localhost:5000",
         }
         os.environ["MSAL_CONFIG"] = json.dumps(mock_config)
 
@@ -84,6 +85,7 @@ class MSALAuthTest(AsyncTestCase):
             "tenant_id": "73N4N7",
             "allowed_users": "testuser@yourdirectory.com ;"
             " anotheruser@yourdirectory.com",
+            "redirect_url": "localhost:5000",
         }
         os.environ["MSAL_CONFIG"] = json.dumps(mock_config)
 
@@ -131,6 +133,7 @@ class MSALAuthTest(AsyncTestCase):
             "secret": "53CR37",
             "tenant_id": "73N4N7",
             "allowed_users": "unknown_user@yourdirectory.com",
+            "redirect_url": "localhost:5000",
         }
         os.environ["MSAL_CONFIG"] = json.dumps(mock_config)
 

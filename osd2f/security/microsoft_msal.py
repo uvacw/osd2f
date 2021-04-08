@@ -32,7 +32,7 @@ async def microsoft_msal_authentication(func, *args, **kwargs):
     if not session.get("user") and not session.get("flow"):
         flow = authorizer.initiate_auth_code_flow(
             config.scope,
-            redirect_uri=url_for("researcher", _external=True),
+            redirect_uri=config.redirect_url,
         )
         session["flow"] = flow
         return redirect(flow["auth_uri"])
