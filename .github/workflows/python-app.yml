@@ -28,7 +28,7 @@ jobs:
     - name: Lint with flake8
       run: flake8 ./
     - name: mypy
-      run: mypy ./osd2f/
+      run: mypy ./osd2f/ --ignore-missing-imports
     - name: Test with pytest
       run: pytest ./
     - name: Install & do a dry run
