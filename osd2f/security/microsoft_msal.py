@@ -12,6 +12,7 @@ import msal
 
 from quart import redirect, request, session, url_for
 
+from ..database import insert_log
 from ..definitions import MSALConfiguration
 
 
@@ -43,6 +44,9 @@ async def microsoft_msal_authentication(func, *args, **kwargs):
                 session.get("flow"), request.args
             )
         except ValueError:
+            await insert_log(
+                "server", "WARN", "unable to acquire token for authentication"
+            )
             session.clear()
             return 'Something went wrong, please <a href="/researcher"> try again </a>'
         session.pop("flow")
@@ -50,9 +54,22 @@ async def microsoft_msal_authentication(func, *args, **kwargs):
             session["user"] = token["id_token_claims"].get("preferred_username")
             return redirect(request.url)
         else:
+            await insert_log(
+                "server",
+                "WARN",
+                "unauthorized access attempt",
+                user_agent_string=request.headers.get("User-Agent"),
+            )
             return "Your account is not authorized", 403
 
     # with active authorized session
     elif session.get("user"):
+        await insert_log(
+            "server",
+            "INFO",
+            "download access by authorized user",
+            entry={"user": session.get("user"), "path": request.url},
+            user_agent_string=request.headers.get("User-Agent"),
+        )
         return await func(*args, **kwargs)
     return redirect("/")
