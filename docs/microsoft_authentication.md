@@ -32,6 +32,8 @@ The server is configured by passing a serialized JSON object as the `MSAL_CONFIG
     "client_id":"a-provided-client-id",  // Application (client) ID
     "secret":"the-application-secret",   // a secret created when generating the app registration
     "tenant_id":"azure-tenant-id",       // Directory (tenant) ID
+    "redirect_url": "localhost:5000"     // location microsoft should send users to after login in,
+                                         // must match an App registration entry
     // users you want to provide access, note that they
     // should be part of the active directory in the same tenant as 
     // the application
@@ -48,3 +50,5 @@ export OSD2F_SECRET="a-safe-production-secret"
 osd2f -m Development -db "sqlite://:memory:" -vv
 
 ```
+
+Note that changing the environment variable in a cloud environment might require restarting the service.
