@@ -23,5 +23,6 @@ setup(
         "tortoise-orm",
         "asyncpg",
         "hypercorn",
+        "msal",
     ],
 )
