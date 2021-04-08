@@ -26,7 +26,7 @@ async def microsoft_msal_authentication(func, *args, **kwargs):
         authority=config.authority,
         client_credential=config.secret,
     )
-    accepted_users = config.allowed_users.split(";")
+    accepted_users = [u.strip() for u in config.allowed_users.split(";")]
 
     # new user
     if not session.get("user") and not session.get("flow"):
