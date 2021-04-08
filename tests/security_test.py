@@ -54,7 +54,7 @@ class MSALAuthTest(AsyncTestCase):
 
         with patch("osd2f.security.microsoft_msal.msal", MockMSAL), patch(
             "osd2f.database.get_submissions", subMock
-        ):
+        ), patch("osd2f.security.microsoft_msal.insert_log", AsyncMock()):
             from osd2f.server import start
 
             app = start(run=False)
@@ -101,7 +101,7 @@ class MSALAuthTest(AsyncTestCase):
 
         with patch("osd2f.security.microsoft_msal.msal", MockMSAL), patch(
             "osd2f.database.get_submissions", subMock
-        ):
+        ), patch("osd2f.security.microsoft_msal.insert_log", AsyncMock()):
             from osd2f.server import start
 
             app = start(run=False)
@@ -148,7 +148,7 @@ class MSALAuthTest(AsyncTestCase):
 
         with patch("osd2f.security.microsoft_msal.msal", MockMSAL), patch(
             "osd2f.database.get_submissions", subMock
-        ):
+        ), patch("osd2f.security.microsoft_msal.insert_log", AsyncMock()):
             from osd2f.server import start
 
             app = start(run=False)
