@@ -10,7 +10,7 @@ import os
 
 import msal
 
-from quart import redirect, request, session, url_for
+from quart import redirect, request, session
 
 from ..database import insert_log
 from ..definitions import MSALConfiguration
