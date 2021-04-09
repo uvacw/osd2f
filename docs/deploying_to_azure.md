@@ -21,7 +21,7 @@ az account show
 
 ## creating the webapp
 
-Using webapp up will setup the webapp, the appservice and the plan required. The app won't work before we also apply the other commands.
+Using webapp up will setup the webapp, the appservice and the plan required. The app won't work before we also apply the other commands. Make sure to be inside the OSD2F folder (locally) when running this command.
 
 ```bash
 az webapp up  \
@@ -146,4 +146,20 @@ az webapp up  \
     --location "West Europe" \
     --name $WEBAPPNAME
 ```
+
+# updating the app
+
+If at a certain point you need to update the app settings (e.g., change from SQLlite to Postgres), you will also need to include the ```resource-group``` parameter in the Azure commands. You can get the resource-group info from the app overview. 
+
+Afterwards, you can define it as an environment variable:
+```export RESOURCEGROUPNAME="includethenamehere"```
+
+And include it along with the commands above, after the webapp name. For example:
+```
+az webapp config connection-string set \
+    --name $WEBAPPNAME --resource-group $RESOURCEGROUPNAME\
+    ...
+```
+
+
 
