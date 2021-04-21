@@ -3,7 +3,6 @@
 We don't want to test our ORM package, so these tests target the convenvience
 functions used.
 """
-import asyncio
 import os
 import sqlite3
 import time
