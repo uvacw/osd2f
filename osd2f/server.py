@@ -16,12 +16,14 @@ app = Quart(__name__)
 async def start_database():
     logger.debug(f"DB URL: {app.config['DB_URL']}")
     await database.initialize_database(app.config["DB_URL"])
+    app.logQueue = database.add_database_logging()
 
 
 @app.after_serving
 async def stop_database():
     logger.debug("Stopping database")
     await database.stop_database()
+    app.logQueue.put("stop")  # signals the database log worker to stop
 
 
 @app.route("/")
