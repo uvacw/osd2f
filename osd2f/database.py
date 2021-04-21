@@ -128,10 +128,11 @@ def add_database_logging() -> queue.SimpleQueue:
             except queue.Empty:
                 await asyncio.sleep(0.1)
 
-    logQueue = queue.SimpleQueue()
+    logQueue: queue.SimpleQueue = queue.SimpleQueue()
     h = logging.handlers.QueueHandler(logQueue)
     h.setLevel(logger.level)
     print(h.level)
     logger.addHandler(h)
     asyncio.get_running_loop().create_task(async_log_worker(logQueue))
+
     return logQueue
