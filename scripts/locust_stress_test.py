@@ -2,7 +2,8 @@
 
 Run headless using:
 
-locust --host http://localhost:5000 -f scripts/locust_stress_test.py --headless --users 100 -t 60sec
+locust --host http://localhost:5000 -f scripts/locust_stress_test.py \
+    --headless --users 100 -t 60sec
 
 Run with web interface:
 
@@ -13,12 +14,13 @@ NOTE: it's recommended to use a ASGI tool such as hypercorn in production,
 
 """
 import faker
-from scripts import facebook_data_generator
-
-from osd2f.utils import flatmap
 
 from locust import between, task
 from locust.contrib.fasthttp import FastHttpUser
+
+from osd2f.utils import flatmap
+
+from scripts import facebook_data_generator
 
 
 class FacebookParticipant(FastHttpUser):
@@ -58,7 +60,7 @@ class FacebookParticipant(FastHttpUser):
             "advertisers_who_uploaded_a_contact_list_with_your_information.json": [
                 {"entry": e}
                 for e in flatmap(
-                    facebook_data_generator.generate_advertisers_who_uploaded_a_contact_list_with_your_information(
+                    facebook_data_generator.generate_advertisers_who_uploaded_a_contact_list_with_your_information(  # noqa
                         self.user, 100
                     ),
                     "custom_audiences",

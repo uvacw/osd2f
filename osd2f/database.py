@@ -9,7 +9,7 @@ from tortoise.models import Model
 from .definitions import Submission, SubmissionList
 from .logger import logger
 
-clientLogQueue = queue.SimpleQueue()
+clientLogQueue: queue.SimpleQueue = queue.SimpleQueue()
 
 
 class DBSubmission(Model):
