@@ -1,7 +1,7 @@
-from collections.abc import MutableMapping
 import functools
 import pathlib
 import typing
+from collections.abc import MutableMapping
 
 import yaml
 
