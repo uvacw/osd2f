@@ -39,7 +39,7 @@ def load_settings(force_disk: bool = False) -> Settings:
         return _cached_load_settings()
 
 
-def flatten(d: dict, parent_key: str = "", sep: str = "_"):
+def flatten(d: collections.MutableMapping, parent_key: str = "", sep: str = "_"):
     items = []
     if type(d) == str:
         return d
@@ -54,6 +54,11 @@ def flatten(d: dict, parent_key: str = "", sep: str = "_"):
     return dict(items)
 
 
-def flatmap(items: typing.Union[dict, list], in_key: typing.Optional[str] = None):
+def flatmap(
+    items: dict,
+    in_key: typing.Optional[str] = None,
+):
+
     base = items if in_key is None else items.get(in_key, [])
+
     return [flatten(e, sep=".") for e in base]
