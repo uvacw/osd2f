@@ -54,7 +54,9 @@ async def microsoft_msal_authentication(func, *args, **kwargs):
             await insert_log(
                 "server",
                 "WARN",
-                "MSAL response did not contain `id_token_claims`, this may indicate that the configuration must be checked by an organizational administrator or is otherwise incomplete.",
+                "MSAL response did not contain `id_token_claims`, this may indicate "
+                "that the configuration must be checked by an organizational "
+                "administrator or is otherwise incomplete.",
             )
             return (
                 "This app is unable to verify your identity due to lacking rigths.",
