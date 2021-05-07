@@ -206,3 +206,5 @@ class LoggerToDBTest(AsyncTestCase):
         os.remove(db_file)
         os.remove(db_file + "-shm")
         os.remove(db_file + "-wal")
+
+        await stop_database()
