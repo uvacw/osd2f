@@ -36,7 +36,7 @@ hypercorn==0.11.2
     # via
     #   OSD2F (setup.py)
     #   quart
-hyperframe==6.0.0
+hyperframe==6.0.1
     # via h2
 idna==2.10
     # via requests
@@ -56,7 +56,7 @@ pycparser==2.20
     # via cffi
 pydantic==1.8.1
     # via OSD2F (setup.py)
-pyjwt[crypto]==2.0.1
+pyjwt[crypto]==2.1.0
     # via msal
 pypika-tortoise==0.1.0
     # via tortoise-orm
@@ -72,9 +72,9 @@ toml==0.10.2
     # via
     #   hypercorn
     #   quart
-tortoise-orm==0.17.1
+tortoise-orm==0.17.2
     # via OSD2F (setup.py)
-typing-extensions==3.7.4.3
+typing-extensions==3.10.0.0
     # via
     #   aiosqlite
     #   pydantic
