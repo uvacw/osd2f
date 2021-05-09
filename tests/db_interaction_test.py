@@ -5,9 +5,12 @@ functions used.
 """
 import os
 import sqlite3
+import time
 from unittest.mock import AsyncMock, patch
 
 from aiounittest.case import AsyncTestCase
+
+from osd2f.database import stop_database
 
 
 class DatabaseStartStopTest(AsyncTestCase):
@@ -105,3 +108,101 @@ class UploadSubmissionTest(AsyncTestCase):
             assert r.status_code == 200
 
             sublist_db_mock.assert_called_once_with(submissionlist=submissions)
+
+
+class LogInsertTest(AsyncTestCase):
+    async def test_log_insert(self):
+        from osd2f.database import initialize_database, insert_log
+
+        # we use a file simply because we want to access the same database
+        # in the test as in the app context
+        db_file = "test_temp"
+        db_url = f"sqlite://{db_file}"
+
+        await initialize_database(db_url=db_url)
+
+        await insert_log("backend", "INFO", "position")
+        await insert_log("backend", "INFO", "position")
+        await insert_log("backend", "INFO", "position", "sid_string")
+        await insert_log(
+            "backend", "INFO", "position", "sid_string2", {"thing": "value"}
+        )
+
+        c = sqlite3.connect(db_file)
+
+        # check if the submissions table received the inserts,
+        # because they are non-blocking, we'll have to just
+        # wait a bit
+        r = []
+        for i in range(100):
+            r = c.execute("SELECT * FROM osd2f_logs").fetchall()
+            if len(r) == 4:
+                break
+            time.sleep(0.01)
+
+        assert r, ValueError("No(t all) records returned")
+
+        assert (
+            len(c.execute("SELECT * FROM osd2f_logs WHERE log_sid IS NULL").fetchall())
+            == 2
+        )
+        assert (
+            len(
+                c.execute(
+                    "SELECT * FROM osd2f_logs WHERE log_sid IS NOT NULL"
+                ).fetchall()
+            )
+            == 2
+        )
+        assert (
+            len(
+                c.execute(
+                    "SELECT * FROM osd2f_logs WHERE log_entry IS NOT NULL"
+                ).fetchall()
+            )
+            == 1
+        )
+        c.close()
+
+        os.remove(db_file)
+        os.remove(db_file + "-shm")
+        os.remove(db_file + "-wal")
+
+        await stop_database()
+
+
+class LoggerToDBTest(AsyncTestCase):
+    async def test_log_to_db(self):
+        from osd2f.database import initialize_database, add_database_logging
+        from osd2f.logger import logger
+
+        # we use a file simply because we want to access the same database
+        # in the test as in the app context
+        db_file = "test_temp2"
+        db_url = f"sqlite://{db_file}"
+
+        await initialize_database(db_url=db_url)
+
+        logger.setLevel("DEBUG")
+
+        q = add_database_logging()
+
+        logger.debug("seen debug")
+        logger.info("seen info")
+        logger.warning("seen warning")
+        logger.critical("seen critical")
+
+        q.put("stop")
+
+        c = sqlite3.connect(db_file)
+
+        r = []
+        for i in range(100):
+            r = c.execute("SELECT * FROM osd2f_logs").fetchall()
+            if len(r) == 4:
+                break
+            time.sleep(0.01)
+
+        os.remove(db_file)
+        os.remove(db_file + "-shm")
+        os.remove(db_file + "-wal")
