@@ -5,10 +5,8 @@ import logging
 
 from osd2f import config
 
-from .config import Testing
-from .database import initialize_database, stop_database
 from .logger import logger
-from .server import start
+from .server import app, start
 
 LOGFORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
@@ -77,8 +75,6 @@ def parse_and_run():
     if not args.dry_run:
         start(mode=args.mode, database_url_override=args.database_url)
     else:
-        app = start(mode=args.mode, database_url_override=args.database_url, run=False)
-        asyncio.run(initialize_database(Testing.DB_URL))
         tp = app.test_client()
         assert asyncio.run(tp.get("/")).status_code == 200
         assert asyncio.run(tp.get("/privacy")).status_code == 200
@@ -101,4 +97,3 @@ def parse_and_run():
             ).status_code
             == 200
         )
-        asyncio.run(stop_database())

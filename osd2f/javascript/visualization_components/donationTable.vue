@@ -57,7 +57,6 @@
 </template>
 
 <script>
-import {server} from '../server_interaction'
 export default {
     props: {
         fields: Array,
@@ -80,7 +79,7 @@ export default {
               } 
           showfields.push(o)}
           )
-      
+      console.log(showfields)
       this.showfields = showfields
     },
     data(){
@@ -110,12 +109,10 @@ export default {
     },
     methods: {
         onRowSelected(items){
-            if (items.length>0){server.log("INFO","select row", this.filedata.submission_id)}
             this.selected = items
         },
         removeSelection(){
             if(this.selected==null){return}
-            server.log("INFO",`removed rows`, window.sid, {rows_removed:this.selected.length})
             this.filedata.n_deleted += this.selected.length
             this.filedata.entries = this.filedata.entries.filter(e => !this.selected.includes(e))
             this.selected = null

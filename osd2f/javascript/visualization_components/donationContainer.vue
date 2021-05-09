@@ -7,7 +7,7 @@
 
             <div class="row justify-content-center p-4">
                 <b-row>
-                    <b-col ><b-button size="lg" variant="success" @click="showConsentModal">Donate!</b-button></b-col>
+                    <b-col ><b-button size="lg" variant="success" v-b-modal.consent-modal>Donate!</b-button></b-col>
                     <b-col ><b-button size="sm" v-b-toggle.edit-donation variant="outline-primary"> Inspect & edit your donation </b-button></b-col>
                 </b-row>
             </div>
@@ -49,16 +49,13 @@
 
 import donationTable from './donationTable'
 import consentConfirmation from './consentConfirmation'
-import {server} from '../server_interaction.js'
+
 
 export default {
   components: { donationTable,  consentConfirmation},
     props : {
         donations: Array
         },
-    updated : function(){
-        server.log("INFO", "Tables shown changed", window.sid)
-    },
     data() {
         return {
             tabIndex: 0
@@ -69,12 +66,6 @@ export default {
             let total = 0
             this.donations.forEach(d=>total+=d.entries.length)
             return total
-        }
-    },
-    methods: {
-        showConsentModal(){
-            this.$bvModal.show('consent-modal')
-            server.log("INFO", "Consent modal shown")
         }
     }
 
