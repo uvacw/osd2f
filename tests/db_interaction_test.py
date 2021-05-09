@@ -33,6 +33,8 @@ class DatabaseStartStopTest(AsyncTestCase):
         os.remove(db_file + "-shm")
         os.remove(db_file + "-wal")
 
+        await stop_database()
+
     async def test_stop_database(self):
         close_mock = AsyncMock()
         with patch("tortoise.Tortoise.close_connections", close_mock):
@@ -206,3 +208,5 @@ class LoggerToDBTest(AsyncTestCase):
         os.remove(db_file)
         os.remove(db_file + "-shm")
         os.remove(db_file + "-wal")
+
+        await stop_database()
