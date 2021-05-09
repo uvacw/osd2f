@@ -7,10 +7,16 @@ import { Archive } from 'libarchive.js'
 import { apply_adv_anonymization } from './server_interaction'
 import { visualize } from './visualize'
 import { getFilesFromDataTransferItems } from 'datatransfer-files-promise'
+import { server } from './server_interaction'
 
 export { visualize as vis } from './visualize'
+export { server } from './server_interaction'
+
+server.log('INFO', 'loaded js')
 
 Archive.init({ workerUrl: '/static/js/libarchive/worker-bundle.js' })
+
+server.log('INFO', 'initialized archive worker')
 
 // 1. submit handlers
 const folderScanner = function (webkitEntry, files) {
@@ -133,15 +139,25 @@ export const fileLoadController = async function (sid, settings, files) {
     fileob['submission_id'] = sid
     fileob['n_deleted'] = 0
     try {
+      server.log('INFO', 'file parsing', window.sid, {
+        file_match: setmatch[f.name]
+      })
       fileob['entries'] = fileReader(
         settings['files'][setmatch[f.name]].accepted_fields,
         JSON.parse(content),
         null,
         settings['files'][setmatch[f.name]].in_key
       )
+      server.log('INFO', 'file send to anonymization', sid, {
+        file_match: setmatch[f.name]
+      })
       fileob = await apply_adv_anonymization(fileob)
+      server.log('INFO', 'file anonymized', sid, {
+        file_match: setmatch[f.name]
+      })
       data.push(fileob)
     } catch (e) {
+      server.log('ERROR', 'file matched, but is not JSON', sid)
       console.log("Unable to parse file because it's not real JSON")
     }
 
@@ -161,30 +177,38 @@ export const fileLoadController = async function (sid, settings, files) {
   bar.value = 100
   document.getElementById('processing').classList.add('invisible')
 
+  server.log('INFO', 'starting visualization', sid)
   visualize(data)
 }
 
 export async function fileSelectHandler (e) {
+  server.log('INFO', 'file select detected', sid)
   var filesSelected = e.target.files
   if (filesSelected === undefined) {
-    console.log('no files', e)
+    server.log('INFO', 'file select empty', sid)
     return // no files selected yet
   }
 
   // if there is one file, which is an archive
   if (RegExp('.*.zip$').exec(filesSelected[0].name) != null) {
+    server.log('INFO', 'file select is archive', sid)
+
     let archiveContent = await Archive.open(filesSelected[0])
     let contentList = await archiveContent.getFilesArray()
     let fl = contentList.map(c => c.file)
 
     fileLoadController(sid, settings, fl)
   } else {
+    server.log('INFO', 'file select is single file', sid)
+
     fileLoadController(sid, settings, Array(filesSelected[0]))
   }
 }
 document.getElementById('fileElem').onchange = fileSelectHandler
 
 async function fileDropHandler (e) {
+  server.log('INFO', 'file drop detected', sid)
+
   let filesSelected = await getFilesFromDataTransferItems(e.dataTransfer.items)
 
   // if there is one file, which is an archive
@@ -192,12 +216,16 @@ async function fileDropHandler (e) {
     filesSelected.length == 1 &&
     RegExp('.*.zip$').exec(filesSelected[0].name) != null
   ) {
+    server.log('INFO', 'file drop is archive', sid)
+
     let archiveContent = await Archive.open(filesSelected[0])
     let contentList = await archiveContent.getFilesArray()
     let fl = contentList.map(c => c.file)
 
     fileLoadController(sid, settings, fl)
   } else {
+    server.log('INFO', 'file drop is file(s)', sid)
+
     fileLoadController(sid, settings, filesSelected)
   }
 }

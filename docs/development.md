@@ -27,8 +27,10 @@ The intended use of this framework is to provide a participant facing data submi
 You can install this Python Package for local development purposes. To do 
 so, we *strongly* advice using a virtual environment context. 
 
-In addition, please note that OSD2F was written for Python `3.8.0`. Using
+In addition, please note that OSD2F was written for Python `3.8.6`. Using
 a virtual environment should make it easy to install this version without impacting your other Python projects.
+
+*NOTE: There is a known issue with the Faker dependency on version `3.8.6`/`3.9.5`, see more [on their github](https://github.com/joke2k/faker/issues/1439)* 
 
 ----
 ##### Example using the popular [anaconda distribution of python](https://www.anaconda.com/)
