@@ -50,6 +50,18 @@ async def microsoft_msal_authentication(func, *args, **kwargs):
             session.clear()
             return 'Something went wrong, please <a href="/researcher"> try again </a>'
         session.pop("flow")
+        if "id_token_claims" not in token:
+            await insert_log(
+                "server",
+                "WARN",
+                "MSAL response did not contain `id_token_claims`, this may indicate "
+                "that the configuration must be checked by an organizational "
+                "administrator or is otherwise incomplete.",
+            )
+            return (
+                "This app is unable to verify your identity due to lacking rigths.",
+                500,
+            )
         if token["id_token_claims"].get("preferred_username") in accepted_users:
             session["user"] = token["id_token_claims"].get("preferred_username")
             return redirect(request.url)
