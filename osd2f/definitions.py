@@ -34,7 +34,7 @@ class MSALConfiguration(BaseModel):
     redirect_url: str
 
     authority: Optional[str] = None
-    scope: List[str] = ["User.ReadBasic.All"]
+    scope: List[str] = ["User.Read"]
 
     @validator("authority", pre=True, always=True)
     def set_authority(cls, v, *, values, **kwargs):
