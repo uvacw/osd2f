@@ -34,6 +34,7 @@
   "devDependencies": {
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.2",
+    "postcss": "^8.2.15",
     "style-loader": "^2.0.0",
     "vue-loader": "^15.9.6",
     "vue-template-compiler": "^2.6.12",
