@@ -20,6 +20,7 @@ setup(
         "quart",
         "pyyaml",
         "pydantic",
+        "pydantic[email]",
         "tortoise-orm",
         "asyncpg",
         "hypercorn",
