@@ -64,7 +64,7 @@ pytz==2020.5
     # via tortoise-orm
 pyyaml==5.4.1
     # via OSD2F (setup.py)
-quart==0.13.1
+quart==0.15.0
     # via OSD2F (setup.py)
 requests==2.25.1
     # via msal
