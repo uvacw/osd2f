@@ -1,0 +1,31 @@
+project_title : OSD2F
+contact_us : email@domain.tld
+static_pages: 
+  home: 
+    active : True
+    name : The OSD2F project
+    blocks:
+      - type : jumbotron
+        title : Data donation made easy
+        lines : 
+            - A general way of donating data
+            - For JSON based GDPR exports
+            - To use with external survey and analysis tools
+        buttons : 
+            - name : About the project
+              label : "btn-primary"
+              link : "#project"
+            - name: How it works
+              label : "btn-success" 
+              link : "/donate" 
+        image : "/static/skull_phone_cc.jpg"
+
+  privacy:
+    active : True
+    name : Our guarantees
+    blocks : []
+
+  
+    # donate:
+  #   active : True
+  #   name : How to donate

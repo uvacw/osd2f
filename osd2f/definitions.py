@@ -1,6 +1,8 @@
+from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, validator
+import pydantic
 
 
 class Submission(BaseModel):
@@ -24,6 +26,42 @@ class FileSetting(BaseModel):
 
 class Settings(BaseModel):
     files: Dict[str, FileSetting]
+
+
+class BlockTypeEnum(str, Enum):
+    jumbotron = "jumbotron"
+
+
+class ContentButton(BaseModel):
+    name: str
+    link: str
+    label: str
+
+
+class PageTypeEnum(str, Enum):
+    home = "home"
+    privacy = "privacy"
+    donate = "donate"
+
+
+class ContentBlock(BaseModel):
+    type: BlockTypeEnum
+    title: Optional[str]
+    lines: List[str]
+    buttons: List[ContentButton]
+    image: Optional[str]
+
+
+class ContentPage(BaseModel):
+    active: bool
+    name: str
+    blocks: List[ContentBlock]
+
+
+class ContentSettings(BaseModel):
+    project_title: str
+    contact_us: pydantic.EmailStr
+    static_pages: Dict[PageTypeEnum, ContentPage]
 
 
 class MSALConfiguration(BaseModel):

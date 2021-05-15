@@ -1,0 +1,13 @@
+{% extends "formats/base.html.jinja" %}
+
+{% block content %} 
+    {% for contentblock in settings.static_pages[current_page].blocks %}
+
+        {% if contentblock.type=="jumbotron" %} 
+            {% include "blocks/jumbotron.html.jinja" %} 
+
+        {% endif %} 
+
+    {% endfor %} 
+
+{% endblock content %} 

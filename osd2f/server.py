@@ -1,9 +1,10 @@
 import csv
 import io
 import json
+import yaml
 
 from osd2f import config, database, security, utils
-from osd2f.definitions import Submission, SubmissionList
+from osd2f.definitions import ContentSettings, Submission, SubmissionList
 
 from quart import Quart, render_template, request
 from quart.json import jsonify
@@ -27,6 +28,16 @@ async def stop_database():
     logger.debug("Stopping database")
     await database.stop_database()
     app.logQueue.put("stop")  # signals the database log worker to stop
+
+
+# TODO: REMOVE THIS DEV ENDPOINT
+@app.route("/empty")
+async def empty():
+    settings_raw = yaml.load(open("osd2f/settings/default_content_settings.yaml"))
+    settings = ContentSettings.parse_obj(settings_raw)
+    return await render_template(
+        "formats/empty.html.jinja", settings=settings, current_page="home"
+    )
 
 
 @app.route("/")

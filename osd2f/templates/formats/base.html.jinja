@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include "blocks/head.html.jinja" %}
+
+<body>
+    {% include "blocks/navbar.html.jinja" %}
+
+    <main>
+        <div class="container pt-4"><br></div>
+        {% block content %} {% endblock %}    
+        <div class="container p-1"><br></div>     
+    </main>
+
+</body>
+
+{% include "blocks/footer.html.jinja" %}
+{% include "blocks/bootstrap_scripts.html.jinja" %} 
