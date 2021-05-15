@@ -17,7 +17,7 @@ setup(
     # quart is version pinned due to a bug in the 0.14.X versions
     # pending resolution of: https://gitlab.com/pgjones/quart/-/issues/398
     install_requires=[
-        "quart<0.14.0",
+        "quart",
         "pyyaml",
         "pydantic",
         "tortoise-orm",
