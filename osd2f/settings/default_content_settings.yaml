@@ -7,6 +7,8 @@ static_pages:
     blocks:
       - type : jumbotron
         title : Data donation made easy
+        id : top
+        image : "/static/skull_phone_cc.jpg"
         lines : 
             - A general way of donating data
             - For JSON based GDPR exports
@@ -18,7 +20,48 @@ static_pages:
             - name: How it works
               label : "btn-success" 
               link : "/donate" 
-        image : "/static/skull_phone_cc.jpg"
+
+      - type : two_block_row
+        id : project
+        image: "/static/study_cc.jpg"
+        image_pos: left
+        title : OSD2F provides a whitelist based collection website
+        lines : 
+          - Under GDPR, everyone should be able to export <br> their data in machine-readable format
+          - Many platform provide standardized ways to get this data by <br> exporting it as a set of JSON files
+          - This app allows researchers to easily and safely collect exported data donated by participants in their studies
+        buttons : 
+          - name: About the developers
+            label : "btn-primary"
+            link : "#team"
+          - name: Donate now
+            label: "btn-success"
+            link: "/donate"
+
+      - type : two_block_row
+        id : team
+        image: "/static/uva_building.jpg"
+        image_pos: right
+        title : The University of Amsterdam build this pilot application to support social media researchers
+        lines : 
+          - API access is increasinlgy curtailed, making <br>it harder to understand what happens on social media
+          - The GDPR provides a legal basis for participants <br>to be able to get, and thus donate, their data
+          - Our team has proudly worked on this pilot to <br>open up data donations for your project
+        circles_row: 
+            - title : Prof. Dr. Hypothetical collaborator
+              subtitle: this person does not exist
+              image : "https://thispersondoesnotexist.com/image"
+            - title : Sponsored by
+              subtitle: A random image
+              image : "https://picsum.photos/200/300.jpg"
+        buttons : 
+          - name: About the project
+            label : "btn-primary"
+            link : "#team"
+          - name: Donate now
+            label: "btn-success"
+            link: "/donate"
+
 
   privacy:
     active : True

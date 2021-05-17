@@ -30,6 +30,12 @@ class Settings(BaseModel):
 
 class BlockTypeEnum(str, Enum):
     jumbotron = "jumbotron"
+    twoblockrow = "two_block_row"
+
+
+class ImagePositionEnum(str, Enum):
+    right = "right"
+    left = "left"
 
 
 class ContentButton(BaseModel):
@@ -44,12 +50,21 @@ class PageTypeEnum(str, Enum):
     donate = "donate"
 
 
+class CirclesRowCircle(BaseModel):
+    image: str
+    title: Optional[str]
+    subtitle: Optional[str]
+
+
 class ContentBlock(BaseModel):
     type: BlockTypeEnum
+    id: str
     title: Optional[str]
     lines: List[str]
     buttons: List[ContentButton]
     image: Optional[str]
+    image_pos: Optional[ImagePositionEnum]
+    circles_row: Optional[List[CirclesRowCircle]]
 
 
 class ContentPage(BaseModel):
