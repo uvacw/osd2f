@@ -6,7 +6,7 @@ import typing
 from tortoise import Tortoise, fields
 from tortoise.models import Model
 
-from .definitions import Submission, SubmissionList
+from .definitions import ContentSettings, Submission, SubmissionList
 from .logger import logger
 
 clientLogQueue: queue.SimpleQueue = queue.SimpleQueue()
@@ -37,6 +37,30 @@ class DBLog(Model):
 
     class Meta:
         table = "osd2f_logs"
+
+
+class DBConfigurationBlobs(Model):
+    id = fields.IntField(pk=True)
+    insert_timestamp = fields.DatetimeField(auto_now_add=True)
+    insert_user = fields.CharField(index=True, max_length=150, null=False)
+    config_type = fields.CharField(index=True, max_length=50, null=False)
+    config_blob = fields.JSONField(null=False)
+
+    class Meta:
+        table = "osd2f_config"
+
+
+async def get_content_config() -> typing.Optional[ContentSettings]:
+    config_blob = await DBConfigurationBlobs.all().order_by("-insert_timestamp").first()
+    if config_blob:
+        config = ContentSettings.from_obj(config_blob)
+        return config
+
+
+async def set_content_config(user: str, content: ContentSettings):
+    await DBConfigurationBlobs.create(
+        insert_user=user, config_type="content", config_blob=content.json()
+    )
 
 
 async def initialize_database(db_url: str):

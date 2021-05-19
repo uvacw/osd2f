@@ -5,30 +5,34 @@ from collections.abc import MutableMapping
 
 import yaml
 
-from .definitions import Settings
+from .definitions import ContentSettings, UploadSettings
 from .logger import logger
+
+# TODO Restructure:
+# - accept settings from CLI args
+# - generically apply cashing of CLI location
 
 
 @functools.lru_cache
-def _cached_load_settings() -> Settings:
+def _cached_load_settings() -> UploadSettings:
     return _load_settings_from_disk()
 
 
-def _load_settings_from_disk() -> Settings:
+def _load_settings_from_disk() -> UploadSettings:
     settings_dir = pathlib.Path(__file__).parent.joinpath("settings")
     try:
-        settings = Settings.parse_obj(
+        settings = UploadSettings.parse_obj(
             yaml.safe_load(open(settings_dir.joinpath("upload_settings.yaml")))
         )
     except FileNotFoundError:
         logger.warning("No user provided `upload_settings.yaml` found, using defaults.")
-        settings = Settings.parse_obj(
+        settings = UploadSettings.parse_obj(
             yaml.safe_load(open(settings_dir.joinpath("default_upload_settings.yaml")))
         )
     return settings
 
 
-def load_settings(force_disk: bool = False) -> Settings:
+def load_upload_settings(force_disk: bool = False) -> UploadSettings:
     if force_disk:
         logger.warning(
             "Settings are re-loaded from disk on every request, "
@@ -37,6 +41,14 @@ def load_settings(force_disk: bool = False) -> Settings:
         return _load_settings_from_disk()
     else:
         return _cached_load_settings()
+
+
+def load_content_settings() -> ContentSettings:
+    settings_dir = pathlib.Path(__file__).parent.joinpath("settings")
+    settings = ContentSettings.parse_obj(
+        yaml.safe_load(open(settings_dir.joinpath("default_content_settings.yaml")))
+    )
+    return settings
 
 
 def flatten(d: MutableMapping, parent_key: str = "", sep: str = "_"):

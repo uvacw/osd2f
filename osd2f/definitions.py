@@ -24,7 +24,7 @@ class FileSetting(BaseModel):
     anonymizers: Optional[List[Dict[str, str]]]
 
 
-class Settings(BaseModel):
+class UploadSettings(BaseModel):
     files: Dict[str, FileSetting]
 
 

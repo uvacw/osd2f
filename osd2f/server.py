@@ -89,7 +89,7 @@ async def upload():
             sid,
             user_agent_string=request.headers["User-Agent"],
         )
-        settings = utils.load_settings(force_disk=app.debug)
+        settings = utils.load_upload_settings(force_disk=app.debug)
         return await render_template(
             "filesubmit.html", settings=settings.dict(), sid=sid
         )
@@ -153,7 +153,7 @@ async def researcher(items=None, filetype=None):
 async def adv_anonymize_file():
     data = await request.get_data()
     logger.debug(f"[anonymization] received: {data}")
-    settings = utils.load_settings(force_disk=app.debug)
+    settings = utils.load_upload_settings(force_disk=app.debug)
     try:
         submission = Submission.parse_raw(data)
     except ValueError as e:

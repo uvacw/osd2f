@@ -15,7 +15,7 @@ import re
 import typing
 
 from .facebook import fb_redact_posts_usernames_based_on_title
-from ..definitions import Settings, Submission, SubmissionList
+from ..definitions import UploadSettings, Submission, SubmissionList
 from ..logger import logger
 
 options: typing.Dict[str, typing.Callable[[typing.Dict, str], typing.Awaitable]] = {
@@ -51,7 +51,7 @@ async def apply(
     return anonymized_entries
 
 
-async def anonymize_submission(submission: Submission, settings: Settings):
+async def anonymize_submission(submission: Submission, settings: UploadSettings):
     for filename_pattern, setting in settings.files.items():
         logger.debug(f"matching {filename_pattern} to {submission.filename}")
         if not re.search(filename_pattern, submission.filename):
@@ -76,7 +76,7 @@ async def anonymize_submission(submission: Submission, settings: Settings):
 
 
 async def anonymize_submission_list(
-    submission_list: SubmissionList, settings: Settings
+    submission_list: SubmissionList, settings: UploadSettings
 ) -> SubmissionList:
     for i, submission in enumerate(submission_list.__root__):
         logger.debug(f"at submission {i}")

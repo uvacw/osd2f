@@ -27,7 +27,7 @@ class test_anonymizer_package_interface(AsyncTestCase):
 
     async def test_submission_list_anonymization(self):
         from osd2f import anonymizers
-        from osd2f.definitions import Settings, SubmissionList, Submission
+        from osd2f.definitions import UploadSettings, SubmissionList, Submission
 
         async def testfunc(e, a):
             e[a] = a
@@ -35,7 +35,7 @@ class test_anonymizer_package_interface(AsyncTestCase):
 
         anonymizers.options["testfunc"] = testfunc
 
-        settings = Settings(
+        settings = UploadSettings(
             files={
                 "file(_\\d)?.json": {
                     "accepted_fields": [],
@@ -57,7 +57,7 @@ class test_anonymizer_package_interface(AsyncTestCase):
 
     async def test_broken_anonymizer(self):
         from osd2f import anonymizers
-        from osd2f.definitions import Settings, SubmissionList, Submission
+        from osd2f.definitions import UploadSettings, SubmissionList, Submission
 
         async def brokenanonymizer(s: dict, arg: str = None):
             if s.get("title") == "weird entry":
@@ -68,7 +68,7 @@ class test_anonymizer_package_interface(AsyncTestCase):
 
         anonymizers.options["brokenanonymizer"] = brokenanonymizer
 
-        settings = Settings(
+        settings = UploadSettings(
             files={
                 "file(_\\d)?.json": {
                     "accepted_fields": [],
