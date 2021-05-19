@@ -19,7 +19,7 @@ RUN pip install -r requirements_dev.txt
 
 # run tests
 RUN flake8 ./
-RUN mypy ./osd2f/
+RUN mypy ./osd2f/ --ignore-missing-imports
 RUN pytest ./
 
 # set the default command for the container (i.e. running production)

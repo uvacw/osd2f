@@ -1,10 +1,13 @@
+import csv
+import io
 import json
 
-from osd2f import config, database, utils
+from osd2f import config, database, security, utils
 from osd2f.definitions import Submission, SubmissionList
 
 from quart import Quart, render_template, request
 from quart.json import jsonify
+from quart.wrappers.response import Response
 
 from .anonymizers import anonymize_submission
 from .logger import logger
@@ -105,6 +108,36 @@ async def status():
     return "Page Unavailable", 404
 
 
+@app.route("/researcher/<items>.<filetype>")
+@app.route("/researcher", strict_slashes=False)
+@security.authorization_required
+async def researcher(items=None, filetype=None):
+    if not items:
+        return await render_template("download.html")
+    elif items == "osd2f_completed_submissions":
+        data = await database.get_submissions()
+    elif items == "osd2f_pending_participants":
+        data = await database.get_pending_participants()
+    elif items == "osd2f_activity_logs":
+        data = await database.get_activity_logs()
+    else:
+        return "Unknown export", 404
+
+    if filetype == "json":
+        fs = json.dumps(data)
+    elif filetype == "csv":
+        st = io.StringIO()
+        fields = {key for item in data for key in item}
+        dw = csv.DictWriter(st, fieldnames=sorted(fields))
+        dw.writeheader()
+        dw.writerows(data)
+        fs = st.getvalue()
+    else:
+        return "Unknown filetype", 404
+
+    return Response(fs, 200, {"Content-type": "application/text; charset=utf-8"})
+
+
 @app.route("/adv_anonymize_file", methods=["POST"])
 async def adv_anonymize_file():
     data = await request.get_data()
@@ -174,6 +207,7 @@ def start(mode: str = "Testing", database_url_override: str = "", run: bool = Tr
             "To run OSD2F in production, a database url should be specified "
             "either as an env variabel (OSD2f_DB_URL) or via the CLI."
         )
+
     logger.debug(app.config)
     if run:
         app.run(

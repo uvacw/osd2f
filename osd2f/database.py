@@ -78,6 +78,74 @@ async def insert_submission(submission: Submission):
         )
 
 
+async def get_submissions():
+    submissions = await DBSubmission.all()
+    submission_dict = [
+        {
+            "db_id": si.id,
+            "submission_id": si.submission_id,
+            "filename": si.filename,
+            "n_deleted_across_file": si.n_deleted,
+            "insert_timestamp": si.insert_timestamp.isoformat(),
+            "entry": si.entry,
+        }
+        for si in submissions
+    ]
+    return submission_dict
+
+
+async def get_pending_participants():
+    conn = Tortoise.get_connection("default")
+    rs = await conn.execute_query(
+        """
+    WITH completed AS (
+        SELECT DISTINCT log_sid FROM osd2f_logs
+        WHERE
+            log_SID IS NOT NULL
+            AND log_position="Received the donation!"
+        GROUP BY log_sid
+    )
+
+    SELECT
+        osd2f_logs.log_sid AS submission_id,
+        MIN(insert_timestamp) AS first_seen,
+        MAX(insert_timestamp) AS last_seen
+    FROM osd2f_logs
+    OUTER LEFT JOIN completed ON osd2f_logs.log_sid=completed.log_sid
+    WHERE submission_id IS NOT NULL
+    GROUP BY submission_id
+    ORDER BY last_seen DESC
+    """
+    )
+    data = [
+        {
+            "submission_id": r["submission_id"],
+            "first_seen": r["first_seen"],
+            "last_seen": r["last_seen"],
+        }
+        for r in rs[1]
+    ]
+    return data
+
+
+async def get_activity_logs():
+    logs = await DBLog.all()
+    data = [
+        {
+            "db_id": log.id,
+            "insert_timestamp": log.insert_timestamp.isoformat(),
+            "log_level": log.log_level,
+            "source": log.log_source,
+            "position": log.log_position,
+            "submission_id": log.log_sid,
+            "user-agent-string": log.user_agent_string,
+            "entry": log.log_entry,
+        }
+        for log in logs
+    ]
+    return data
+
+
 async def insert_submission_list(submissionlist: SubmissionList):
     if len(submissionlist.__root__) < 1:
         logger.info("Empty submissionlist")
