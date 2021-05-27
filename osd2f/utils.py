@@ -1,5 +1,7 @@
 import functools
 import pathlib
+import typing
+from collections.abc import MutableMapping
 
 import yaml
 
@@ -35,3 +37,28 @@ def load_settings(force_disk: bool = False) -> Settings:
         return _load_settings_from_disk()
     else:
         return _cached_load_settings()
+
+
+def flatten(d: MutableMapping, parent_key: str = "", sep: str = "_"):
+    items = []
+    if type(d) == str:
+        return d
+    for k, v in d.items():
+        new_key = parent_key + sep + k if parent_key else k
+        if isinstance(v, MutableMapping):
+            items.extend(flatten(v, new_key, sep=sep).items())
+        elif type(v) == list:
+            items.append((new_key, [flatten(vi, sep=sep) for vi in v]))
+        else:
+            items.append((new_key, v))
+    return dict(items)
+
+
+def flatmap(
+    items: dict,
+    in_key: typing.Optional[str] = None,
+):
+
+    base = items if in_key is None else items.get(in_key, [])
+
+    return [flatten(e, sep=".") for e in base]

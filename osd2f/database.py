@@ -9,6 +9,8 @@ from tortoise.models import Model
 from .definitions import Submission, SubmissionList
 from .logger import logger
 
+clientLogQueue: queue.SimpleQueue = queue.SimpleQueue()
+
 
 class DBSubmission(Model):
     id = fields.IntField(pk=True)
@@ -40,13 +42,65 @@ class DBLog(Model):
 async def initialize_database(db_url: str):
     await Tortoise.init(db_url=db_url, modules={"models": ["osd2f.database"]})
     await Tortoise.generate_schemas(safe=True)
+    start_logworker()
 
 
 async def stop_database():
     await Tortoise.close_connections()
+    stop_logworker()
+
+
+def start_logworker():
+    async def logworker():
+        stop = False
+        while 1:
+            try:
+                log = clientLogQueue.get_nowait()
+                print(log)
+                if log != "STOP":
+                    try:
+                        await background_insert_log(**log)
+                    except Exception as e:
+                        print(e)
+                else:
+                    stop = True
+                    logger.info("Stopping server logging worker")
+
+            except queue.Empty:
+                if not stop:
+                    await asyncio.sleep(0.1)
+                    continue
+                else:
+                    return
+
+    asyncio.get_running_loop().create_task(logworker())
+
+
+def stop_logworker():
+    clientLogQueue.put("STOP")
 
 
 async def insert_log(
+    log_source: str,
+    log_level: str,
+    log_position: str,
+    log_sid: typing.Optional[str] = None,
+    entry: typing.Dict = None,
+    user_agent_string: typing.Optional[str] = None,
+):
+    clientLogQueue.put(
+        dict(
+            log_source=log_source,
+            log_level=log_level,
+            log_position=log_position,
+            log_sid=log_sid,
+            entry=entry,
+            user_agent_string=user_agent_string,
+        )
+    )
+
+
+async def background_insert_log(
     log_source: str,
     log_level: str,
     log_position: str,

@@ -3,6 +3,7 @@
 We don't want to test our ORM package, so these tests target the convenvience
 functions used.
 """
+import asyncio
 import os
 import sqlite3
 import time
@@ -140,7 +141,7 @@ class LogInsertTest(AsyncTestCase):
             r = c.execute("SELECT * FROM osd2f_logs").fetchall()
             if len(r) == 4:
                 break
-            time.sleep(0.01)
+            await asyncio.sleep(0.01)
 
         assert r, ValueError("No(t all) records returned")
 
