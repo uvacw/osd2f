@@ -73,10 +73,42 @@ class ContentPage(BaseModel):
     blocks: List[ContentBlock]
 
 
+class UploadBox(BaseModel):
+    header: Optional[str]
+    explanation: List[str]
+
+
+class PreviewComponent(BaseModel):
+    title: str
+    explanation: List[str]
+    previous_file_button: str
+    next_file_button: str
+
+
+class ConsentPopup(BaseModel):
+    title: str
+    lead: str
+    points: Optional[List[str]]
+    end_text: str
+    decline_button: str
+    accept_button: str
+
+
+class UploadPage(BaseModel):
+    blocks: List[ContentBlock]
+    upload_box: UploadBox
+    processing_text: str
+    donate_button: str
+    inspect_button: str
+    preview_component: PreviewComponent
+    consent_popup: ConsentPopup
+
+
 class ContentSettings(BaseModel):
     project_title: str
     contact_us: pydantic.EmailStr
     static_pages: Dict[PageTypeEnum, ContentPage]
+    upload_page: UploadPage
 
 
 class MSALConfiguration(BaseModel):

@@ -65,10 +65,40 @@ static_pages:
 
   privacy:
     active : True
-    name : Our guarantees
-    blocks : []
+    name : Privacy protection
+    blocks : 
+      - type : jumbotron
+        title : Data donation made easy
+        id : top
+        lines : 
+            - A simple application for donation collection
+        buttons: []
 
-  
-    # donate:
-  #   active : True
-  #   name : How to donate
+upload_page:
+  blocks : []
+  upload_box :
+    header : "Select file(s):"
+    explanation : 
+      - "You can use the file selector to select the zipfile from your platform"
+      - "You can also drag the folder into this box"
+  processing_text : "processing your donation for preview"
+  donate_button : "Donate"
+  inspect_button : "Inspect & edit"
+  preview_component:
+    title : "Inspect & Edit your donation"
+    explanation :
+      - The top shows the files in your donation
+      - In each file, you can search for content
+      - You can remove content by clicking on the rows and pressing "remove selection"
+    previous_file_button : Previous file
+    next_file_button: Next file
+  consent_popup :
+    title : "I want to donate my data..."
+    lead : "This box explains the conditions of your donation"
+    points:
+      - how data is secured
+      - what the data will be used for
+      - how long the data will be stored
+    end_text: "By clicking below, you consent to these terms..."
+    decline_button: "I do not consent"
+    accept_button: "I consent"

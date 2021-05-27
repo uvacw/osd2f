@@ -1,10 +1,9 @@
 import csv
 import io
 import json
-import yaml
 
 from osd2f import config, database, security, utils
-from osd2f.definitions import ContentSettings, Submission, SubmissionList
+from osd2f.definitions import Submission, SubmissionList
 
 from quart import Quart, render_template, request
 from quart.json import jsonify
@@ -30,47 +29,42 @@ async def stop_database():
     app.logQueue.put("stop")  # signals the database log worker to stop
 
 
-# TODO: REMOVE THIS DEV ENDPOINT
-@app.route("/empty")
-async def empty():
-    settings_raw = yaml.load(open("osd2f/settings/default_content_settings.yaml"))
-    settings = ContentSettings.parse_obj(settings_raw)
+async def render_page(pagename: str):
+    settings = await utils.load_content_settings(use_cache=not app.debug)
+    if pagename not in settings.static_pages.keys():
+        await database.insert_log(
+            "server",
+            "INFO",
+            "unknown page visited",
+            entry={"pagename": pagename},
+            user_agent_string=request.headers["User-Agent"],
+        )
+        return await render_template
+    await database.insert_log(
+        "server",
+        "INFO",
+        f"{pagename} visited",
+        user_agent_string=request.headers["User-Agent"],
+    )
     return await render_template(
-        "formats/empty.html.jinja", settings=settings, current_page="home"
+        "formats/static_template.html.jinja", settings=settings, current_page=pagename
     )
 
 
 @app.route("/")
+@app.route("/home")
 async def home():
-    await database.insert_log(
-        "server",
-        "INFO",
-        "home visited",
-        user_agent_string=request.headers["User-Agent"],
-    )
-    return await render_template("home.html")
+    return await render_page("home")
 
 
 @app.route("/privacy")
 async def privacy():
-    await database.insert_log(
-        "server",
-        "INFO",
-        "privacy visited",
-        user_agent_string=request.headers["User-Agent"],
-    )
-    return await render_template("privacy.html")
+    return await render_page("privacy")
 
 
 @app.route("/donate")
 async def donate():
-    await database.insert_log(
-        "server",
-        "INFO",
-        "donation info visited",
-        user_agent_string=request.headers["User-Agent"],
-    )
-    return await render_template("donate.html")
+    return await render_page("donate")
 
 
 @app.route("/upload", methods=["GET", "POST"])

@@ -1,5 +1,5 @@
 <section class="jumbotron m-0" style="background-image: url({{ contentblock.image }}); background-size: cover;">
-    <div class="container pt-4 text-white text-center">
+    <div class="container pt-4 {{ 'text-white' if contentblock.image else '' }} text-center">
         {% if contentblock.title %} <h1>{{contentblock.title|safe}} </h1> {% endif %} 
         <br>
         {% for line in contentblock.lines %} 

@@ -6,7 +6,7 @@ import typing
 from tortoise import Tortoise, fields
 from tortoise.models import Model
 
-from .definitions import ContentSettings, Submission, SubmissionList
+from .definitions import ContentSettings, Submission, SubmissionList, UploadSettings
 from .logger import logger
 
 clientLogQueue: queue.SimpleQueue = queue.SimpleQueue()
@@ -50,19 +50,6 @@ class DBConfigurationBlobs(Model):
         table = "osd2f_config"
 
 
-async def get_content_config() -> typing.Optional[ContentSettings]:
-    config_blob = await DBConfigurationBlobs.all().order_by("-insert_timestamp").first()
-    if config_blob:
-        config = ContentSettings.from_obj(config_blob)
-        return config
-
-
-async def set_content_config(user: str, content: ContentSettings):
-    await DBConfigurationBlobs.create(
-        insert_user=user, config_type="content", config_blob=content.json()
-    )
-
-
 async def initialize_database(db_url: str):
     await Tortoise.init(db_url=db_url, modules={"models": ["osd2f.database"]})
     await Tortoise.generate_schemas(safe=True)
@@ -72,6 +59,27 @@ async def initialize_database(db_url: str):
 async def stop_database():
     await Tortoise.close_connections()
     stop_logworker()
+
+
+async def get_content_config() -> typing.Optional[DBConfigurationBlobs]:
+    config_item = (
+        await DBConfigurationBlobs.filter(config_type="content")
+        .order_by("-insert_timestamp")
+        .first()
+    )
+    return config_item
+
+
+async def set_content_config(user: str, content: ContentSettings):
+    await DBConfigurationBlobs.create(
+        insert_user=user, config_type="content", config_blob=content.json()
+    )
+
+
+async def set_upload_config(user: str, content: UploadSettings):
+    await DBConfigurationBlobs.create(
+        insert_user=user, config_type="upload", config_blob=content.json()
+    )
 
 
 def start_logworker():
