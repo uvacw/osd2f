@@ -30,6 +30,7 @@ async def stop_database():
 
 
 async def render_page(pagename: str):
+    """Get the specified page-specification from the content settings and render it."""
     settings = await utils.load_content_settings(use_cache=not app.debug)
     if pagename not in settings.static_pages.keys():
         await database.insert_log(
