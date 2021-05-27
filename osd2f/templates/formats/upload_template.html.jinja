@@ -2,7 +2,8 @@
 
 {% block content %} 
     <div class="container-fluid p-0 m-0 text-center">
-    {% for contentblock in settings.static_pages[current_page].blocks %}
+
+    {% for contentblock in settings.upload_page.blocks %}
 
         {% if contentblock.type=="jumbotron" %} 
             {% include "blocks/jumbotron.html.jinja" %} 
@@ -15,5 +16,7 @@
 
     {% endfor %} 
     </div>
+
+    
 
 {% endblock content %} 

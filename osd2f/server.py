@@ -68,6 +68,14 @@ async def donate():
     return await render_page("donate")
 
 
+@app.route("/upload2")
+async def upload2():
+    settings = await utils.load_content_settings(use_cache=not app.debug)
+    return await render_template(
+        "formats/upload_template.html.jinja", settings=settings
+    )
+
+
 @app.route("/upload", methods=["GET", "POST"])
 async def upload():
     if request.method == "GET":
