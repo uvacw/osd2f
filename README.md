@@ -51,3 +51,4 @@ osd2f -m Testing # to run a testing instance
 
 1. [how to develop](docs/development.md)
 2. [Deploying to Azure](docs/deploying_to_azure.md)
+3. [Running stresstests](docs/stresstests.md)
