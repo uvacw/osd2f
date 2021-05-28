@@ -68,6 +68,7 @@ async def donate():
     return await render_page("donate")
 
 
+# TODO: REMOVE WHEN UPLOAD FROM CONTENT CONFIG IS FINALIZED
 @app.route("/upload2")
 async def upload2():
     settings = await utils.load_content_settings(use_cache=not app.debug)
