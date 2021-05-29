@@ -121,7 +121,7 @@ class MSALConfiguration(BaseModel):
     client_id: str
     secret: str
     allowed_users: str
-    redirect_url: str
+    redirect_url: Optional[str]
 
     authority: Optional[str] = None
     scope: List[str] = ["User.Read"]
