@@ -67,7 +67,7 @@ def generate_comments(user: str, n: int = 10) -> typing.Dict:
         return c
 
     # for some reason, comments are exported with an outer "comments" key
-    comments = {"comments": [make_comment() for _ in range(n)]}
+    comments = {"comments_v2": [make_comment() for _ in range(n)]}
     return comments
 
 
@@ -177,7 +177,7 @@ def generate_likes_and_reactions_pages(user: str, n: int = 10):
     f = faker.Faker()
     # page_likes has the outer key "page_likes"
     page_likes = {
-        "page_likes": [
+        "page_likes_v2": [
             {
                 "name": f.company(),
                 "timestamp": f.unix_time(start_datetime=datetime.datetime(2020, 1, 1)),
@@ -192,7 +192,7 @@ def generate_likes_and_reactions_posts_and_comments(user: str, n: int = 10):
     f = faker.Faker()
     # likes & reactions have the outer key "reactions"
     reactions = {
-        "reactions": [
+        "reactions_v2": [
             {
                 "timestamp": f.unix_time(start_datetime=datetime.datetime(2020, 1, 1)),
                 # data is an array that is always length 1 in our sample,
@@ -224,14 +224,14 @@ def generate_advertisers_youve_interacted_with(user: str, n: int = 10):
                 "timestamp": f.unix_time(start_datetime=datetime.datetime(2020, 1, 1)),
             }
         )
-    return {"history": interactions}
+    return {"history_v2": interactions}
 
 
 def generate_advertisers_who_uploaded_a_contact_list_with_your_information(
     user: str, n: int = 10
 ):
     f = faker.Faker()
-    return {"custom_audiences": [f.company() for _ in range(n)]}
+    return {"custom_audiences_v2": [f.company() for _ in range(n)]}
 
 
 def generate_ads_interests(user: str, n: int = 10):
@@ -286,7 +286,7 @@ def generate_bundle(
     if n_page_reactions:
         page_reactions_path = os.path.join(output_dir, user_dir, "likes_and_reactions")
         os.makedirs(name=page_reactions_path)
-        with open(os.path.join(page_reactions_path, "pages.json"), "w") as f:
+        with open(os.path.join(page_reactions_path, "pages_you've_liked.json"), "w") as f:
             json.dump(
                 generate_likes_and_reactions_pages(user=user, n=n_page_reactions),
                 f,
