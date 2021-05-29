@@ -20,11 +20,13 @@ var app = new Vue({
   data: {
     filedata: {},
     fields: [],
-    donations: []
+    donations: [],
+    content : {}
   }
 })
 
 // Placeholder visualization
-export function visualize (d) {
+export function visualize (d,c) {
+  app.content = c.upload_page
   app.donations = d
 }

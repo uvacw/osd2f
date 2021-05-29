@@ -2,16 +2,16 @@
  <div>
      <h5> File: {{ filedata.filename }} </h5>
 
-    <span>There are: <b> {{ this.rows }} </b> entries in this file selected for donation</span>
+    <span>{{content.preview_component.entries_in_file_text}} <b> {{ this.rows }} </b></span>
     
     <div class="row">
-        <b-input-group prepend="Search this file:" class="mt-3">
+        <b-input-group :prepend="content.preview_component.search_prompt" class="mt-3">
             
             <b-form-input
                 id="filter-input"
                 v-model="filter"
                 type="search"
-                placeholder="Type to Search"
+                :placeholder="content.preview_component.search_box_placeholder"
             ></b-form-input>
 
             <b-input-group-append>
@@ -19,7 +19,7 @@
                     variant="danger"
                     @click="removeSelection"
                     small
-                >Remove selected rows</b-button>
+                >{{content.preview_component.remove_rows_button}}</b-button>
             </b-input-group-append>
         </b-input-group>
     </div>
@@ -62,6 +62,7 @@ export default {
     props: {
         fields: Array,
         filedata: Object,
+        content: Object
     },
     // infer fields from entries
     created: function(){

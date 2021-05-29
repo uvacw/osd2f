@@ -122,7 +122,8 @@
 
 <script src="/static/js/main.js"></script>
 <script>
-    let settings = {{ settings|tojson|safe }};
+    let settings = {{ upload_settings|tojson|safe }};
+    let content = {{ content_settings|tosjon|safe }};
     let sid = {{sid|tojson|safe}};
     window.sid = sid;
 

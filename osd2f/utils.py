@@ -2,13 +2,14 @@ import datetime
 import functools
 import os
 import pathlib
-import pytz
 import typing
 from collections.abc import MutableMapping
 
+import pytz
+
 import yaml
 
-from .database import set_content_config, get_content_config
+from .database import get_content_config, set_content_config
 from .definitions import ContentSettings, UploadSettings
 from .logger import logger
 
@@ -58,7 +59,7 @@ async def load_content_settings(use_cache: bool) -> ContentSettings:
     # load disk version ()
     disk_config = (
         yaml.safe_load(open(settings_dir.joinpath("default_content_settings.yaml")))
-        if (not DISK_CONFIG_VERSION and not use_cache)
+        if (not DISK_CONFIG_VERSION or not use_cache)
         else DISK_CONFIG_VERSION
     )
 

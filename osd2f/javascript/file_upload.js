@@ -178,7 +178,7 @@ export const fileLoadController = async function (sid, settings, files) {
   document.getElementById('processing').classList.add('invisible')
 
   server.log('INFO', 'starting visualization', sid)
-  visualize(data)
+  visualize(data, content)
 }
 
 export async function fileSelectHandler (e) {

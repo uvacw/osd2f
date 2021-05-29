@@ -40,7 +40,7 @@ async def render_page(pagename: str):
             entry={"pagename": pagename},
             user_agent_string=request.headers["User-Agent"],
         )
-        return await render_template
+        return await render_page("home")
     await database.insert_log(
         "server",
         "INFO",
@@ -48,7 +48,9 @@ async def render_page(pagename: str):
         user_agent_string=request.headers["User-Agent"],
     )
     return await render_template(
-        "formats/static_template.html.jinja", settings=settings, current_page=pagename
+        "formats/static_template.html.jinja",
+        content_settings=settings,
+        current_page=pagename,
     )
 
 
@@ -68,17 +70,9 @@ async def donate():
     return await render_page("donate")
 
 
-# TODO: REMOVE WHEN UPLOAD FROM CONTENT CONFIG IS FINALIZED
-@app.route("/upload2")
-async def upload2():
-    settings = await utils.load_content_settings(use_cache=not app.debug)
-    return await render_template(
-        "formats/upload_template.html.jinja", settings=settings
-    )
-
-
 @app.route("/upload", methods=["GET", "POST"])
 async def upload():
+    # for users visiting the page
     if request.method == "GET":
         # sid is an ID by which a referrer may identify
         # a user. This could for instance be the id that
@@ -93,10 +87,15 @@ async def upload():
             sid,
             user_agent_string=request.headers["User-Agent"],
         )
-        settings = utils.load_upload_settings(force_disk=app.debug)
+        upload_settings = utils.load_upload_settings(force_disk=app.debug)
+        content_settings = await utils.load_content_settings(use_cache=not app.debug)
         return await render_template(
-            "filesubmit.html", settings=settings.dict(), sid=sid
+            "formats/upload_template.html.jinja",
+            content_settings=content_settings,
+            upload_settings=upload_settings,
+            sid=request.args.get("sid", "test"),
         )
+    # for data submissions posted by the interface
     elif request.method == "POST":
         data = await request.get_data()
         try:

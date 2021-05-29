@@ -81,15 +81,21 @@ upload_page:
     explanation : 
       - "You can use the file selector to select the zipfile from your platform"
       - "You can also drag the folder into this box"
+  thanks_text: "Thanks for trying osd2f"
   processing_text : "processing your donation for preview"
+  file_indicator_text: "Entries in your donation: "
   donate_button : "Donate"
   inspect_button : "Inspect & edit"
   preview_component:
+    entries_in_file_text: "Entries in this file: "
     title : "Inspect & Edit your donation"
     explanation :
       - The top shows the files in your donation
       - In each file, you can search for content
       - You can remove content by clicking on the rows and pressing "remove selection"
+    remove_rows_button : "remove selected rows"
+    search_prompt: "Search in file"
+    search_box_placeholder: "type to search this file"
     previous_file_button : Previous file
     next_file_button: Next file
   consent_popup :

@@ -1,26 +1,22 @@
 <template>
     <div>
         <b-modal 
-            title="I want to donate my data..." 
+            :title="content.consent_popup.title"
             id="consent-modal" 
-            ok-title="I consent" 
+            :ok-title="content.consent_popup.accept_button"
             ok-variant="success"
-            cancel-title="I'm sorry"
+            :cancel-title="content.consent_popup.decline_button"
             :ok-disabled="this.processing"
             @ok="sub"
         >
             <b-overlay :show="show" rounded="sm">
                 <div :aria-hidden="show ? 'true' : null">
-                    Thank you for considering to donate your data to this project. 
-
-                    Please understand the following:
+                    <div class="p-1"> {{ content.consent_popup.lead }} </div>
                     <ul>
-                        <li> Your data will be kept until 5 years after publishing the results of this project </li>
-                        <li> You data will <b>never</b> be shared with third parties </li> 
-                        <li> etcetera.... </li>
+                        <li v-for="lit in content.consent_popup.points"> {{lit}} </li>
                     </ul>
 
-                    Do you want to donate {{n_entries}} entries? 
+                    <div class="p-1"> {{ content.consent_popup.end_text }} </div>
                 </div>
             </b-overlay>
         </b-modal>
@@ -31,7 +27,8 @@ import {server} from "../server_interaction"
 
 export default {
     props:{
-        donations : Array
+        donations : Array,
+        content: Object
     },
     data(){
         return {

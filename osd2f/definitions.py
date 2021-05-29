@@ -1,8 +1,7 @@
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, validator
-import pydantic
+from pydantic import BaseModel, EmailStr, validator
 
 
 class Submission(BaseModel):
@@ -79,10 +78,14 @@ class UploadBox(BaseModel):
 
 
 class PreviewComponent(BaseModel):
+    entries_in_file_text: str
     title: str
     explanation: List[str]
     previous_file_button: str
     next_file_button: str
+    remove_rows_button: str
+    search_prompt: str
+    search_box_placeholder: str
 
 
 class ConsentPopup(BaseModel):
@@ -97,6 +100,8 @@ class ConsentPopup(BaseModel):
 class UploadPage(BaseModel):
     blocks: List[ContentBlock]
     upload_box: UploadBox
+    thanks_text: str
+    file_indicator_text: str
     processing_text: str
     donate_button: str
     inspect_button: str
@@ -106,7 +111,7 @@ class UploadPage(BaseModel):
 
 class ContentSettings(BaseModel):
     project_title: str
-    contact_us: pydantic.EmailStr
+    contact_us: EmailStr
     static_pages: Dict[PageTypeEnum, ContentPage]
     upload_page: UploadPage
 

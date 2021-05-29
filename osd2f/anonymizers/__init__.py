@@ -15,7 +15,7 @@ import re
 import typing
 
 from .facebook import fb_redact_posts_usernames_based_on_title
-from ..definitions import UploadSettings, Submission, SubmissionList
+from ..definitions import Submission, SubmissionList, UploadSettings
 from ..logger import logger
 
 options: typing.Dict[str, typing.Callable[[typing.Dict, str], typing.Awaitable]] = {
