@@ -127,7 +127,10 @@ async def status():
 @security.authorization_required
 async def researcher(items=None, filetype=None):
     if not items:
-        return await render_template("download.html")
+        content_settings = await utils.load_content_settings(use_cache=not app.debug)
+        return await render_template(
+            "formats/researcher_template.html.jinja", content_settings=content_settings
+        )
     elif items == "osd2f_completed_submissions":
         data = await database.get_submissions()
     elif items == "osd2f_pending_participants":
