@@ -1,6 +1,5 @@
 import json
 import os
-from osd2f.database import stop_database
 from unittest.mock import AsyncMock, patch
 
 from aiounittest.case import AsyncTestCase

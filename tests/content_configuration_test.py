@@ -6,8 +6,9 @@
  - app config non-DEBUG in content call
  - static pages take arbitrary content
 """
-from aiounittest.case import AsyncTestCase
 from unittest.mock import AsyncMock, Mock, patch
+
+from aiounittest.case import AsyncTestCase
 
 from osd2f.definitions import (
     ConsentPopup,
@@ -187,30 +188,6 @@ class ContentConfigurationTest(AsyncTestCase):
             for snippet in expected_absent:
                 assert body.find(snippet) <= 0
 
-            await app.shutdown()
-
-    async def test_content_rendering(self):
-        load_content_settings_mock = AsyncMock(return_value=fake_settings)
-
-        with patch(
-            "osd2f.server.utils.load_content_settings", load_content_settings_mock
-        ):
-            from osd2f.server import start
-
-            app = start(mode="Development", run=False)
-            await app.startup()
-            c = app.test_client()
-            homepage = await c.get("/")
-            body = await homepage.get_data(as_text=True)
-
-            expected_present = ["testpage", "two_block_row", "testprivacypage"]
-            for snippet in expected_present:
-                assert body.find(snippet)
-
-            expected_absent = ["testdonatepage"]
-            for snippet in expected_absent:
-                assert body.find(snippet) <= 0
-
             upload_page = await c.get("/upload")
             body = await upload_page.get_data(as_text=True)
 
@@ -221,7 +198,8 @@ class ContentConfigurationTest(AsyncTestCase):
                 "explanation test 1",
                 "explanation test 2",
                 "file indicator test",
-                fake_settings.json(),  # test whether the content settings obj is injected
+                # test whether the content settings obj is injected
+                fake_settings.json(),
             ]
             for snippet in expected_present:
                 assert body.find(snippet)

@@ -1,6 +1,7 @@
 import asyncio
 import logging.handlers
 import queue
+import time
 import typing
 
 from tortoise import Tortoise, fields
@@ -110,6 +111,7 @@ def start_logworker():
 
 def stop_logworker():
     clientLogQueue.put("STOP")
+    time.sleep(0.2)
 
 
 async def insert_log(
