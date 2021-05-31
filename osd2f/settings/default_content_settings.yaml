@@ -74,6 +74,12 @@ static_pages:
             - A simple application for donation collection
         buttons: []
 
+
+  donate:
+    active : False
+    name : Donation Page
+    blocks : []
+
 upload_page:
   blocks : []
   upload_box :
