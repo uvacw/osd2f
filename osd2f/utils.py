@@ -57,11 +57,15 @@ async def load_content_settings(use_cache: bool) -> ContentSettings:
     db_config = await get_content_config()
 
     # load disk version ()
-    disk_config = (
-        yaml.safe_load(open(settings_dir.joinpath("default_content_settings.yaml")))
-        if (not DISK_CONFIG_VERSION or not use_cache)
-        else DISK_CONFIG_VERSION
-    )
+    global DISK_CONFIG_VERSION
+    if not DISK_CONFIG_VERSION or not use_cache:
+        disk_config = yaml.safe_load(
+            open(settings_dir.joinpath("default_content_settings.yaml"))
+        )
+        DISK_CONFIG_VERSION = disk_config
+
+    else:
+        disk_config = DISK_CONFIG_VERSION
 
     disk_timestamp = pytz.UTC.localize(
         datetime.datetime.fromtimestamp(
