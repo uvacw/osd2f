@@ -11,6 +11,7 @@ from quart.wrappers.response import Response
 
 from .anonymizers import anonymize_submission
 from .logger import logger
+from .security import translate_environment_vars
 
 app = Quart(__name__)
 
@@ -204,6 +205,8 @@ async def log():
 
 
 def start(mode: str = "Testing", database_url_override: str = "", run: bool = True):
+    translate_environment_vars()
+
     app.config.from_object(getattr(config, mode))
     app.env = mode.lower()
 

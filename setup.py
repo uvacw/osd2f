@@ -23,6 +23,8 @@ setup(
     },
     scripts=["bin/osd2f"],
     install_requires=[
+        "azure-keyvault-secrets",
+        "azure-identity",
         "quart",
         "pyyaml",
         "pydantic",

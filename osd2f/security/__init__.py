@@ -7,9 +7,14 @@ import os
 from functools import wraps
 
 # Wrapper implementations for Authentication
-from .microsoft_msal import microsoft_msal_authentication
-from .not_confgured import no_authentication
+from .authorization.microsoft_msal import microsoft_msal_authentication
+from .authorization.not_confgured import no_authentication
+
+# Global module logger
 from ..logger import logger
+
+# Environment secret resolvers
+from .secrets import azure_keyvault
 
 
 def authorization_required(func):
@@ -23,3 +28,23 @@ def authorization_required(func):
             return await no_authentication(func, *args, **kwargs)
 
     return decorated_path
+
+
+def translate_environment_vars():
+    """Translate environment variable values to their secrets.
+
+    Assumes environment variables matching a pattern:
+     `SECRETSTORE_PREFIX::DELIMITED::ARGUMENTS`
+
+    should be translated by their respective resolver functions.
+
+    """
+    # resolvers
+    resolvers = {azure_keyvault.PREFIX: azure_keyvault.azure_keyvault_replace}
+
+    # iterate through environment variables, re-assign if they match a resolver
+    # prefix.
+    for var, value in os.environ.items():
+        for prefix, func in resolvers.items():
+            if value.startswith(prefix):
+                os.environ[var] = func(value)
