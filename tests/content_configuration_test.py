@@ -211,6 +211,7 @@ class ContentConfigurationTest(AsyncTestCase):
         from osd2f.cli import parse_and_run
         import osd2f.utils
 
+        import copy
         import sys
         import yaml
 
@@ -219,18 +220,22 @@ class ContentConfigurationTest(AsyncTestCase):
         )
 
         test_file_path = "content_config_file_test.yaml"
+        sargv = copy.copy(sys.argv)
 
-        sys.argv.extend(["--dry-run", "--generate-current-config", test_file_path])
+        sys.argv = ["", "--dry-run", "--generate-current-config", test_file_path]
         parse_and_run()
 
         assert len(open(test_file_path).read()) > 0
 
+        sys.argv = sargv
         ContentSettings.parse_obj(yaml.safe_load(open(test_file_path)))
+        os.remove(test_file_path)
 
     def test_cli_content_file_override(self):
         from osd2f.cli import parse_and_run
         import osd2f.utils
 
+        import copy
         import sys
 
         assert osd2f.utils.DISK_CONTENT_CONFIG_PATH.find(
@@ -239,12 +244,18 @@ class ContentConfigurationTest(AsyncTestCase):
 
         cv = osd2f.utils.DISK_CONTENT_CONFIG_PATH
 
-        test_file_path = "content_config_file_test.yaml"
+        test_file_path = "./content_config_file_test.yaml"
 
-        sys.argv.extend(["--dry-run", "-cc", test_file_path])
+        sargv = copy.copy(sys.argv)
+
+        sys.argv = ["", "--dry-run", "--generate-current-config", test_file_path]
+        parse_and_run()
+
+        sys.argv = [__file__, "--dry-run", "-cc", test_file_path]
         parse_and_run()
 
         assert osd2f.utils.DISK_CONTENT_CONFIG_PATH == test_file_path
 
+        sys.argv = sargv
         osd2f.utils.DISK_CONTENT_CONFIG_PATH = cv
         os.remove(test_file_path)
