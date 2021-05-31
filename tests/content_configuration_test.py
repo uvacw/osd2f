@@ -6,6 +6,7 @@
  - app config non-DEBUG in content call
  - static pages take arbitrary content
 """
+import os
 from unittest.mock import AsyncMock, Mock, patch
 
 from aiounittest.case import AsyncTestCase
@@ -205,3 +206,45 @@ class ContentConfigurationTest(AsyncTestCase):
                 assert body.find(snippet)
 
             await app.shutdown()
+
+    def test_cli_content_file_generation(self):
+        from osd2f.cli import parse_and_run
+        import osd2f.utils
+
+        import sys
+        import yaml
+
+        assert osd2f.utils.DISK_CONTENT_CONFIG_PATH.find(
+            "default_content_settings.yaml"
+        )
+
+        test_file_path = "content_config_file_test.yaml"
+
+        sys.argv.extend(["--dry-run", "--generate-current-config", test_file_path])
+        parse_and_run()
+
+        assert len(open(test_file_path).read()) > 0
+
+        ContentSettings.parse_obj(yaml.safe_load(open(test_file_path)))
+
+    def test_cli_content_file_override(self):
+        from osd2f.cli import parse_and_run
+        import osd2f.utils
+
+        import sys
+
+        assert osd2f.utils.DISK_CONTENT_CONFIG_PATH.find(
+            "default_content_settings.yaml"
+        )
+
+        cv = osd2f.utils.DISK_CONTENT_CONFIG_PATH
+
+        test_file_path = "content_config_file_test.yaml"
+
+        sys.argv.extend(["--dry-run", "-cc", test_file_path])
+        parse_and_run()
+
+        assert osd2f.utils.DISK_CONTENT_CONFIG_PATH == test_file_path
+
+        osd2f.utils.DISK_CONTENT_CONFIG_PATH = cv
+        os.remove(test_file_path)

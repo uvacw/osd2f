@@ -20,13 +20,14 @@ async def start_database():
     logger.debug(f"DB URL: {app.config['DB_URL']}")
     await database.initialize_database(app.config["DB_URL"])
     app.logQueue = database.add_database_logging()
+    await utils.load_content_settings(use_cache=False)
 
 
 @app.after_serving
 async def stop_database():
     logger.debug("Stopping database")
     await database.stop_database()
-    app.logQueue.put("stop")  # signals the database log worker to stop
+    app.logQueue.put("stop-logging")  # signals the database log worker to stop
 
 
 async def render_page(pagename: str):
@@ -204,6 +205,7 @@ async def log():
 
 def start(mode: str = "Testing", database_url_override: str = "", run: bool = True):
     app.config.from_object(getattr(config, mode))
+    app.env = mode.lower()
 
     if database_url_override:
         logger.debug("Using CLI specified DB URL instead of ENV VAR")

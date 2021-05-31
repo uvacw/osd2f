@@ -275,6 +275,8 @@ def add_database_logging() -> queue.SimpleQueue:
         while 1:
             try:
                 m = q.get_nowait()
+                if m == "stop-logging":
+                    break
                 if m.msg == "stop-logging":
                     break
                 if len(m.msg) < 5000:

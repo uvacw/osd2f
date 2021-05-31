@@ -13,10 +13,11 @@ from .database import get_content_config, set_content_config
 from .definitions import ContentSettings, UploadSettings
 from .logger import logger
 
-# TODO Restructure:
-# - accept settings from CLI args
-# - generically apply cashing of CLI location
-
+DISK_CONTENT_CONFIG_PATH: str = str(
+    pathlib.Path(__file__)
+    .parent.joinpath("settings")
+    .joinpath("default_content_settings.yaml")
+)
 DISK_CONFIG_VERSION = ""
 
 
@@ -51,26 +52,20 @@ def load_upload_settings(force_disk: bool = False) -> UploadSettings:
 
 
 async def load_content_settings(use_cache: bool) -> ContentSettings:
-    settings_dir = pathlib.Path(__file__).parent.joinpath("settings")
-
     # load db config version
     db_config = await get_content_config()
 
     # load disk version ()
     global DISK_CONFIG_VERSION
     if not DISK_CONFIG_VERSION or not use_cache:
-        disk_config = yaml.safe_load(
-            open(settings_dir.joinpath("default_content_settings.yaml"))
-        )
+        disk_config = yaml.safe_load(open(DISK_CONTENT_CONFIG_PATH))
         DISK_CONFIG_VERSION = disk_config
 
     else:
         disk_config = DISK_CONFIG_VERSION
 
     disk_timestamp = pytz.UTC.localize(
-        datetime.datetime.fromtimestamp(
-            os.path.getmtime(settings_dir.joinpath("default_content_settings.yaml"))
-        )
+        datetime.datetime.fromtimestamp(os.path.getmtime(DISK_CONTENT_CONFIG_PATH))
     )
 
     # if no database config exists, insert disk version in database and

@@ -65,6 +65,9 @@ class ContentBlock(BaseModel):
     image_pos: Optional[ImagePositionEnum]
     circles_row: Optional[List[CirclesRowCircle]]
 
+    class Config:
+        use_enum_values = True
+
 
 class ContentPage(BaseModel):
     active: bool
@@ -114,6 +117,9 @@ class ContentSettings(BaseModel):
     contact_us: EmailStr
     static_pages: Dict[PageTypeEnum, ContentPage]
     upload_page: UploadPage
+
+    class Config:
+        use_enum_values = True
 
 
 class MSALConfiguration(BaseModel):

@@ -47,6 +47,23 @@ osd2f -h # see help
 osd2f -m Testing # to run a testing instance
 ```
 
+You can configure the text content of the webpages. The easiest way to get started
+is by generating a YAML file with the default values and editing it to your liking:
+
+```bash
+osd2f --generate-current-config config.yaml
+```
+
+You can start the server with this content configuration by passing a file-path 
+via the CLI. 
+
+```bash
+osd2f --content-configuration config.yaml # make sure you've edited it first
+```
+
+***Note**: OSD2F will store the configuration in the database. In development mode, the
+most recently edited version is used between the database and the file.*
+
 ## See also:
 
 1. [how to develop](docs/development.md)

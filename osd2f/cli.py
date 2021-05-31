@@ -5,6 +5,8 @@ import logging
 
 from osd2f import config
 
+import yaml
+
 from .config import Testing
 from .database import initialize_database, stop_database
 from .logger import logger
@@ -45,6 +47,19 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    "--generate-current-config",
+    type=str,
+    help="Path to put an current content configuration YAML file.",
+)
+
+parser.add_argument(
+    "-cc",
+    "--content-configuration",
+    type=str,
+    help="A content configuration YAML file",
+)
+
+parser.add_argument(
     "--dry-run",
     action="store_true",
     help="test whether endpoints provide 200 code responses,"
@@ -73,9 +88,24 @@ def parse_and_run():
         "If you see this, you are running with debug logging. "
         "DO NOT DO THIS IN PRODUCTION."
     )
+    if args.content_configuration:
+        import osd2f.utils
 
-    if not args.dry_run:
+        osd2f.utils.DISK_CONTENT_CONFIG_PATH = args.content_configuration
+
+    if not args.dry_run and not args.generate_current_config:
         start(mode=args.mode, database_url_override=args.database_url)
+
+    elif args.generate_current_config:
+        from osd2f.utils import load_content_settings
+
+        app = start(mode=args.mode, database_url_override=args.database_url, run=False)
+        asyncio.run(app.startup())
+        settings = asyncio.run(load_content_settings(use_cache=False))
+        with open(args.generate_current_config, "w") as outputfile:
+            yaml.dump(settings.dict(by_alias=True), outputfile)
+        asyncio.run(app.shutdown())
+
     else:
         app = start(mode=args.mode, database_url_override=args.database_url, run=False)
         asyncio.run(initialize_database(Testing.DB_URL))

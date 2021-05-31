@@ -35,6 +35,10 @@ jobs:
       run: |
         pip install -e ./
         osd2f --dry-run
+    - name: Check config generation functionality
+      run: |
+        osd2f --generate-current-config cc.yaml
+        [ -s cc.yaml ] #check whether the file is not empty
 
   release_build:
 
