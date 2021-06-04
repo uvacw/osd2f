@@ -1,10 +1,11 @@
 import asyncio
 import logging
-from tortoise import fields
-from tortoise.models import Model
 import queue
 import time
 import typing
+
+from tortoise import fields
+from tortoise.models import Model
 
 from ..logger import logger
 

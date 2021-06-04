@@ -1,6 +1,7 @@
-from pydantic import BaseModel, EmailStr
 from enum import Enum
 from typing import Dict, List, Optional
+
+from pydantic import BaseModel, EmailStr
 
 
 class FileSetting(BaseModel):

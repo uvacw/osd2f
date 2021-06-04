@@ -1,4 +1,4 @@
-from tortoise import Tortoise, fields
+from tortoise import fields
 from tortoise.models import Model
 
 from ..definitions import Submission, SubmissionList

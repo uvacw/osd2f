@@ -1,6 +1,7 @@
+import typing
+
 from tortoise import fields
 from tortoise.models import Model
-import typing
 
 from ..definitions import ContentSettings, UploadSettings
 
