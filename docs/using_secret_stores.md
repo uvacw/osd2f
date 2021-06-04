@@ -36,3 +36,20 @@ OSD2F_DB_URL='azure-keyvault::https://osd2f-test.vault.azure.net/::OSD2F-DB-URL'
 ```
 
 Observe that the application makes the expected `keyvault-test` sqlite database file. 
+
+### Requirements when deploying 
+
+If you are deploying a OSD2F app, most likely to Azure, make sure the webapp has the `secret` `Get` and `Key` `Get` permissions. You can add these via the KeyVault Access policies or by issuing the command: 
+
+```bash
+export WEBAPP_ID="your webapp PRINCIPLE ID"
+export KEYVAULT_NAME="your keyvault name"
+
+az keyvault set-policy \
+    --name $KEYVAULT_NAME \
+    --object-id $WEBAPP_ID \
+    --secret-permissions get \
+    --key-permissions get
+```
+Note that this gives the webapp permission to *all* secrets in this keyvault. We recommend using
+separate keyvaults for separate applications or services.
