@@ -32,7 +32,10 @@ For example, if the keyvault is called `osd2f-test`, it should have a location s
 `https://osd2f-test.vault.azure.net/`. We store a database URL with the key name `OSD2F-DB-URL` (azure doesn't accept underscores in key names) and the value `sqlite://keyvault-test`. To use this key (locally), make sure the right credentials are set (e.g. `az login` to the appropriate subscription). Then start OSD2F:
 
 ```bash
-OSD2F_DB_URL='azure-keyvault::https://osd2f-test.vault.azure.net/::OSD2F-DB-URL' osd2f -m Development
+# we use the normal env variable, but the value is the azure-keyvault specification
+# instead of the 'real' value we want to use. 
+export OSD2F_DB_URL='azure-keyvault::https://osd2f-test.vault.azure.net/::OSD2F-DB-URL' 
+osd2f -m Development
 ```
 
 Observe that the application makes the expected `keyvault-test` sqlite database file. 
