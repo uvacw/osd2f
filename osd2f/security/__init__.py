@@ -9,12 +9,8 @@ from functools import wraps
 # Wrapper implementations for Authentication
 from .authorization.microsoft_msal import microsoft_msal_authentication
 from .authorization.not_confgured import no_authentication
-
-# Global module logger
-from ..logger import logger
-
-# Environment secret resolvers
-from .secrets import azure_keyvault
+from .secrets import azure_keyvault  # Environment secret resolvers
+from ..logger import logger  # Global module logger
 
 
 def authorization_required(func):

@@ -1,5 +1,5 @@
-from unittest.mock import Mock, patch
 from importlib import reload
+from unittest.mock import Mock, patch
 
 from aiounittest.case import AsyncTestCase
 
@@ -18,7 +18,8 @@ class SecretResolverTest(AsyncTestCase):
             m.assert_called()  # might be called more than once, depending on cache
 
     def test_azure_keyvault_resolver(self):
-        m = lambda s: "resolved" + s
+        def m(s):
+            return "resolved" + s
 
         import os
         from osd2f.security.secrets import azure_keyvault

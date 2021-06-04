@@ -11,7 +11,6 @@ from quart.wrappers.response import Response
 
 from .anonymizers import anonymize_submission
 from .logger import logger
-from .security import translate_environment_vars
 
 app = Quart(__name__)
 

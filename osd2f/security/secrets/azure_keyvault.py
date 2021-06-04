@@ -1,6 +1,7 @@
-from ...logger import logger
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
+
+from ...logger import logger
 
 PREFIX = "azure-keyvault"
 
