@@ -1,6 +1,10 @@
 import os as _os
 import typing as _typing
 
+from .security import translate_environment_vars
+
+translate_environment_vars()  # resolve secrets in env variables on import
+
 
 class Config:
     DEBUG: bool = False
