@@ -10,7 +10,6 @@ import yaml
 from .config import Testing
 from .database import initialize_database, stop_database
 from .logger import logger
-from .security import translate_environment_vars
 from .server import start
 
 LOGFORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
