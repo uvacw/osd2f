@@ -286,7 +286,9 @@ def generate_bundle(
     if n_page_reactions:
         page_reactions_path = os.path.join(output_dir, user_dir, "likes_and_reactions")
         os.makedirs(name=page_reactions_path)
-        with open(os.path.join(page_reactions_path, "pages_you've_liked.json"), "w") as f:
+        with open(
+            os.path.join(page_reactions_path, "pages_you've_liked.json"), "w"
+        ) as f:
             json.dump(
                 generate_likes_and_reactions_pages(user=user, n=n_page_reactions),
                 f,
