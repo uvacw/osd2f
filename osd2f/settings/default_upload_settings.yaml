@@ -7,7 +7,7 @@ files:
     (^|/|\\)comments.json:
       # in key is required when the initial level of data
       # is not a list but an object (e.g. {} instead of [])
-      in_key : "comments"
+      in_key : "comments_v2"
       # accepted_fields to include in the upload
       # remove a field to filter it out
       accepted_fields:
@@ -59,9 +59,18 @@ files:
         - name
         - timestamp
 
+    ## alternative filename for likes & reactions of pages
+    pages_you've_liked.json:
+      in_key : page_likes_v2
+      accepted_fields:
+        - name
+        - timestamp
+
+
+
     # these are the likes & reactions of posts & comments
     posts_and_comments.json:
-      in_key: reactions
+      in_key: reactions_v2
       accepted_fields:
         - timestamp
         - data.reaction.reaction
@@ -70,7 +79,7 @@ files:
 
     # Advertiser interactions file
     advertisers_you've_interacted_with.json:
-      in_key : history
+      in_key : history_v2
       accepted_fields:
         - title
         - action
@@ -78,5 +87,5 @@ files:
 
     # Advertisers who uploaded user information
     advertisers_who_uploaded_a_contact_list_with_your_information.json:
-      in_key : custom_audiences
+      in_key : custom_audiences_v2
       accepted_fields: []

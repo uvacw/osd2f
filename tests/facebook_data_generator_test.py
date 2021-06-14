@@ -57,7 +57,9 @@ class MinimalFacebookGeneratorTest(TestCase):
             )
         )
         self.assertTrue(
-            glob.glob("temp_test_data/facebook-*/likes_and_reactions/pages.json")
+            glob.glob(
+                "temp_test_data/facebook-*/likes_and_reactions/pages_you've_liked.json"
+            )
         )
         self.assertTrue(glob.glob("temp_test_data/facebook-*/comments/comments.json"))
         self.assertTrue(
