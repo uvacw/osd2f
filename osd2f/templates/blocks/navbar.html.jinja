@@ -1,0 +1,26 @@
+<header>
+    <div class="navbar navbar-dark shadow-sm navbar-expand-lg bg-dark fixed-top">
+        <a class="navbar-brand" href="/#">{{ content_settings.project_title}} </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+
+                {% for pagename, page in content_settings.static_pages.items() %}
+                    {% if page.active == True %}
+                    <li class="nav-item {{ 'active' if pagename==current_page else '' }}">
+                        <a class="nav-link" href="/{{ pagename }}">
+                            <span>{{page.name}}</span>
+                        </a>
+                    </li>
+                    {% endif %}
+            
+            {% endfor %} 
+            </ul>
+                
+
+        </div>
+
+    </div>
+</header>

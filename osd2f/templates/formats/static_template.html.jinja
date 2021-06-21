@@ -1,0 +1,19 @@
+{% extends "formats/base.html.jinja" %}
+
+{% block content %} 
+    <div class="container-fluid p-0 m-0 text-center">
+    {% for contentblock in content_settings.static_pages[current_page].blocks %}
+
+        {% if contentblock.type=="jumbotron" %} 
+            {% include "blocks/jumbotron.html.jinja" %} 
+        {% endif %} 
+
+
+        {% if contentblock.type=="two_block_row" %}
+            {% include "blocks/two_block_row.html.jinja" %}
+        {% endif%}
+
+    {% endfor %} 
+    </div>
+
+{% endblock content %} 

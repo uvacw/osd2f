@@ -1,4 +1,4 @@
-"""Security wrappers dynamically seet at request time.
+"""Security wrappers dynamically set at request time.
 
 Wrapper functions should have the (Callable, *args, **kwargs) -> Response signature.
 """

@@ -1,12 +1,13 @@
 import asyncio
 import logging.handlers
 import queue
+import time
 import typing
 
 from tortoise import Tortoise, fields
 from tortoise.models import Model
 
-from .definitions import Submission, SubmissionList
+from .definitions import ContentSettings, Submission, SubmissionList, UploadSettings
 from .logger import logger
 
 clientLogQueue: queue.SimpleQueue = queue.SimpleQueue()
@@ -39,6 +40,17 @@ class DBLog(Model):
         table = "osd2f_logs"
 
 
+class DBConfigurationBlobs(Model):
+    id = fields.IntField(pk=True)
+    insert_timestamp = fields.DatetimeField(auto_now_add=True)
+    insert_user = fields.CharField(index=True, max_length=150, null=False)
+    config_type = fields.CharField(index=True, max_length=50, null=False)
+    config_blob = fields.JSONField(null=False)
+
+    class Meta:
+        table = "osd2f_config"
+
+
 async def initialize_database(db_url: str):
     await Tortoise.init(db_url=db_url, modules={"models": ["osd2f.database"]})
     await Tortoise.generate_schemas(safe=True)
@@ -48,6 +60,27 @@ async def initialize_database(db_url: str):
 async def stop_database():
     await Tortoise.close_connections()
     stop_logworker()
+
+
+async def get_content_config() -> typing.Optional[DBConfigurationBlobs]:
+    config_item = (
+        await DBConfigurationBlobs.filter(config_type="content")
+        .order_by("-insert_timestamp")
+        .first()
+    )
+    return config_item
+
+
+async def set_content_config(user: str, content: ContentSettings):
+    await DBConfigurationBlobs.create(
+        insert_user=user, config_type="content", config_blob=content.json()
+    )
+
+
+async def set_upload_config(user: str, content: UploadSettings):
+    await DBConfigurationBlobs.create(
+        insert_user=user, config_type="upload", config_blob=content.json()
+    )
 
 
 def start_logworker():
@@ -78,6 +111,7 @@ def start_logworker():
 
 def stop_logworker():
     clientLogQueue.put("STOP")
+    time.sleep(0.2)
 
 
 async def insert_log(
@@ -241,6 +275,8 @@ def add_database_logging() -> queue.SimpleQueue:
         while 1:
             try:
                 m = q.get_nowait()
+                if m == "stop-logging":
+                    break
                 if m.msg == "stop-logging":
                     break
                 if len(m.msg) < 5000:

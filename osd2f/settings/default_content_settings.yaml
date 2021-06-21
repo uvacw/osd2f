@@ -1,0 +1,116 @@
+project_title : OSD2F
+contact_us : email@domain.tld
+static_pages: 
+  home: 
+    active : True
+    name : The OSD2F project
+    blocks:
+      - type : jumbotron
+        title : Data donation made easy
+        id : top
+        image : "/static/skull_phone_cc.jpg"
+        lines : 
+            - A general way of donating data
+            - For JSON based GDPR exports
+            - To use with external survey and analysis tools
+        buttons : 
+            - name : About the project
+              label : "btn-primary"
+              link : "#project"
+            - name: How it works
+              label : "btn-success" 
+              link : "/donate" 
+
+      - type : two_block_row
+        id : project
+        image: "/static/study_cc.jpg"
+        image_pos: left
+        title : OSD2F provides a whitelist based collection website
+        lines : 
+          - Under GDPR, everyone should be able to export <br> their data in machine-readable format
+          - Many platform provide standardized ways to get this data by <br> exporting it as a set of JSON files
+          - This app allows researchers to easily and safely collect exported data donated by participants in their studies
+        buttons : 
+          - name: About the developers
+            label : "btn-primary"
+            link : "#team"
+          - name: Donate now
+            label: "btn-success"
+            link: "/donate"
+
+      - type : two_block_row
+        id : team
+        image: "/static/uva_building.jpg"
+        image_pos: right
+        title : The University of Amsterdam build this pilot application to support social media researchers
+        lines : 
+          - API access is increasinlgy curtailed, making <br>it harder to understand what happens on social media
+          - The GDPR provides a legal basis for participants <br>to be able to get, and thus donate, their data
+          - Our team has proudly worked on this pilot to <br>open up data donations for your project
+        circles_row: 
+            - title : Prof. Dr. Hypothetical collaborator
+              subtitle: this person does not exist
+              image : "https://thispersondoesnotexist.com/image"
+            - title : Sponsored by
+              subtitle: A random image
+              image : "https://picsum.photos/200/300.jpg"
+        buttons : 
+          - name: About the project
+            label : "btn-primary"
+            link : "#team"
+          - name: Donate now
+            label: "btn-success"
+            link: "/donate"
+
+
+  privacy:
+    active : True
+    name : Privacy protection
+    blocks : 
+      - type : jumbotron
+        title : Data donation made easy
+        id : top
+        lines : 
+            - A simple application for donation collection
+        buttons: []
+
+
+  donate:
+    active : False
+    name : Donation Page
+    blocks : []
+
+upload_page:
+  blocks : []
+  upload_box :
+    header : "Select file(s):"
+    explanation : 
+      - "You can use the file selector to select the zipfile from your platform"
+      - "You can also drag the folder into this box"
+  thanks_text: "Thanks for trying osd2f"
+  processing_text : "processing your donation for preview"
+  file_indicator_text: "Entries in your donation: "
+  donate_button : "Donate"
+  inspect_button : "Inspect & edit"
+  preview_component:
+    entries_in_file_text: "Entries in this file: "
+    title : "Inspect & Edit your donation"
+    explanation :
+      - The top shows the files in your donation
+      - In each file, you can search for content
+      - You can remove content by clicking on the rows and pressing "remove selection"
+    remove_rows_button : "remove selected rows"
+    search_prompt: "Search in file"
+    search_box_placeholder: "type to search this file"
+    previous_file_button : Previous file
+    next_file_button: Next file
+  consent_popup :
+    title : "I want to donate my data..."
+    lead : "This box explains the conditions of your donation"
+    points:
+      - how data is secured
+      - what the data will be used for
+      - how long the data will be stored
+    end_text: "By clicking below, you consent to these terms..."
+    decline_button: "I do not consent"
+    accept_button: "I consent"

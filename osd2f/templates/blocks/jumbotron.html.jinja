@@ -1,0 +1,15 @@
+<section class="jumbotron m-0" style="background-image: url({{ contentblock.image }}); background-size: cover;">
+    <div class="container pt-4 {{ 'text-white' if contentblock.image else '' }} text-center">
+        {% if contentblock.title %} <h1>{{contentblock.title|safe}} </h1> {% endif %} 
+        <br>
+        {% for line in contentblock.lines %} 
+            <p class="lead font-weight-bold">{{ line | safe }} </p> 
+        {% endfor %} 
+        <br>
+        {% include "blocks/circles_row.html.jinja" %}
+        {% for button in contentblock.buttons %} 
+            <a href="{{button.link}}"><button class="btn {{button.label}}" type="button">{{button.name}}</button></a>
+        {% endfor %} 
+
+    </div>
+</section>

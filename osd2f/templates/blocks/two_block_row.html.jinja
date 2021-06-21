@@ -1,0 +1,20 @@
+<div class="row bg-secondary justify-content-center">
+    {% if  contentblock.image and contentblock.image_pos=="left" %}
+        <div class="col-xl-5 col-lg-6 p-0 bg-primary"><img src="{{ contentblock.image }}" alt="" class="img-fluid" style="height: 100%; width: 100%;"></div>
+    {% endif %}
+    <div class="col-xl-5 col-lg-6 p-5 bg-white">
+        <h3 id="{{ contentblock.id }}">{{contentblock.title|safe}}</h3>
+        {% for line in contentblock.lines %}
+            <p>{{line|safe}}</p>
+        {% endfor%}
+        {% include "blocks/circles_row.html.jinja" %}
+        <div class="text-center">
+            {% for button in contentblock.buttons %}
+            <a href="{{button.link}}"><button type="button" class="btn {{button.label}}">{{button.name}}</button></a>
+            {% endfor %}
+        </div>
+    </div>
+    {% if  contentblock.image and contentblock.image_pos=="right"%}
+        <div class="col-xl-5 col-lg-6 p-0 bg-primary"><img src="{{ contentblock.image }}" alt="" class="img-fluid" style="height: 100%; width: 100%;"></div>
+    {% endif %}
+</div>

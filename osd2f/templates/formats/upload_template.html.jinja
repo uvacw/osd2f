@@ -1,0 +1,135 @@
+{% extends "formats/base.html.jinja" %}
+
+{% block content %} 
+    <div class="container-fluid pt-2 m-0 text-center">
+
+    <!-- Additional explanations about uploads -->
+    {% for contentblock in content_settings.upload_page.blocks %}
+
+        {% if contentblock.type=="jumbotron" %} 
+            {% include "blocks/jumbotron.html.jinja" %} 
+        {% endif %} 
+
+
+        {% if contentblock.type=="two_block_row" %}
+            {% include "blocks/two_block_row.html.jinja" %}
+        {% endif%}
+
+    {% endfor %} 
+    </div>
+
+    <!-- Upload interface -->
+    <div class="container-fluid min-vh-100">
+    
+        <!-- The dropbox for files -->
+        <style>
+            #drop-area {
+                border: 2px dashed #ccc;
+                border-radius: 20px;
+                width: 480px;
+                margin: 50px auto;
+                padding: 20px;
+            }
+            
+            #drop-area.highlight {
+                border-color: cornflowerblue;
+            }
+        </style>
+        <div class="row mb-0 pt-1 justify-content-center">
+            <div id="drop-area" class="col-xl-5 col-lg-6 col-md-8 col-sm-10 p-6 mb-1">
+                <h3 class="text-center"> {{content_settings.upload_page.upload_box.header|safe}} </h3>
+                <progress id="progress-bar" max=100 value=0 style="width:100%; height:15px;"></progress>
+                <form class="my-form">
+                {% for par in content_settings.upload_page.upload_box.explanation%}
+                    <p>{{par|safe}}</p>
+                {% endfor %}
+                <input type="file" id="fileElem">
+                <label class="button" for="fileElem"></label>
+                </form>
+                
+            </div>      
+        </div>
+        <!-- The status messages (generally hidden) -->
+        <div id="processing" class="invisible">
+            <div class="row p-2 justify-content-center">
+                <h2 class="text-center">{{content_settings.upload_page.processing_text}}</h2>
+            </div>
+            <div class="row p-2 justify-content-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- The "thank you" message (initially hidden!) -->
+        <div class="row justify-content-center invisible" id="thankyou">
+            <h1>{{content_settings.upload_page.thanks_text}}</h1>
+        </div>
+
+        <!-- The Veux component to interact with the uploaded data -->
+        <div class="row justify-content-center p-4">
+            <div id="visualization">
+        
+                <donation-container
+                v-bind:donations="donations"
+                v-bind:content="content"
+                >
+                </donation-container>
+            </div>
+        </div>
+    
+    </div>
+
+<!-- necessary scripts, including our own main.js -->
+    <!-- parsing script -->
+    <script src="/static/js/main.js"></script>
+    <!-- page functionality related to presentation -->
+    <script>
+        let settings = {{ upload_settings.json()|safe }};
+        let content = {{ content_settings.json()|safe }};
+        let sid = {{sid|tojson|safe}};
+        window.sid = sid;
+
+
+        let dropArea = document.getElementById("drop-area");
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false)
+        })
+
+        function preventDefaults(e) {
+        e.preventDefault()
+        e.stopPropagation()
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, highlight, false)
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, unhighlight, false)
+        })
+
+        function highlight(e) {
+        dropArea.classList.add('highlight')
+        }
+
+        function unhighlight(e) {
+        dropArea.classList.remove('highlight')
+        }
+        
+        
+
+        // track whether the donation has been completed for the prevent close dialogue
+        let noDonationYet=true
+
+        // prevent accidentally leaving before donating
+        window.onbeforeunload = confirmExit;
+        function confirmExit() {
+            if (noDonationYet) {
+            return "You haven't donated yet, are you sure you want to leave?";
+            }
+        }
+
+    </script>
+{% endblock content %} 

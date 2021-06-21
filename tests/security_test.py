@@ -68,9 +68,11 @@ class MSALAuthTest(AsyncTestCase):
         with patch("osd2f.security.microsoft_msal.msal", MockMSAL), patch(
             "osd2f.database.get_submissions", subMock
         ), patch("osd2f.security.microsoft_msal.insert_log", AsyncMock()):
+            from osd2f.database import initialize_database, stop_database
             from osd2f.server import start
 
             app = start(run=False)
+            await initialize_database("sqlite://:memory:")
             app.secret_key = "TESTINGSECRET"
             tc = app.test_client()
 
@@ -89,6 +91,8 @@ class MSALAuthTest(AsyncTestCase):
             # able to download file
             r = await tc.get("/researcher/osd2f_completed_submissions.csv")
             assert r.status_code == 200
+
+            await stop_database()
 
     async def test_known_email_of_multiple(self):
         mock_config = {
@@ -117,9 +121,11 @@ class MSALAuthTest(AsyncTestCase):
         with patch("osd2f.security.microsoft_msal.msal", MockMSAL), patch(
             "osd2f.database.get_submissions", subMock
         ), patch("osd2f.security.microsoft_msal.insert_log", AsyncMock()):
+            from osd2f.database import initialize_database, stop_database
             from osd2f.server import start
 
             app = start(run=False)
+            await initialize_database("sqlite://:memory:")
             app.secret_key = "TESTINGSECRET"
             tc = app.test_client()
 
@@ -138,6 +144,8 @@ class MSALAuthTest(AsyncTestCase):
             # able to download file
             r = await tc.get("/researcher/osd2f_completed_submissions.csv")
             assert r.status_code == 200
+
+            await stop_database()
 
     async def test_unknown_email(self):
         mock_config = {

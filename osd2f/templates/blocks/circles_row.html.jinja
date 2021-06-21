@@ -1,0 +1,11 @@
+{% if contentblock.circles_row %}
+<div class="row justify-content-center">
+    {% for circleItem in contentblock.circles_row %}
+        <div class="col-sm-4 text-center">
+            <img src="{{circleItem.image}}" alt="" class="rounded-circle image-fluid" style="width: 100px; height: 100px;">
+            <p class="m-0" style="font-size: x-small;">{{ circleItem.title | safe }}</p>
+            <p class="text-muted" style="font-size: x-small;">{{ circleItem.subtitle | safe }}</p>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
