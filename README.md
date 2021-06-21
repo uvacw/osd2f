@@ -10,8 +10,11 @@ platform. Here, scientists can instruct participants in their research to upload
 exports from major online platforms (generally based on participants rights to their own
 data under GDPR).
 
-Currently supported donations: 
-* Facebook exports
+The App aims to be as export agnostic as possible while keeping things feasible to maintain.
+You can specify the files and the whitelist of JSON fields through YAML configuration. 
+There are out-of-the-box specifications for the following data-export sources:
+
+* Facebook
 
 ## Using OSD2F locally
 
