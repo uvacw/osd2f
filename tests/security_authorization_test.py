@@ -65,9 +65,9 @@ class MSALAuthTest(AsyncTestCase):
             ]
         )
 
-        with patch("osd2f.security.microsoft_msal.msal", MockMSAL), patch(
+        with patch("osd2f.security.authorization.microsoft_msal.msal", MockMSAL), patch(
             "osd2f.database.get_submissions", subMock
-        ), patch("osd2f.security.microsoft_msal.insert_log", AsyncMock()):
+        ), patch("osd2f.security.authorization.microsoft_msal.insert_log", AsyncMock()):
             from osd2f.database import initialize_database, stop_database
             from osd2f.server import start
 
@@ -118,9 +118,9 @@ class MSALAuthTest(AsyncTestCase):
             ]
         )
 
-        with patch("osd2f.security.microsoft_msal.msal", MockMSAL), patch(
+        with patch("osd2f.security.authorization.microsoft_msal.msal", MockMSAL), patch(
             "osd2f.database.get_submissions", subMock
-        ), patch("osd2f.security.microsoft_msal.insert_log", AsyncMock()):
+        ), patch("osd2f.security.authorization.microsoft_msal.insert_log", AsyncMock()):
             from osd2f.database import initialize_database, stop_database
             from osd2f.server import start
 
@@ -170,9 +170,9 @@ class MSALAuthTest(AsyncTestCase):
             ]
         )
 
-        with patch("osd2f.security.microsoft_msal.msal", MockMSAL), patch(
+        with patch("osd2f.security.authorization.microsoft_msal.msal", MockMSAL), patch(
             "osd2f.database.get_submissions", subMock
-        ), patch("osd2f.security.microsoft_msal.insert_log", AsyncMock()):
+        ), patch("osd2f.security.authorization.microsoft_msal.insert_log", AsyncMock()):
             from osd2f.server import start
 
             app = start(run=False)
@@ -224,9 +224,11 @@ class MSALAuthTest(AsyncTestCase):
             ]
         )
 
-        with patch("osd2f.security.microsoft_msal.msal", MockMSALNoToken), patch(
-            "osd2f.database.get_submissions", subMock
-        ), patch("osd2f.security.microsoft_msal.insert_log", AsyncMock()):
+        with patch(
+            "osd2f.security.authorization.microsoft_msal.msal", MockMSALNoToken
+        ), patch("osd2f.database.get_submissions", subMock), patch(
+            "osd2f.security.authorization.microsoft_msal.insert_log", AsyncMock()
+        ):
             from osd2f.server import start
 
             app = start(run=False)

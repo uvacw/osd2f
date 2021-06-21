@@ -12,8 +12,8 @@ import msal
 
 from quart import redirect, request, session
 
-from ..database import insert_log
-from ..definitions import MSALConfiguration
+from ...database import insert_log
+from ...definitions import MSALConfiguration
 
 
 async def microsoft_msal_authentication(func, *args, **kwargs):

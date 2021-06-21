@@ -108,7 +108,7 @@ sessions, so running this command will 'logout' any ongoing session.
 
 **NOTE**: deploying secrets in this way is not 'safe', anyone with 
           admin access to this resource group will be able to see
-          the secret!
+          the secret! Consider using a [secret store](./using_secret_stores.md)
 
 set the custom startup command. We use the hypercorn ASGI server middleware for performance reasons. 
 
