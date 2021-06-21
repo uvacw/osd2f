@@ -77,11 +77,15 @@ class MSALAuthTest(AsyncTestCase):
             tc = app.test_client()
 
             # redirect to flow
-            r = await tc.get("/researcher")
+            r = await tc.get("/researcher")  # , follow_redirects=True)
+            assert r.status_code == 302
+            assert r.location == "/login"
+
+            r = await tc.get("/login")
             assert r.status_code == 302
 
             # redirect as comming back from microsoft
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 302
 
             # now recognized for login
@@ -130,15 +134,15 @@ class MSALAuthTest(AsyncTestCase):
             tc = app.test_client()
 
             # redirect to flow
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 302
 
             # redirect as comming back from microsoft
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 302
 
             # now recognized for login
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 200
 
             # able to download file
@@ -180,24 +184,24 @@ class MSALAuthTest(AsyncTestCase):
             tc = app.test_client()
 
             # redirect to flow
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 302
 
             # redirect as comming back from microsoft,
             # but the email is not accepted
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 403
 
             # login is rejected
             # first by retrying authentication
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 302
             # but rejecting the same email
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 403
 
             # unable to download file
-            r = await tc.get("/researcher/osd2f_completed_submissions.csv")
+            r = await tc.get("/login")
             r = await tc.get("/researcher/osd2f_completed_submissions.csv")
             assert r.status_code == 403
 
@@ -238,7 +242,11 @@ class MSALAuthTest(AsyncTestCase):
             # redirect to flow
             r = await tc.get("/researcher")
             assert r.status_code == 302
+            assert r.location == "/login"
+
+            r = await tc.get("/login")
+            assert r.status_code == 302
 
             # redirect as comming back from microsoft
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 500
