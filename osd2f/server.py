@@ -115,14 +115,6 @@ async def upload():
         return jsonify({"error": "", "data": ""}), 200
 
 
-@app.route("/status")
-async def status():
-    if app.debug:
-        count = await database.count_submissions()
-        return f"Received: {count} submissions"
-    return "Page Unavailable", 404
-
-
 @app.route("/researcher/<items>.<filetype>")
 @app.route("/researcher", strict_slashes=False)
 @security.authorization_required
