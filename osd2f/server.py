@@ -2,10 +2,13 @@ import csv
 import io
 import json
 
+
 from osd2f import config, database, security, utils
 from osd2f.definitions import Submission, SubmissionList
+from osd2f.security.authorization import USER_FIELD
 
-from quart import Quart, render_template, request
+from quart import Quart, render_template, request, session
+from quart.utils import redirect
 from quart.json import jsonify
 from quart.wrappers.response import Response
 
@@ -113,6 +116,19 @@ async def upload():
             )
             return jsonify({"error": "incorrect submission format", "data": {}}), 400
         return jsonify({"error": "", "data": ""}), 200
+
+
+@app.route("/login")
+@security.authorization_required
+async def login():
+    return "logged in"
+
+
+@app.route("/logout")
+async def logout():
+    if session.get(USER_FIELD):
+        session.pop(USER_FIELD)
+    return redirect("/")
 
 
 @app.route("/researcher/<items>.<filetype>")
