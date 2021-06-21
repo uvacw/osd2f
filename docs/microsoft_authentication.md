@@ -20,7 +20,7 @@ The app uses the access information to check whether the user has an email in th
 3. Pick a Name
 4. set `accounts in this organizational directory only (Single tenant)`
 5. The `Redirect URI` should match the endpoint that requires authentication. 
-   For local testing, this could be `http://localhost:5000/researcher`. 
+   For local testing, this could be `http://localhost:5000/login`. 
 
 
 ## Configuring the server
@@ -29,11 +29,11 @@ The server is configured by passing a serialized JSON object as the `MSAL_CONFIG
 
 ```json
 {
-    "client_id":"a-provided-client-id",  // Application (client) ID
-    "secret":"the-application-secret",   // a secret created when generating the app registration
-    "tenant_id":"azure-tenant-id",       // Directory (tenant) ID
-    "redirect_url": "localhost:5000"     // location microsoft should send users to after login in,
-                                         // must match an App registration entry
+    "client_id":"a-provided-client-id",     // Application (client) ID
+    "secret":"the-application-secret",      // a secret created when generating the app registration
+    "tenant_id":"azure-tenant-id",          // Directory (tenant) ID
+    "redirect_url": "localhost:5000/login"  // location microsoft should send users to after login in,
+                                            // must match an App registration entry
     // users you want to provide access, note that they
     // should be part of the active directory in the same tenant as 
     // the application
