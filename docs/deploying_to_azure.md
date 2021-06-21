@@ -161,5 +161,20 @@ az webapp config connection-string set \
     ...
 ```
 
+# applying new configurations (temporary method)
+
+There is currently no configuration interface for the content of the app. You can update remote (e.g. Azure)
+webapp content configurations by locally creating a content-file and running the app with the remote
+database connection. 
+
+For example:
+
+```bash
+OSD2F_DB_URL="<your database string>" \
+OSD2F_SECRET="arbitrary string" \
+osd2f \
+-m Production \
+-cc your_content_settings.yaml
+```
 
 
