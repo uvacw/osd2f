@@ -79,6 +79,7 @@ def parse_and_run():
     elif args.verbose == 3:
         level = logging.DEBUG
     else:
+        print("UNKNOWN LOGLEVEL SPECIFIED")
         level = logging.NOTSET
 
     logging.basicConfig(format=LOGFORMAT, level="WARNING")
