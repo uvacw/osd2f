@@ -2,10 +2,11 @@ import csv
 import io
 import json
 
-
 from osd2f import config, database, security, utils
 from osd2f.definitions import Submission, SubmissionList
 from osd2f.security.authorization import USER_FIELD
+
+import pyzipper
 
 from quart import Quart, render_template, request, session
 from quart.utils import redirect
@@ -131,15 +132,24 @@ async def logout():
     return redirect("/")
 
 
-@app.route("/researcher/<items>.<filetype>")
 @app.route("/researcher", strict_slashes=False)
 @security.authorization_required
-async def researcher(items=None, filetype=None):
+async def researcher():
+    content_settings = await utils.load_content_settings(use_cache=not app.debug)
+    return await render_template(
+        "formats/researcher_template.html.jinja",
+        content_settings=content_settings,
+        password_protected=bool(app.config["DATA_PASSWORD"]),
+    )
+
+
+@app.route("/researcher/<items>.<filetype>.<zipext>")
+@app.route("/researcher/<items>.<filetype>")
+@security.authorization_required
+async def downloads(items: str = None, filetype: str = None, zipext: str = None):
+
     if not items:
-        content_settings = await utils.load_content_settings(use_cache=not app.debug)
-        return await render_template(
-            "formats/researcher_template.html.jinja", content_settings=content_settings
-        )
+        return redirect("/researcher")
     elif items == "osd2f_completed_submissions":
         data = await database.get_submissions()
     elif items == "osd2f_pending_participants":
@@ -149,18 +159,30 @@ async def researcher(items=None, filetype=None):
     else:
         return "Unknown export", 404
 
+    if app.config.get("DATA_PASSWORD") and not zipext:
+        logger.warn("Non-zip downloaded requested, but OSD2F_DATA_PASSWORD is set.")
+        return "Only encrypted `.zip` files are available", 401
+
+    st = io.StringIO()
     if filetype == "json":
         fs = json.dumps(data)
     elif filetype == "csv":
-        st = io.StringIO()
         fields = {key for item in data for key in item}
         dw = csv.DictWriter(st, fieldnames=sorted(fields))
         dw.writeheader()
         dw.writerows(data)
-        fs = st.getvalue()
     else:
         return "Unknown filetype", 404
 
+    if zipext:
+        zipio = io.BytesIO()
+        with pyzipper.AESZipFile(zipio, "w", encryption=pyzipper.WZ_AES) as zipfile:
+            zipfile.setpassword(app.config.get("DATA_PASSWORD").encode())
+            zipfile.writestr(f"{items}.{filetype}", st.getvalue())
+
+        return Response(zipio.getvalue(), 200, {"Content-type": "application/zip"})
+
+    fs = st.getvalue()
     return Response(fs, 200, {"Content-type": "application/text; charset=utf-8"})
 
 

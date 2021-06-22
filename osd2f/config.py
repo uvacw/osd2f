@@ -12,6 +12,8 @@ class Config:
     BIND: str = "127.0.0.1"
     PORT: int = 5000
     SECRET_KEY: _typing.Optional[str] = None
+    DATA_PASSWORD: str = _os.environ.get("OSD2F_DATA_PASSWORD", "")
+
     # Allow for BIG submissions 4*16mb for
     # in-memory anonymization.
     # NOTE: protect POST endpoints with

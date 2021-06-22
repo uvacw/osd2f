@@ -29,6 +29,7 @@ setup(
         "pyyaml",
         "pydantic",
         "pydantic[email]",
+        "pyzipper",
         "tortoise-orm",
         "asyncpg",
         "hypercorn",
