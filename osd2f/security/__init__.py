@@ -12,6 +12,8 @@ from .authorization.not_confgured import no_authentication
 from .secrets import azure_keyvault  # Environment secret resolvers
 from ..logger import logger  # Global module logger
 
+RESOLVERS = {azure_keyvault.PREFIX: azure_keyvault.azure_keyvault_replace}
+
 
 def authorization_required(func):
     @wraps(func)
@@ -35,12 +37,27 @@ def translate_environment_vars():
     should be translated by their respective resolver functions.
 
     """
-    # resolvers
-    resolvers = {azure_keyvault.PREFIX: azure_keyvault.azure_keyvault_replace}
-
     # iterate through environment variables, re-assign if they match a resolver
     # prefix.
     for var, value in os.environ.items():
-        for prefix, func in resolvers.items():
+        for prefix, func in RESOLVERS.items():
             if value.startswith(prefix):
                 os.environ[var] = func(value)
+
+
+def translate_value(value: str) -> str:
+    """Translate a given value to the appropriate secret.
+
+    Assumes the value matches a pattern of a known resolver, e.g.:
+        `SECRETSTORE_PREFIX::DELIMITED::ARGUMENTS`
+
+    secrets are resolved by their matching RESOLVERS function.
+
+    String not matching any known prefix are ignored.
+    """
+    for prefix, func in RESOLVERS.items():
+        if value.startswith(prefix):
+            logger.debug(f"{value} resolved using {func.__name__}")
+            return func(value)
+
+    logger.debug(f"{value} did not match any registered resolver.")

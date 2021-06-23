@@ -245,13 +245,13 @@ def create_app(
 
     if data_password_override:
         logger.debug("Using CLI specified DATA PASSWORD instead of ENV VAR")
-        selected_config.DATA_PASSWORD = data_password_override
+        selected_config.DATA_PASSWORD = security.translate_value(data_password_override)
     if app_secret_override:
         logger.debug("Using CLI specified SECRET instead of ENV VAR")
-        selected_config.SECRET_KEY = app_secret_override
+        selected_config.SECRET_KEY = security.translate_value(app_secret_override)
     if database_url_override:
         logger.debug("Using CLI specified DB URL instead of ENV VAR")
-        selected_config.DB_URL = database_url_override
+        selected_config.DB_URL = security.translate_value(database_url_override)
 
     app.config.from_object(selected_config)
     app.env = mode.lower()
