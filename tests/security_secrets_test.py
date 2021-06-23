@@ -29,7 +29,7 @@ class SecretResolverTest(AsyncTestCase):
         other_secret = "another-secret::somehwere::key"
         os.environ["not_azure_secret"] = other_secret
 
-        with patch("osd2f.security.secrets.azure_keyvault.azure_keyvault_replace", m):
+        with patch("osd2f.security.RESOLVERS", {azure_keyvault.PREFIX: m}):
             from osd2f.security import translate_environment_vars
 
             translate_environment_vars()
