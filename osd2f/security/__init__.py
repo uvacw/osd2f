@@ -61,3 +61,4 @@ def translate_value(value: str) -> str:
             return func(value)
 
     logger.debug(f"{value} did not match any registered resolver.")
+    return value
