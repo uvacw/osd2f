@@ -17,7 +17,7 @@ class SecretResolverTest(AsyncTestCase):
 
             m.assert_called()  # might be called more than once, depending on cache
 
-    def test_azure_keyvault_resolver(self):
+    def test_azure_keyvault_env_translation(self):
         def m(s):
             return "resolved" + s
 
@@ -38,3 +38,24 @@ class SecretResolverTest(AsyncTestCase):
             assert os.environ["azure_secret"].startswith("resolved")
             # non azure key should not be resolved
             assert os.environ["not_azure_secret"] == other_secret
+
+    def test_azure_keyvault_env_translation(self):
+        def m(s):
+            return "resolved" + s
+
+        import os
+        from osd2f.security.secrets import azure_keyvault
+
+        secret = f"{azure_keyvault.PREFIX}::test-keyvault::value"
+        other_secret = "another-secret::somehwere::key"
+
+        with patch("osd2f.security.RESOLVERS", {azure_keyvault.PREFIX: m}):
+            from osd2f.security import translate_value
+
+            resolved_secret = translate_value(secret)
+            unresolved_secret = translate_value(other_secret)
+
+            # azure key should be resolved
+            assert resolved_secret.startswith("resolved")
+            # non azure key should not be resolved
+            assert unresolved_secret == other_secret
