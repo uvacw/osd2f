@@ -7,9 +7,9 @@ from aiounittest.case import AsyncTestCase
 
 class NoAuthConfigTest(AsyncTestCase):
     async def test_noauth(self):
-        from osd2f.server import start
+        from osd2f.server import create_app
 
-        app = start(run=False)
+        app = create_app()
         tc = app.test_client()
         r = await tc.get("/researcher")
         assert r.status_code == 501
@@ -69,9 +69,9 @@ class MSALAuthTest(AsyncTestCase):
             "osd2f.database.get_submissions", subMock
         ), patch("osd2f.security.authorization.microsoft_msal.insert_log", AsyncMock()):
             from osd2f.database import initialize_database, stop_database
-            from osd2f.server import start
+            from osd2f.server import create_app
 
-            app = start(run=False)
+            app = create_app()
             await initialize_database("sqlite://:memory:")
             app.secret_key = "TESTINGSECRET"
             tc = app.test_client()
@@ -126,9 +126,9 @@ class MSALAuthTest(AsyncTestCase):
             "osd2f.database.get_submissions", subMock
         ), patch("osd2f.security.authorization.microsoft_msal.insert_log", AsyncMock()):
             from osd2f.database import initialize_database, stop_database
-            from osd2f.server import start
+            from osd2f.server import create_app
 
-            app = start(run=False)
+            app = create_app()
             await initialize_database("sqlite://:memory:")
             app.secret_key = "TESTINGSECRET"
             tc = app.test_client()
@@ -177,9 +177,9 @@ class MSALAuthTest(AsyncTestCase):
         with patch("osd2f.security.authorization.microsoft_msal.msal", MockMSAL), patch(
             "osd2f.database.get_submissions", subMock
         ), patch("osd2f.security.authorization.microsoft_msal.insert_log", AsyncMock()):
-            from osd2f.server import start
+            from osd2f.server import create_app
 
-            app = start(run=False)
+            app = create_app()
             app.secret_key = "TESTINGSECRET"
             tc = app.test_client()
 
@@ -233,9 +233,9 @@ class MSALAuthTest(AsyncTestCase):
         ), patch("osd2f.database.get_submissions", subMock), patch(
             "osd2f.security.authorization.microsoft_msal.insert_log", AsyncMock()
         ):
-            from osd2f.server import start
+            from osd2f.server import create_app
 
-            app = start(run=False)
+            app = create_app()
             app.secret_key = "TESTINGSECRET"
             tc = app.test_client()
 

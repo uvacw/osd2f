@@ -2,7 +2,7 @@
 import os
 
 from .logger import logger
-from .server import start
+from .server import create_app, start_app
 
 if mode := os.environ.get("OSD2F_MODE"):
     assert mode in ("Development", "Testing", "Production")
@@ -11,6 +11,7 @@ else:
 
 
 if mode and __name__ == "__main__":
-    start(mode=mode, run=True)
+    app = create_app(mode=mode)
+    start_app(app)
 elif mode:
-    app = start(mode=mode, run=False)
+    app = create_app(mode=mode)

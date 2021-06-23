@@ -1,6 +1,7 @@
 import csv
 import io
 import json
+import typing
 
 from osd2f import config, database, security, utils
 from osd2f.definitions import Submission, SubmissionList
@@ -177,7 +178,7 @@ async def downloads(items: str = None, filetype: str = None, zipext: str = None)
     if zipext:
         zipio = io.BytesIO()
         with pyzipper.AESZipFile(zipio, "w", encryption=pyzipper.WZ_AES) as zipfile:
-            zipfile.setpassword(app.config.get("DATA_PASSWORD").encode())
+            zipfile.setpassword(app.config.get("DATA_PASSWORD", "").encode())
             zipfile.writestr(f"{items}.{filetype}", st.getvalue())
 
         return Response(zipio.getvalue(), 200, {"Content-type": "application/zip"})
@@ -233,13 +234,27 @@ async def log():
     return "", 200
 
 
-def start(mode: str = "Testing", database_url_override: str = "", run: bool = True):
-    app.config.from_object(getattr(config, mode))
-    app.env = mode.lower()
+def create_app(
+    mode: str = "Testing",
+    database_url_override: typing.Optional[str] = None,
+    app_secret_override: typing.Optional[str] = None,
+    data_password_override: typing.Optional[str] = None,
+) -> Quart:
+    """Create a Quart app instance with appropriate configuration and sanity checks."""
+    selected_config: config.Config = getattr(config, mode)
 
+    if data_password_override:
+        logger.debug("Using CLI specified DATA PASSWORD instead of ENV VAR")
+        selected_config.DATA_PASSWORD = data_password_override
+    if app_secret_override:
+        logger.debug("Using CLI specified SECRET instead of ENV VAR")
+        selected_config.SECRET_KEY = app_secret_override
     if database_url_override:
         logger.debug("Using CLI specified DB URL instead of ENV VAR")
-        app.config["DB_URL"] = database_url_override
+        selected_config.DB_URL = database_url_override
+
+    app.config.from_object(selected_config)
+    app.env = mode.lower()
 
     # Check to make sure the application is never in production with a vacant key
     in_production_mode = mode == "Production"
@@ -258,9 +273,9 @@ def start(mode: str = "Testing", database_url_override: str = "", run: bool = Tr
         )
 
     logger.debug(app.config)
-    if run:
-        app.run(
-            host=app.config["BIND"], port=app.config["PORT"], debug=app.config["DEBUG"]
-        )
-    else:
-        return app
+    return app
+
+
+def start_app(app: Quart):
+    """Start Quart application with configured bind, port and debug state."""
+    app.run(host=app.config["BIND"], port=app.config["PORT"], debug=app.config["DEBUG"])

@@ -1,4 +1,4 @@
-from tortoise import fields
+from tortoise import fields, Tortoise
 from tortoise.models import Model
 
 from ..definitions import Submission, SubmissionList
@@ -70,3 +70,36 @@ async def insert_submission_list(submissionlist: SubmissionList):
 
 async def count_submissions():
     return await DBSubmission.all().count()
+
+
+async def get_pending_participants():
+    conn = Tortoise.get_connection("default")
+    rs = await conn.execute_query(
+        """
+    WITH completed AS (
+        SELECT DISTINCT log_sid FROM osd2f_logs
+        WHERE
+            log_SID IS NOT NULL
+            AND log_position="Received the donation!"
+        GROUP BY log_sid
+    )
+    SELECT
+        osd2f_logs.log_sid AS submission_id,
+        MIN(insert_timestamp) AS first_seen,
+        MAX(insert_timestamp) AS last_seen
+    FROM osd2f_logs
+    OUTER LEFT JOIN completed ON osd2f_logs.log_sid=completed.log_sid
+    WHERE submission_id IS NOT NULL
+    GROUP BY submission_id
+    ORDER BY last_seen DESC
+    """
+    )
+    data = [
+        {
+            "submission_id": r["submission_id"],
+            "first_seen": r["first_seen"],
+            "last_seen": r["last_seen"],
+        }
+        for r in rs[1]
+    ]
+    return data
