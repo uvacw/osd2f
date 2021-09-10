@@ -105,16 +105,16 @@ Fake data is part of this repository to demonstrate potential donations. It allo
 that on it's service should be similar to real donations when testing your deployment, developing new anonymizes or
 visualizations. 
 
-Fake data was generated using the 'faker' package implementation in [scripts/facebook_data_generator.py](../scripts/facebook_data_generator.py), using the command:
+Fake data was generated using the 'faker' package implementation in [scripts/sample_data_generator.py](../scripts/sample_data_generator.py), using the command:
 
 ```bash
-python scripts/facebook_data_generator.py -o mockdata/facebook --overwrite -i 2 -z -tz -t
+python scripts/sample_data_generator.py -o mockdata/sample --overwrite -i 2 -z -tz -t
 ```
 
 More information about how to use this script, consult the help:
 
 ```bash
-python scripts/facebook_data_generator.py -h
+python scripts/sample_data_generator.py -h
 ```
 
 ## Code style & checks
