@@ -20,10 +20,10 @@ from locust.contrib.fasthttp import FastHttpUser
 
 from osd2f.utils import flatmap
 
-from scripts import facebook_data_generator
+from scripts import sample_data_generator
 
 
-class FacebookParticipant(FastHttpUser):
+class SampleParticipant(FastHttpUser):
     wait_time = between(0.1, 5)
 
     def on_start(self):
@@ -33,37 +33,31 @@ class FacebookParticipant(FastHttpUser):
         self.sid = f.uuid4()
         self.entries = {
             "comments.json": flatmap(
-                facebook_data_generator.generate_comments(user=self.user, n=1000),
+                sample_data_generator.generate_comments(user=self.user, n=1000),
                 "comments",
             ),
             f"your_posts_{self.user}_1.json": flatmap(
-                facebook_data_generator.generate_posts(self.user, n=100)
+                sample_data_generator.generate_posts(self.user, n=100)
             ),
-            "pages.json": flatmap(
-                facebook_data_generator.generate_likes_and_reactions_pages(
-                    self.user, 10
-                ),
-                "page_likes",
+            "engagement.json": flatmap(
+                sample_data_generator.generate_engagement(self.user, 10),
+                "engagement",
             ),
-            "posts_and_comments.json": flatmap(
-                facebook_data_generator.generate_likes_and_reactions_posts_and_comments(
-                    self.user, 100
-                ),
-                "reactions",
+            "companies_followed.json": flatmap(
+                sample_data_generator.generate_companies_followed(self.user, 100),
+                "companies_followed",
             ),
-            "advertisers_you've_interacted_with.json": flatmap(
-                facebook_data_generator.generate_advertisers_youve_interacted_with(
-                    self.user, 50
-                ),
-                "history",
+            "ads_clicked.json": flatmap(
+                sample_data_generator.generate_ads_clicked(self.user, 50),
+                "ads_clicked",
             ),
-            "advertisers_who_uploaded_a_contact_list_with_your_information.json": [
+            "profile_interests.json": [
                 {"entry": e}
                 for e in flatmap(
-                    facebook_data_generator.generate_advertisers_who_uploaded_a_contact_list_with_your_information(  # noqa
+                    sample_data_generator.generate_profile_interests(  # noqa
                         self.user, 100
                     ),
-                    "custom_audiences",
+                    "profile_interests",
                 )
             ],
         }

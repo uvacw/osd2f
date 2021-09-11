@@ -14,12 +14,12 @@ Register
 import re
 import typing
 
-from .facebook import fb_redact_posts_usernames_based_on_title
+from .sample_platform import redact_text
 from ..definitions import Submission, SubmissionList, UploadSettings
 from ..logger import logger
 
 options: typing.Dict[str, typing.Callable[[typing.Dict, str], typing.Awaitable]] = {
-    fb_redact_posts_usernames_based_on_title.__name__: fb_redact_posts_usernames_based_on_title  # noqa
+    redact_text.__name__: redact_text  # noqa
 }
 
 

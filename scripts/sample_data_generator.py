@@ -68,7 +68,7 @@ def generate_posts(user: str, n: int = 10) -> typing.Dict:
                             "expanded_url": f.url(),
                             "source": f.company(),  # optional
                         },
-                        "post_text": f.text()
+                        "post_text": f.text(),
                     }
                 ]
             }
@@ -102,8 +102,10 @@ def generate_engagement(user: str, n: int = 10):
         "engagement_info": [
             {
                 "timestamp": f.unix_time(start_datetime=datetime.datetime(2020, 1, 1)),
-                "engagement_type": random.choice(['like', 'share', 'recommend', 'listen', 'click']),
-                "object": 'uuid' + str(random.randint(5000,9000000))
+                "engagement_type": random.choice(
+                    ["like", "share", "recommend", "listen", "click"]
+                ),
+                "object": "uuid" + str(random.randint(5000, 9000000)),
             }
             for _ in range(n)
         ]
@@ -118,7 +120,7 @@ def generate_ads_clicked(user: str, n: int = 10):
         ads_clicked.append(
             {
                 "ad_title": f.catch_phrase(),
-                "activity": random.choice(['click', 'expand', 'watch']),
+                "activity": random.choice(["click", "expand", "watch"]),
                 "timestamp": f.unix_time(start_datetime=datetime.datetime(2020, 1, 1)),
             }
         )
@@ -175,7 +177,9 @@ def generate_bundle(
             json.dump(generate_comments(user=user, n=n_comments), f, indent=indents)
 
     if n_companies_followed:
-        companies_followed_path = os.path.join(output_dir, user_dir, "companies_followed")
+        companies_followed_path = os.path.join(
+            output_dir, user_dir, "companies_followed"
+        )
         os.makedirs(name=companies_followed_path)
         with open(
             os.path.join(companies_followed_path, "companies_followed.json"), "w"
@@ -187,18 +191,14 @@ def generate_bundle(
             )
 
     if n_engagement:
-        engagement_path = os.path.join(
-            output_dir, user_dir, "engagement"
-        )
+        engagement_path = os.path.join(output_dir, user_dir, "engagement")
         os.makedirs(name=engagement_path, exist_ok=True)
         with open(
             os.path.join(engagement_path, "engagement.json"),
             "w",
         ) as f:
             json.dump(
-                generate_engagement(
-                    user=user, n=n_engagement
-                ),
+                generate_engagement(user=user, n=n_engagement),
                 f,
                 indent=indents,
             )
@@ -210,22 +210,16 @@ def generate_bundle(
         )
         os.makedirs(name=ads_clicked_path, exist_ok=True)
         with open(
-            os.path.join(
-                ads_clicked_path, "ads_clicked.json"
-            ),
+            os.path.join(ads_clicked_path, "ads_clicked.json"),
             "w",
         ) as f:
             json.dump(
-                generate_ads_clicked(
-                    user=user, n=n_ads_clicked
-                ),
+                generate_ads_clicked(user=user, n=n_ads_clicked),
                 f,
                 indent=indents,
             )
     if n_profile_interests:
-        profile_interests_path = os.path.join(
-            output_dir, user_dir, "profile_interests"
-        )
+        profile_interests_path = os.path.join(output_dir, user_dir, "profile_interests")
         os.makedirs(profile_interests_path, exist_ok=True)
         with open(
             os.path.join(
@@ -235,9 +229,7 @@ def generate_bundle(
             "w",
         ) as f:
             json.dump(
-                generate_profile_interests(
-                    user=user, n=n_profile_interests
-                ),
+                generate_profile_interests(user=user, n=n_profile_interests),
                 f,
                 indent=indents,
             )

@@ -1,0 +1,44 @@
+{
+  "companies_followed": [
+    {
+      "company_name": "Martinez-Perkins",
+      "timestamp": 1589694183
+    },
+    {
+      "company_name": "Ford, Espinoza and Perez",
+      "timestamp": 1582791633
+    },
+    {
+      "company_name": "Chen Group",
+      "timestamp": 1614419429
+    },
+    {
+      "company_name": "Rogers and Sons",
+      "timestamp": 1603795034
+    },
+    {
+      "company_name": "Obrien-Davis",
+      "timestamp": 1602435398
+    },
+    {
+      "company_name": "Jefferson Group",
+      "timestamp": 1615258596
+    },
+    {
+      "company_name": "Hernandez-Bryant",
+      "timestamp": 1614902228
+    },
+    {
+      "company_name": "Garner, Jones and Bowers",
+      "timestamp": 1611435279
+    },
+    {
+      "company_name": "Cox, Walton and Coleman",
+      "timestamp": 1625075187
+    },
+    {
+      "company_name": "Ward-Fernandez",
+      "timestamp": 1616115499
+    }
+  ]
+}
