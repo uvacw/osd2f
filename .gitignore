@@ -148,3 +148,6 @@ node_modules/
 
 # Azure configs
 .azure/
+
+# IDE specific things
+.vscode

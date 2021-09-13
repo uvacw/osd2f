@@ -19,6 +19,8 @@ setup(
             "templates/*/*",
             "settings/*",
             "static/js/*",
+            "static/js/libarchive/*",
+            "static/js/libarchive/wasm-gen/*",
         ]
     },
     scripts=["bin/osd2f"],

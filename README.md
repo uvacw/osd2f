@@ -12,9 +12,7 @@ data under GDPR).
 
 The App aims to be as export agnostic as possible while keeping things feasible to maintain.
 You can specify the files and the whitelist of JSON fields through YAML configuration. 
-There are out-of-the-box specifications for the following data-export sources:
-
-* Facebook
+As such it supports Data Donation Packages of arbitrary format in JSON files. 
 
 ## Using OSD2F locally
 
