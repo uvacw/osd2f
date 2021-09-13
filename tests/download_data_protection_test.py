@@ -20,12 +20,11 @@ class TestPasswordProtectedDownloads(IsolatedAsyncioTestCase):
 
         # set cookie to avoid real MSAL flow
         async with tc.session_transaction() as session:
-            session["user"] = "testuser"
+            session[USER_FIELD] = "testuser"
 
         r = await tc.get("/researcher/osd2f_completed_submissions.json.zip")
         assert r.status_code == 200
-        
 
-        os.pop("MSAL_CONFIG")
+        os.environ.pop("MSAL_CONFIG")
 
         await testapp.shutdown()

@@ -1,5 +1,6 @@
 import json
 import os
+from osd2f.server import stop_database
 from unittest.mock import AsyncMock, patch
 
 from aiounittest.case import AsyncTestCase
@@ -13,6 +14,7 @@ class NoAuthConfigTest(AsyncTestCase):
         tc = app.test_client()
         r = await tc.get("/researcher")
         assert r.status_code == 501
+        await app.shutdown()
 
 
 class MockMSAL:
@@ -21,7 +23,7 @@ class MockMSAL:
             pass
 
         def initiate_auth_code_flow(self, *args, **kwargs):
-            return {"auth_uri": "/researcher"}
+            return {"auth_uri": "/login"}
 
         def acquire_token_by_auth_code_flow(self, *args, **kwargs):
             return {
@@ -250,3 +252,5 @@ class MSALAuthTest(AsyncTestCase):
             # redirect as comming back from microsoft
             r = await tc.get("/login")
             assert r.status_code == 500
+
+            await stop_database()

@@ -1,3 +1,4 @@
+import copy
 import csv
 import io
 import json
@@ -161,7 +162,7 @@ async def downloads(items: str = None, filetype: str = None, zipext: str = None)
         return "Unknown export", 404
 
     if app.config.get("DATA_PASSWORD") and not zipext:
-        logger.warn("Non-zip downloaded requested, but OSD2F_DATA_PASSWORD is set.")
+        logger.warning("Non-zip downloaded requested, but OSD2F_DATA_PASSWORD is set.")
         return "Only encrypted `.zip` files are available", 401
 
     st = io.StringIO()
@@ -241,7 +242,7 @@ def create_app(
     data_password_override: typing.Optional[str] = None,
 ) -> Quart:
     """Create a Quart app instance with appropriate configuration and sanity checks."""
-    selected_config: config.Config = getattr(config, mode)
+    selected_config: config.Config = copy.deepcopy(getattr(config, mode))
 
     if data_password_override:
         logger.debug("Using CLI specified DATA PASSWORD instead of ENV VAR")
