@@ -51,11 +51,7 @@ class MinimalSampleGeneratorTest(TestCase):
         self.assertTrue(glob.glob("temp_test_data/sample-*.tar"))
         self.assertTrue(glob.glob("temp_test_data/sample-*/posts/posts_0.json"))
         self.assertTrue(glob.glob("temp_test_data/sample-*/posts/posts_1.json"))
-        self.assertTrue(
-            glob.glob(
-                "temp_test_data/sample-*/engagement/engagement.json"
-            )
-        )
+        self.assertTrue(glob.glob("temp_test_data/sample-*/engagement/engagement.json"))
         self.assertTrue(
             glob.glob(
                 "temp_test_data/sample-*/profile_interests/profile_interests.json"
@@ -63,9 +59,7 @@ class MinimalSampleGeneratorTest(TestCase):
         )
         self.assertTrue(glob.glob("temp_test_data/sample-*/comments/comments.json"))
         self.assertTrue(
-            glob.glob(
-                "temp_test_data/sample-*/ads_clicked/ads_clicked.json"
-            )
+            glob.glob("temp_test_data/sample-*/ads_clicked/ads_clicked.json")
         )
         self.assertTrue(
             glob.glob(
