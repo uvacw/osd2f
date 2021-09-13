@@ -22,6 +22,17 @@ CALLBACK_FIELD = "callback_after_login"
 
 async def microsoft_msal_authentication(func, *args, **kwargs):
 
+    # with active authorized session
+    if session.get(USER_FIELD):
+        await insert_log(
+            "server",
+            "INFO",
+            "download access by authorized user",
+            entry={USER_FIELD: session.get(USER_FIELD), "path": request.url},
+            user_agent_string=request.headers.get("User-Agent"),
+        )
+        return await func(*args, **kwargs)
+
     msal_auth = os.environ.get("MSAL_CONFIG")
     config = MSALConfiguration.parse_raw(msal_auth)
 
@@ -86,14 +97,4 @@ async def microsoft_msal_authentication(func, *args, **kwargs):
             )
             return "Your account is not authorized", 403
 
-    # with active authorized session
-    elif session.get(USER_FIELD):
-        await insert_log(
-            "server",
-            "INFO",
-            "download access by authorized user",
-            entry={USER_FIELD: session.get(USER_FIELD), "path": request.url},
-            user_agent_string=request.headers.get("User-Agent"),
-        )
-        return await func(*args, **kwargs)
     return redirect("/")
