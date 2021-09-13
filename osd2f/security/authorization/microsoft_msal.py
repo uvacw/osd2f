@@ -7,7 +7,7 @@ Expects a JSON configuration set as a single string in the `MSAL_CONFIG` field.
 """
 
 import os
-from osd2f.logger import logger
+
 
 import msal
 
@@ -16,6 +16,7 @@ from quart import redirect, request, session
 from ..authorization import USER_FIELD
 from ...database import insert_log
 from ...definitions import MSALConfiguration
+from ...logger import logger
 
 CALLBACK_FIELD = "callback_after_login"
 

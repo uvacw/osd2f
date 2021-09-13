@@ -1,9 +1,10 @@
 import json
 import os
-from osd2f.server import stop_database
 from unittest.mock import AsyncMock, patch
 
 from aiounittest.case import AsyncTestCase
+
+from osd2f.server import stop_database
 
 
 class NoAuthConfigTest(AsyncTestCase):

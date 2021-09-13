@@ -1,4 +1,3 @@
-import copy
 import csv
 import io
 import json
@@ -11,8 +10,8 @@ from osd2f.security.authorization import USER_FIELD
 import pyzipper
 
 from quart import Quart, render_template, request, session
-from quart.utils import redirect
 from quart.json import jsonify
+from quart.utils import redirect
 from quart.wrappers.response import Response
 
 from .anonymizers import anonymize_submission

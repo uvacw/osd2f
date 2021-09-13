@@ -49,13 +49,15 @@ parser.add_argument(
 parser.add_argument(
     "--secret",
     type=str,
-    help="Overrides `OSD2F_SECRET` environment variable with an application secret for session security.",
+    help="Overrides `OSD2F_SECRET` environment variable with"
+    " an application secret for session security.",
 )
 
 parser.add_argument(
     "--download-password",
     type=str,
-    help="Overrides `OSD2F_DATA_PASSWORD` environment variable for researcher download file password protection.",
+    help="Overrides `OSD2F_DATA_PASSWORD` environment variable "
+    "for researcher download file password protection.",
 )
 
 parser.add_argument(

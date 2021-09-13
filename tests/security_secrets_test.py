@@ -39,11 +39,10 @@ class SecretResolverTest(AsyncTestCase):
             # non azure key should not be resolved
             assert os.environ["not_azure_secret"] == other_secret
 
-    def test_azure_keyvault_env_translation(self):
+    def test_azure_keyvault_var_translation(self):
         def m(s):
             return "resolved" + s
 
-        import os
         from osd2f.security.secrets import azure_keyvault
 
         secret = f"{azure_keyvault.PREFIX}::test-keyvault::value"
