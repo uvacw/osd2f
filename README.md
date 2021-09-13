@@ -10,8 +10,7 @@ platform. Here, scientists can instruct participants in their research to upload
 exports from major online platforms (generally based on participants rights to their own
 data under GDPR).
 
-Currently supported donations: 
-* Facebook exports
+Data Donation Packages currently supported in JSON format. 
 
 ## Using OSD2F locally
 

@@ -1,91 +1,82 @@
-## THESE ARE DEFAULT SETTINGS
-## PLEASE COPY THIS FILE TO 'upload_settings.yaml'
-## AND CHANGE THEM TO SUIT YOUR PROJECT
-
-# Facebook upload settings
+# Sample Platform upload settings
 files:
     (^|/|\\)comments.json:
       # in key is required when the initial level of data
       # is not a list but an object (e.g. {} instead of [])
-      in_key : "comments_v2"
+      in_key : "comment_information"
+      anonymizers:
+        - redact_text : ""
       # accepted_fields to include in the upload
       # remove a field to filter it out
       accepted_fields:
         - timestamp
         - title
-        - attachments.data.external_context.url
-        - attachments.media.uri
-        - data.comment.timestamp
-        - data.comment.comment
-        - data.comment.author
-        - data.comment.group
+        - information.comment.comment_text
 
     # posts can be split into multiple files
     # that end in `_<number>`.
-    your_posts(_(\d)+).json:
+    posts(_(\d)+).json:
       # anonymizers are functions applied on the server
       # that can inspect the content of a potential donation
       # and apply anonymization accordingly.
       # the KEY is the function to apply, the VALUE a string-argument
       anonymizers:
-        - fb_redact_posts_usernames_based_on_title : ""
+        - redact_text : ""
       accepted_fields:
         - timestamp
-        - title 
-        - attachments.data.external_context.url
-        - attachments.data.external_context.name
-        - attachments.data.external_context.source
-        - attachments.data.for_sale_item.title
-        - attachments.data.for_sale_item.price
-        - attachments.data.for_sale_item.seller
-        - attachments.data.for_sale_item.created_timestamp
-        - attachments.data.for_sale_item.updated_timestamp
-        - attachments.data.for_sale_item.category
-        - attachments.data.for_sale_item.marketplace
-        - attachments.data.for_sale_item.location.coordinate.lattitude
-        - attachments.data.for_sale_item.location.coordinate.longitude
-        - attachments.data.for_sale_item.description
-        - attachments.data.media.uri
-        - attachments.data.media.creation_timestamp
-        - attachments.data.media.media_metadata.upload_ip
-        - attachments.data.media.title
-        - data.post
-        - data.update_timestamp
+        - post_title 
+        - keywords
+        - post_metadata.expanded_url
+        - post_metadata.source
+        - post_text
 
     # these are the likes & reactions of pages
-    pages.json:
-      in_key : page_likes
+    engagement.json:
+      in_key : engagement_info
       accepted_fields:
-        - name
+        - engagement_type
+        - object
         - timestamp
 
     ## alternative filename for likes & reactions of pages
-    pages_you've_liked.json:
-      in_key : page_likes_v2
+    companies_followed.json:
+      in_key : companies_followed
       accepted_fields:
-        - name
+        - company_name
         - timestamp
 
 
 
     # these are the likes & reactions of posts & comments
-    posts_and_comments.json:
-      in_key: reactions_v2
-      accepted_fields:
-        - timestamp
-        - data.reaction.reaction
-        - data.reaction.actor
-        - title
+    profile_interests.json:
+      in_key: profile_interests
+      accepted_fields: []
 
     # Advertiser interactions file
-    advertisers_you've_interacted_with.json:
-      in_key : history_v2
+    ads_clicked.json:
+      # in_key : 
       accepted_fields:
-        - title
-        - action
+        - ad_title
+        - activity
         - timestamp
 
     # Advertisers who uploaded user information
     advertisers_who_uploaded_a_contact_list_with_your_information.json:
       in_key : custom_audiences_v2
       accepted_fields: []
+
+    # Privacy Checkup
+    privacy_checkup_interactions.json:
+      in_key : privacy_checkup_interactions_v2
+      accepted_fields: 
+        - name
+        - started_timestamp
+        - completed_timestamp
+
+    account_activity.json:
+      in_key: account_activity_v2
+      accepted_fields:
+        - action
+        - country
+        - site_name
+        - timestamp
