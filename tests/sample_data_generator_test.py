@@ -49,29 +49,27 @@ class MinimalSampleGeneratorTest(TestCase):
         self.assertTrue(glob.glob("temp_test_data/sample-*.zip"))
         self.assertTrue(glob.glob("temp_test_data/sample-*.tar.gz"))
         self.assertTrue(glob.glob("temp_test_data/sample-*.tar"))
-        self.assertTrue(glob.glob("temp_test_data/sample-*/posts/your_posts_0.json"))
-        self.assertTrue(glob.glob("temp_test_data/sample-*/posts/your_posts_1.json"))
+        self.assertTrue(glob.glob("temp_test_data/sample-*/posts/posts_0.json"))
+        self.assertTrue(glob.glob("temp_test_data/sample-*/posts/posts_1.json"))
         self.assertTrue(
             glob.glob(
-                "temp_test_data/sample-*/likes_and_reactions/posts_and_comments.json"
+                "temp_test_data/sample-*/engagement/engagement.json"
             )
         )
         self.assertTrue(
             glob.glob(
-                "temp_test_data/sample-*/likes_and_reactions/pages_you've_liked.json"
+                "temp_test_data/sample-*/profile_interests/profile_interests.json"
             )
         )
         self.assertTrue(glob.glob("temp_test_data/sample-*/comments/comments.json"))
         self.assertTrue(
             glob.glob(
-                "temp_test_data/sample-*/ads_and_businesses/advertisers_you've"
-                "_interacted_with.json"
+                "temp_test_data/sample-*/ads_clicked/ads_clicked.json"
             )
         )
         self.assertTrue(
             glob.glob(
-                "temp_test_data/sample-*/ads_and_businesses/advertisers_who_uploaded"
-                "_a_contact_list_with_your_information.json"
+                "temp_test_data/sample-*/companies_followed/companies_followed.json"
             )
         )
 
@@ -90,8 +88,8 @@ class MinimalSampleGeneratorTest(TestCase):
             include_targz_variant=True,
             include_zip_variant=True,
             indents=2,
-            n_companies_followed=10,
-            n_engagement=10,
+            n_companies_followed=20,
+            n_engagement=20,
             n_comments=10,
             n_ads_clicked=10,
             n_post_files=2,

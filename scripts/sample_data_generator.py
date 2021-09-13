@@ -148,7 +148,7 @@ def generate_bundle(
     indents="",
 ):
     user = faker.Faker().user_name()
-    user_dir = f"sample_platform-{user}-{random.randint(0,3)}"
+    user_dir = f"sample-platform-{user}-{random.randint(0,3)}"
     if overwrite and os.path.exists(output_dir):
         shutil.rmtree(output_dir)
     os.makedirs(name=output_dir)
