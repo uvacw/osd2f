@@ -50,7 +50,7 @@ def generate_comments(user: str, n: int = 10) -> typing.Dict:
     return comments
 
 
-def generate_posts(user: str, n: int = 10) -> typing.Dict:
+def generate_posts(user: str, n: int = 10) -> typing.List[typing.Dict]:
     f = faker.Faker()
 
     def make_post():
