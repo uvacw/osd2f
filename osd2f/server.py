@@ -242,7 +242,7 @@ def create_app(
     data_password_override: typing.Optional[str] = None,
 ) -> Quart:
     """Create a Quart app instance with appropriate configuration and sanity checks."""
-    selected_config: config.Config = copy.deepcopy(getattr(config, mode))
+    selected_config: config.Config = getattr(config, mode)()
 
     if data_password_override:
         logger.debug("Using CLI specified DATA PASSWORD instead of ENV VAR")

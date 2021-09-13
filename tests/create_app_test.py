@@ -1,5 +1,5 @@
-import os
 import importlib
+import os
 from unittest import TestCase
 from unittest.mock import Mock, patch
 
@@ -68,7 +68,7 @@ class CreateAppTest(TestCase):
         with patch("osd2f.server.security.translate_value", mock_translate_value):
             from osd2f.server import create_app
 
-            app = create_app(
+            create_app(
                 mode="Production",
                 database_url_override="override_url",
                 app_secret_override="override_secret",
@@ -80,7 +80,7 @@ class CreateAppTest(TestCase):
         with patch("osd2f.server.security.translate_value", mock_translate_value):
             from osd2f.server import create_app
 
-            app = create_app(
+            create_app(
                 mode="Production",
                 app_secret_override="override_secret",
                 data_password_override="override_datapassword",
@@ -91,8 +91,9 @@ class CreateAppTest(TestCase):
         with patch("osd2f.server.security.translate_value", mock_translate_value):
             from osd2f.server import create_app
 
-            app = create_app(
+            create_app(
                 mode="Production",
                 data_password_override="override_datapassword",
+                app_secret_override="tempsecret",
             )
-            mock_translate_value.assert_called_with("override_datapassword")
+            mock_translate_value.assert_called_with("tempsecret")
