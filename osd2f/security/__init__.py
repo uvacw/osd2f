@@ -7,6 +7,7 @@ import os
 from functools import wraps
 
 # Wrapper implementations for Authentication
+from .authorization.basic_auth import basic_authentication
 from .authorization.microsoft_msal import microsoft_msal_authentication
 from .authorization.not_confgured import no_authentication
 from .secrets import azure_keyvault  # Environment secret resolvers
@@ -16,11 +17,16 @@ RESOLVERS = {azure_keyvault.PREFIX: azure_keyvault.azure_keyvault_replace}
 
 
 def authorization_required(func):
+    """A decorator that implements authorization depending on configuration"""
+
     @wraps(func)
     async def decorated_path(*args, **kwargs):
         if os.environ.get("MSAL_CONFIG"):
             logger.info("Using MSAL authentication")
             return await microsoft_msal_authentication(func, *args, **kwargs)
+        if os.environ.get("OSD2F_BASIC_AUTH"):
+            logger.info("Using basic auth, NOT RECOMMENDED FOR PRODUCTION")
+            return await basic_authentication(func, *args, **kwargs)
         else:
             logger.info("Fall back to no authentication")
             return await no_authentication(func, *args, **kwargs)
