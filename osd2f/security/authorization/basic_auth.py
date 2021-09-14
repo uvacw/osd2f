@@ -1,6 +1,6 @@
 import os
 
-from quart import redirect, request, Response, session
+from quart import Response, redirect, request, session
 
 from ..authorization import USER_FIELD
 from ...database import insert_log
