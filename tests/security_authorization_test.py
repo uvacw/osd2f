@@ -1,10 +1,11 @@
+import base64
 import json
 import os
 from unittest.mock import AsyncMock, patch
 
 from aiounittest.case import AsyncTestCase
 
-from osd2f.server import stop_database
+from osd2f.server import create_app, stop_database
 
 
 class NoAuthConfigTest(AsyncTestCase):
@@ -255,3 +256,35 @@ class MSALAuthTest(AsyncTestCase):
             assert r.status_code == 500
 
             await stop_database()
+
+    async def test_basic_auth(self):
+        import osd2f.security
+
+        k = patch.dict(
+            osd2f.security.os.environ,
+            {"OSD2F_BASIC_AUTH": "testuser;testpassword", "OSD2F_SECRET": "testsecret"},
+        )
+        k.start()
+
+        app = create_app()
+        await app.startup()
+        app.secret_key = "TESTINGSECRET"
+        tc = app.test_client()
+
+        r = await tc.get("/researcher")
+        assert r.status_code == 302
+
+        r = await tc.get("/login")
+        assert r.status_code == 401
+
+        encoded_auth = base64.b64encode(b"testuser:testpassword")
+        r = await tc.open(
+            "/login", headers={"Authorization": f"Basic {encoded_auth.decode()}"}
+        )
+        assert r.status_code == 302
+
+        r = await tc.get("/researcher")
+        assert r.status_code == 200
+
+        await app.shutdown()
+        k.stop()
