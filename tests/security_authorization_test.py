@@ -257,34 +257,35 @@ class MSALAuthTest(AsyncTestCase):
 
             await stop_database()
 
+
+class BasicAuthTest(AsyncTestCase):
     async def test_basic_auth(self):
         import osd2f.security
 
-        k = patch.dict(
+        with patch.dict(
             osd2f.security.os.environ,
             {"OSD2F_BASIC_AUTH": "testuser;testpassword", "OSD2F_SECRET": "testsecret"},
-        )
-        k.start()
+            clear=True,
+        ):
 
-        app = create_app()
-        await app.startup()
-        app.secret_key = "TESTINGSECRET"
-        tc = app.test_client()
+            app = create_app()
+            await app.startup()
+            app.secret_key = "TESTINGSECRET"
+            tc = app.test_client()
 
-        r = await tc.get("/researcher")
-        assert r.status_code == 302
+            r = await tc.get("/researcher")
+            assert r.status_code == 302
 
-        r = await tc.get("/login")
-        assert r.status_code == 401
+            r = await tc.get("/login")
+            assert r.status_code == 401
 
-        encoded_auth = base64.b64encode(b"testuser:testpassword")
-        r = await tc.open(
-            "/login", headers={"Authorization": f"Basic {encoded_auth.decode()}"}
-        )
-        assert r.status_code == 302
+            encoded_auth = base64.b64encode(b"testuser:testpassword")
+            r = await tc.open(
+                "/login", headers={"Authorization": f"Basic {encoded_auth.decode()}"}
+            )
+            assert r.status_code == 302
 
-        r = await tc.get("/researcher")
-        assert r.status_code == 200
+            r = await tc.get("/researcher")
+            assert r.status_code == 200
 
-        await app.shutdown()
-        k.stop()
+            await app.shutdown()
