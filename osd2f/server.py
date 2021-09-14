@@ -167,6 +167,7 @@ async def downloads(items: str = None, filetype: str = None, zipext: str = None)
     st = io.StringIO()
     if filetype == "json":
         fs = json.dumps(data)
+        st.write(fs)
     elif filetype == "csv":
         fields = {key for item in data for key in item}
         dw = csv.DictWriter(st, fieldnames=sorted(fields))
