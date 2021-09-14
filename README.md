@@ -70,3 +70,5 @@ most recently edited version is used between the database and the file.*
 1. [how to develop](docs/development.md)
 2. [Deploying to Azure](docs/deploying_to_azure.md)
 3. [Running stresstests](docs/stresstests.md)
+4. [Testing the researcher login with basic auth](docs/basic_authentication.md)
+5. [Using Microsoft Authentication via SSO](docs/microsoft_authentication.md)

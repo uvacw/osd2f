@@ -52,3 +52,7 @@ osd2f -m Development -db "sqlite://:memory:" -vv
 ```
 
 Note that changing the environment variable in a cloud environment might require restarting the service.
+
+## See Also
+
+- Testing local researcher pages with [basic auth](/docs/basic_authentication.md)
