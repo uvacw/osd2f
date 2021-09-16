@@ -72,3 +72,4 @@ most recently edited version is used between the database and the file.*
 3. [Running stresstests](docs/stresstests.md)
 4. [Testing the researcher login with basic auth](docs/basic_authentication.md)
 5. [Using Microsoft Authentication via SSO](docs/microsoft_authentication.md)
+6. [Setting password on researcher downloads](docs/protecting_downloads.md)
