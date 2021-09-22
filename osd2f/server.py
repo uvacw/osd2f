@@ -177,12 +177,13 @@ async def downloads(items: str = None, filetype: str = None, zipext: str = None)
         return "Unknown filetype", 404
 
     if zipext:
-        zipio = io.BytesIO()
-        with pyzipper.AESZipFile(zipio, "w", encryption=pyzipper.WZ_AES) as zipfile:
-            zipfile.setpassword(app.config.get("DATA_PASSWORD", "").encode())
-            zipfile.writestr(f"{items}.{filetype}", st.getvalue())
+        filename = f"{items}.{filetype}"
+        password = app.config.get("DATA_PASSWORD", "")
+        zipfile_body = security.string_to_zipfile(
+            file_content=st, filename=filename, password=password
+        )
 
-        return Response(zipio.getvalue(), 200, {"Content-type": "application/zip"})
+        return Response(zipfile_body, 200, {"Content-type": "application/zip"})
 
     fs = st.getvalue()
     return Response(fs, 200, {"Content-type": "application/text; charset=utf-8"})
