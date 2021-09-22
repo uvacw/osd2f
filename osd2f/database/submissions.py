@@ -3,6 +3,7 @@ from tortoise.models import Model
 
 from ..definitions import Submission, SubmissionList
 from ..logger import logger
+from ..security.entry_encryption import SecureEntry
 
 
 class DBSubmission(Model):
@@ -24,7 +25,7 @@ async def insert_submission(submission: Submission):
         await DBSubmission.create(
             submission_id=submission.submission_id,
             filename=submission.filename,
-            entry=entry,
+            entry=SecureEntry.write_entry_field(entry),
             n_deleted=submission.n_deleted,
         )
 
@@ -38,7 +39,7 @@ async def get_submissions():
             "filename": si.filename,
             "n_deleted_across_file": si.n_deleted,
             "insert_timestamp": si.insert_timestamp.isoformat(),
-            "entry": si.entry,
+            "entry": SecureEntry.read_entry_field(si.entry),
         }
         for si in submissions
     ]
@@ -61,7 +62,7 @@ async def insert_submission_list(submissionlist: SubmissionList):
                 yield DBSubmission(
                     submission_id=sub.submission_id,
                     filename=sub.filename,
-                    entry=entry,
+                    entry=SecureEntry.write_entry_field(entry),
                     n_deleted=sub.n_deleted,
                 )
 

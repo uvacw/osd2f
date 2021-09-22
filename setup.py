@@ -28,7 +28,7 @@ setup(
         "asyncpg",
         "azure-keyvault-secrets",
         "azure-identity",
-        "fernet",
+        "cryptography",
         "hypercorn",
         "msal",
         "pyyaml",

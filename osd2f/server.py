@@ -6,8 +6,8 @@ import typing
 from osd2f import config, database, security, utils
 from osd2f.definitions import Submission, SubmissionList
 from osd2f.security.authorization import USER_FIELD
+from osd2f.security.entry_encryption import SecureEntry
 
-import pyzipper
 
 from quart import Quart, render_template, request, session
 from quart.json import jsonify
@@ -241,6 +241,7 @@ def create_app(
     database_url_override: typing.Optional[str] = None,
     app_secret_override: typing.Optional[str] = None,
     data_password_override: typing.Optional[str] = None,
+    entry_secret_override: typing.Optional[str] = None,
 ) -> Quart:
     """Create a Quart app instance with appropriate configuration and sanity checks."""
     selected_config: config.Config = getattr(config, mode)()
@@ -254,6 +255,11 @@ def create_app(
     if database_url_override:
         logger.debug("Using CLI specified DB URL instead of ENV VAR")
         selected_config.DB_URL = security.translate_value(database_url_override)
+    if entry_secret_override:
+        logger.debug("Using CLI specified Entry encryption secret instead of ENV VAR")
+        selected_config.ENTRY_SECRET = security.translate_value(entry_secret_override)
+
+    SecureEntry.set_secret(secret=selected_config.ENTRY_SECRET)
 
     app.config.from_object(selected_config)
     app.env = mode.lower()
