@@ -75,6 +75,17 @@ class SecureEntryTest(AsyncTestCase):
         self.assertIsNotNone(encrypted.get("encrypted"))
         self.assertEqual(entry, SecureEntry.read_entry_field(encrypted))
 
+    def test_consistent_key(self):
+        from osd2f.security.entry_encryption import SecureEntry
+
+        m = {"thing": "to encrypt"}
+        SecureEntry.set_secret("secret")
+        e = SecureEntry.write_entry_field(m.copy())
+        SecureEntry.set_secret("secret")
+        m2 = SecureEntry.read_entry_field(e)
+
+        self.assertEqual(m, m2)
+
 
 class DatabaseOperationsTest(AsyncTestCase):
     async def test_insert_submission(self):

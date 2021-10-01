@@ -1,6 +1,6 @@
 import base64
 import json
-import os
+import random
 from typing import Any, Dict
 
 from cryptography.fernet import Fernet
@@ -47,12 +47,13 @@ class SecureEntry:
 
     @staticmethod
     def __create_key(password: bytes) -> bytes:
-        salt = os.urandom(16)
+        random.seed(len(password))
+        salt = bytes(random.randint(0, 10 ** 6))
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
             salt=salt,
-            iterations=100000,
+            iterations=320_000,
         )
         key = base64.urlsafe_b64encode(kdf.derive(password))
         return key
