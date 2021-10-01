@@ -1,4 +1,4 @@
-FROM python:3.9.0-buster
+FROM python:3.8.0-buster
 
 EXPOSE 8000
 ARG secret 
@@ -21,6 +21,7 @@ RUN pip install -r requirements_dev.txt
 RUN flake8 ./
 RUN mypy ./osd2f/ --ignore-missing-imports
 RUN pytest ./
+RUN osd2f --dry-run
 
 # set the default command for the container (i.e. running production)
 CMD [ "hypercorn", "osd2f.server:app" ]
