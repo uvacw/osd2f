@@ -1,9 +1,19 @@
+# Example build command:
+#
+#    docker build -t osd2f-generic .
+#  
+# Example running command:
+#
+#    docker run \
+#      -p 8000:8000 \
+#      -e OSD2F_DB_URL='sqlite://:memory:' 
+#      -e OSD2F_SECRET=secret 
+#      osd2f-generic
+#
 FROM python:3.8.0-buster
 
 EXPOSE 8000
-ARG secret 
 
-ENV OSD2F_SECRET=$secret
 ENV OSD2F_MODE=Production
 
 # make code available
