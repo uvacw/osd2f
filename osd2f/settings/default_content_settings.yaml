@@ -40,13 +40,11 @@ static_pages:
 
       - type : two_block_row
         id : team
-        image: "/static/uva_building.jpg"
-        image_pos: right
-        title : The University of Amsterdam build this pilot application to support social media researchers
+        title : Open Source Data Donation Framework
         lines : 
-          - API access is increasinlgy curtailed, making <br>it harder to understand what happens on social media
-          - The GDPR provides a legal basis for participants <br>to be able to get, and thus donate, their data
-          - Our team has proudly worked on this pilot to <br>open up data donations for your project
+          - The digital traces that people leave through their use of various online platforms provide tremendous opportunities for studying human behavior. 
+          - However, the collection of these data is hampered by legal, ethical and technical challenges. 
+          - We present a framework and tool for collecting these data through a data donation platform where consenting participants can securely submit their digital traces.
         circles_row: 
             - title : Prof. Dr. Hypothetical collaborator
               subtitle: this person does not exist
