@@ -1,12 +1,17 @@
 import csv
 import io
 import json
+import typing
 
 from osd2f import config, database, security, utils
 from osd2f.definitions import Submission, SubmissionList
+from osd2f.security.authorization import USER_FIELD
 
-from quart import Quart, render_template, request
+import pyzipper
+
+from quart import Quart, render_template, request, session
 from quart.json import jsonify
+from quart.utils import redirect
 from quart.wrappers.response import Response
 
 from .anonymizers import anonymize_submission
@@ -115,23 +120,37 @@ async def upload():
         return jsonify({"error": "", "data": ""}), 200
 
 
-@app.route("/status")
-async def status():
-    if app.debug:
-        count = await database.count_submissions()
-        return f"Received: {count} submissions"
-    return "Page Unavailable", 404
+@app.route("/login")
+@security.authorization_required
+async def login():
+    return "logged in"
 
 
-@app.route("/researcher/<items>.<filetype>")
+@app.route("/logout")
+async def logout():
+    if session.get(USER_FIELD):
+        session.pop(USER_FIELD)
+    return redirect("/")
+
+
 @app.route("/researcher", strict_slashes=False)
 @security.authorization_required
-async def researcher(items=None, filetype=None):
+async def researcher():
+    content_settings = await utils.load_content_settings(use_cache=not app.debug)
+    return await render_template(
+        "formats/researcher_template.html.jinja",
+        content_settings=content_settings,
+        password_protected=bool(app.config["DATA_PASSWORD"]),
+    )
+
+
+@app.route("/researcher/<items>.<filetype>.<zipext>")
+@app.route("/researcher/<items>.<filetype>")
+@security.authorization_required
+async def downloads(items: str = None, filetype: str = None, zipext: str = None):
+
     if not items:
-        content_settings = await utils.load_content_settings(use_cache=not app.debug)
-        return await render_template(
-            "formats/researcher_template.html.jinja", content_settings=content_settings
-        )
+        return redirect("/researcher")
     elif items == "osd2f_completed_submissions":
         data = await database.get_submissions()
     elif items == "osd2f_pending_participants":
@@ -141,18 +160,31 @@ async def researcher(items=None, filetype=None):
     else:
         return "Unknown export", 404
 
+    if app.config.get("DATA_PASSWORD") and not zipext:
+        logger.warning("Non-zip downloaded requested, but OSD2F_DATA_PASSWORD is set.")
+        return "Only encrypted `.zip` files are available", 401
+
+    st = io.StringIO()
     if filetype == "json":
         fs = json.dumps(data)
+        st.write(fs)
     elif filetype == "csv":
-        st = io.StringIO()
         fields = {key for item in data for key in item}
         dw = csv.DictWriter(st, fieldnames=sorted(fields))
         dw.writeheader()
         dw.writerows(data)
-        fs = st.getvalue()
     else:
         return "Unknown filetype", 404
 
+    if zipext:
+        zipio = io.BytesIO()
+        with pyzipper.AESZipFile(zipio, "w", encryption=pyzipper.WZ_AES) as zipfile:
+            zipfile.setpassword(app.config.get("DATA_PASSWORD", "").encode())
+            zipfile.writestr(f"{items}.{filetype}", st.getvalue())
+
+        return Response(zipio.getvalue(), 200, {"Content-type": "application/zip"})
+
+    fs = st.getvalue()
     return Response(fs, 200, {"Content-type": "application/text; charset=utf-8"})
 
 
@@ -203,13 +235,27 @@ async def log():
     return "", 200
 
 
-def start(mode: str = "Testing", database_url_override: str = "", run: bool = True):
-    app.config.from_object(getattr(config, mode))
-    app.env = mode.lower()
+def create_app(
+    mode: str = "Testing",
+    database_url_override: typing.Optional[str] = None,
+    app_secret_override: typing.Optional[str] = None,
+    data_password_override: typing.Optional[str] = None,
+) -> Quart:
+    """Create a Quart app instance with appropriate configuration and sanity checks."""
+    selected_config: config.Config = getattr(config, mode)()
 
+    if data_password_override:
+        logger.debug("Using CLI specified DATA PASSWORD instead of ENV VAR")
+        selected_config.DATA_PASSWORD = security.translate_value(data_password_override)
+    if app_secret_override:
+        logger.debug("Using CLI specified SECRET instead of ENV VAR")
+        selected_config.SECRET_KEY = security.translate_value(app_secret_override)
     if database_url_override:
         logger.debug("Using CLI specified DB URL instead of ENV VAR")
-        app.config["DB_URL"] = database_url_override
+        selected_config.DB_URL = security.translate_value(database_url_override)
+
+    app.config.from_object(selected_config)
+    app.env = mode.lower()
 
     # Check to make sure the application is never in production with a vacant key
     in_production_mode = mode == "Production"
@@ -228,9 +274,9 @@ def start(mode: str = "Testing", database_url_override: str = "", run: bool = Tr
         )
 
     logger.debug(app.config)
-    if run:
-        app.run(
-            host=app.config["BIND"], port=app.config["PORT"], debug=app.config["DEBUG"]
-        )
-    else:
-        return app
+    return app
+
+
+def start_app(app: Quart):
+    """Start Quart application with configured bind, port and debug state."""
+    app.run(host=app.config["BIND"], port=app.config["PORT"], debug=app.config["DEBUG"])

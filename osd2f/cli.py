@@ -10,7 +10,7 @@ import yaml
 from .config import Testing
 from .database import initialize_database, stop_database
 from .logger import logger
-from .server import start
+from .server import create_app, start_app
 
 LOGFORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
@@ -43,7 +43,21 @@ parser.add_argument(
     "-db",
     "--database-url",
     type=str,
-    help="The database URL to use, overrides the `OSD2F` environment variable.",
+    help="The database URL to use, overrides the `OSD2F_DB_URL` environment variable.",
+)
+
+parser.add_argument(
+    "--secret",
+    type=str,
+    help="Overrides `OSD2F_SECRET` environment variable with"
+    " an application secret for session security.",
+)
+
+parser.add_argument(
+    "--download-password",
+    type=str,
+    help="Overrides `OSD2F_DATA_PASSWORD` environment variable "
+    "for researcher download file password protection.",
 )
 
 parser.add_argument(
@@ -79,6 +93,7 @@ def parse_and_run():
     elif args.verbose == 3:
         level = logging.DEBUG
     else:
+        print("UNKNOWN LOGLEVEL SPECIFIED")
         level = logging.NOTSET
 
     logging.basicConfig(format=LOGFORMAT, level="WARNING")
@@ -94,13 +109,13 @@ def parse_and_run():
 
         osd2f.utils.DISK_CONTENT_CONFIG_PATH = args.content_configuration
 
+    app = create_app(mode=args.mode, database_url_override=args.database_url)
     if not args.dry_run and not args.generate_current_config:
-        start(mode=args.mode, database_url_override=args.database_url)
+        start_app(app)
 
     elif args.generate_current_config:
         from osd2f.utils import load_content_settings
 
-        app = start(mode=args.mode, database_url_override=args.database_url, run=False)
         asyncio.run(app.startup())
         settings = asyncio.run(load_content_settings(use_cache=False))
         with open(args.generate_current_config, "w") as outputfile:
@@ -108,7 +123,6 @@ def parse_and_run():
         asyncio.run(app.shutdown())
 
     else:
-        app = start(mode=args.mode, database_url_override=args.database_url, run=False)
         asyncio.run(initialize_database(Testing.DB_URL))
         tp = app.test_client()
         assert asyncio.run(tp.get("/")).status_code == 200

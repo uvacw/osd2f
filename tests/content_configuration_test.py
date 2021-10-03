@@ -141,9 +141,9 @@ class ContentConfigurationTest(AsyncTestCase):
         with patch(
             "osd2f.server.utils.load_content_settings", load_content_settings_mock
         ):
-            from osd2f.server import start
+            from osd2f.server import create_app
 
-            app = start(run=False)
+            app = create_app()
             await app.startup()
             c = app.test_client()
             await c.get("/")
@@ -157,9 +157,9 @@ class ContentConfigurationTest(AsyncTestCase):
         with patch(
             "osd2f.server.utils.load_content_settings", load_content_settings_mock
         ):
-            from osd2f.server import start
+            from osd2f.server import create_app
 
-            app = start(mode="Development", run=False)
+            app = create_app(mode="Development")
             await app.startup()
             c = app.test_client()
             await c.get("/")
@@ -173,9 +173,9 @@ class ContentConfigurationTest(AsyncTestCase):
         with patch(
             "osd2f.server.utils.load_content_settings", load_content_settings_mock
         ):
-            from osd2f.server import start
+            from osd2f.server import create_app
 
-            app = start(mode="Development", run=False)
+            app = create_app(mode="Development")
             await app.startup()
             c = app.test_client()
             homepage = await c.get("/")

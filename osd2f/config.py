@@ -12,6 +12,9 @@ class Config:
     BIND: str = "127.0.0.1"
     PORT: int = 5000
     SECRET_KEY: _typing.Optional[str] = None
+    DATA_PASSWORD: str = _os.environ.get("OSD2F_DATA_PASSWORD", "")
+    DB_URL = "sqlite://:memory:"
+
     # Allow for BIG submissions 4*16mb for
     # in-memory anonymization.
     # NOTE: protect POST endpoints with
@@ -25,7 +28,6 @@ class Config:
 
 class Testing(Config):
     TESTING = True
-    DB_URL = "sqlite://:memory:"
 
 
 class Development(Config):
@@ -41,7 +43,7 @@ class Production(Config):
     BIND = "0.0.0.0"
     PORT = 8000
     SECRET_KEY = _os.environ.get("OSD2F_SECRET")
-    DB_URL = _os.environ.get("OSD2F_DB_URL")
+    DB_URL = _os.environ.get("OSD2F_DB_URL", "")
     SESSION_COOKIE_SECURE = True  # required HTTPS server
 
 

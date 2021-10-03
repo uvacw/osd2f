@@ -1,18 +1,22 @@
+import base64
 import json
 import os
 from unittest.mock import AsyncMock, patch
 
 from aiounittest.case import AsyncTestCase
 
+from osd2f.server import create_app, stop_database
+
 
 class NoAuthConfigTest(AsyncTestCase):
     async def test_noauth(self):
-        from osd2f.server import start
+        from osd2f.server import create_app
 
-        app = start(run=False)
+        app = create_app()
         tc = app.test_client()
         r = await tc.get("/researcher")
         assert r.status_code == 501
+        await app.shutdown()
 
 
 class MockMSAL:
@@ -21,7 +25,7 @@ class MockMSAL:
             pass
 
         def initiate_auth_code_flow(self, *args, **kwargs):
-            return {"auth_uri": "/researcher"}
+            return {"auth_uri": "/login"}
 
         def acquire_token_by_auth_code_flow(self, *args, **kwargs):
             return {
@@ -69,19 +73,23 @@ class MSALAuthTest(AsyncTestCase):
             "osd2f.database.get_submissions", subMock
         ), patch("osd2f.security.authorization.microsoft_msal.insert_log", AsyncMock()):
             from osd2f.database import initialize_database, stop_database
-            from osd2f.server import start
+            from osd2f.server import create_app
 
-            app = start(run=False)
+            app = create_app()
             await initialize_database("sqlite://:memory:")
             app.secret_key = "TESTINGSECRET"
             tc = app.test_client()
 
             # redirect to flow
-            r = await tc.get("/researcher")
+            r = await tc.get("/researcher")  # , follow_redirects=True)
+            assert r.status_code == 302
+            assert r.location == "/login"
+
+            r = await tc.get("/login")
             assert r.status_code == 302
 
             # redirect as comming back from microsoft
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 302
 
             # now recognized for login
@@ -122,23 +130,23 @@ class MSALAuthTest(AsyncTestCase):
             "osd2f.database.get_submissions", subMock
         ), patch("osd2f.security.authorization.microsoft_msal.insert_log", AsyncMock()):
             from osd2f.database import initialize_database, stop_database
-            from osd2f.server import start
+            from osd2f.server import create_app
 
-            app = start(run=False)
+            app = create_app()
             await initialize_database("sqlite://:memory:")
             app.secret_key = "TESTINGSECRET"
             tc = app.test_client()
 
             # redirect to flow
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 302
 
             # redirect as comming back from microsoft
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 302
 
             # now recognized for login
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 200
 
             # able to download file
@@ -173,31 +181,31 @@ class MSALAuthTest(AsyncTestCase):
         with patch("osd2f.security.authorization.microsoft_msal.msal", MockMSAL), patch(
             "osd2f.database.get_submissions", subMock
         ), patch("osd2f.security.authorization.microsoft_msal.insert_log", AsyncMock()):
-            from osd2f.server import start
+            from osd2f.server import create_app
 
-            app = start(run=False)
+            app = create_app()
             app.secret_key = "TESTINGSECRET"
             tc = app.test_client()
 
             # redirect to flow
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 302
 
             # redirect as comming back from microsoft,
             # but the email is not accepted
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 403
 
             # login is rejected
             # first by retrying authentication
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 302
             # but rejecting the same email
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 403
 
             # unable to download file
-            r = await tc.get("/researcher/osd2f_completed_submissions.csv")
+            r = await tc.get("/login")
             r = await tc.get("/researcher/osd2f_completed_submissions.csv")
             assert r.status_code == 403
 
@@ -229,16 +237,55 @@ class MSALAuthTest(AsyncTestCase):
         ), patch("osd2f.database.get_submissions", subMock), patch(
             "osd2f.security.authorization.microsoft_msal.insert_log", AsyncMock()
         ):
-            from osd2f.server import start
+            from osd2f.server import create_app
 
-            app = start(run=False)
+            app = create_app()
             app.secret_key = "TESTINGSECRET"
             tc = app.test_client()
 
             # redirect to flow
             r = await tc.get("/researcher")
             assert r.status_code == 302
+            assert r.location == "/login"
+
+            r = await tc.get("/login")
+            assert r.status_code == 302
 
             # redirect as comming back from microsoft
-            r = await tc.get("/researcher")
+            r = await tc.get("/login")
             assert r.status_code == 500
+
+            await stop_database()
+
+
+class BasicAuthTest(AsyncTestCase):
+    async def test_basic_auth(self):
+        import osd2f.security
+
+        with patch.dict(
+            osd2f.security.os.environ,
+            {"OSD2F_BASIC_AUTH": "testuser;testpassword", "OSD2F_SECRET": "testsecret"},
+            clear=True,
+        ):
+
+            app = create_app()
+            await app.startup()
+            app.secret_key = "TESTINGSECRET"
+            tc = app.test_client()
+
+            r = await tc.get("/researcher")
+            assert r.status_code == 302
+
+            r = await tc.get("/login")
+            assert r.status_code == 401
+
+            encoded_auth = base64.b64encode(b"testuser:testpassword")
+            r = await tc.open(
+                "/login", headers={"Authorization": f"Basic {encoded_auth.decode()}"}
+            )
+            assert r.status_code == 302
+
+            r = await tc.get("/researcher")
+            assert r.status_code == 200
+
+            await app.shutdown()

@@ -10,7 +10,9 @@ platform. Here, scientists can instruct participants in their research to upload
 exports from major online platforms (generally based on participants rights to their own
 data under GDPR).
 
-Data Donation Packages currently supported in JSON format. 
+The App aims to be as export agnostic as possible while keeping things feasible to maintain.
+You can specify the files and the whitelist of JSON fields through YAML configuration. 
+As such it supports Data Donation Packages of arbitrary format in JSON files. 
 
 ## Using OSD2F locally
 
@@ -68,3 +70,6 @@ most recently edited version is used between the database and the file.*
 1. [how to develop](docs/development.md)
 2. [Deploying to Azure](docs/deploying_to_azure.md)
 3. [Running stresstests](docs/stresstests.md)
+4. [Testing the researcher login with basic auth](docs/basic_authentication.md)
+5. [Using Microsoft Authentication via SSO](docs/microsoft_authentication.md)
+6. [Setting password on researcher downloads](docs/protecting_downloads.md)
