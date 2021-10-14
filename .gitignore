@@ -148,3 +148,6 @@ node_modules/
 
 # IDE specific things
 .vscode
+
+# Mac Cache
+.DS_Store

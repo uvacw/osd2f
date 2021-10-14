@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="OSD2F",
-    python_requires="<3.9>3.8",
+    python_requires=">3.8",
     version="0.0.4",
     description="Open Source Data Donation Framework",
     author="Bob van de Velde",
