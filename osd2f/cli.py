@@ -88,6 +88,13 @@ parser.add_argument(
     " just to make sure nothing broke.",
 )
 
+parser.add_argument(
+    "--entry-decrypt-on-read-disabled",
+    action="store_true",
+    help="Keep entries downloaded through the researcher interface encrypted. "
+    "Overrides the `OSD2F_ENTRY_DECRYPT_ON_READ` ENV variable",
+)
+
 
 def parse_and_run():
     args = parser.parse_args()
@@ -121,6 +128,7 @@ def parse_and_run():
         mode=args.mode,
         database_url_override=args.database_url,
         entry_secret_override=args.entry_encryption_secret,
+        entry_decrypt_on_read_override=not args.entry_decrypt_on_read_disabled,
     )
     if not args.dry_run and not args.generate_current_config:
         start_app(app)

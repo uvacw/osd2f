@@ -53,7 +53,7 @@ class ConfigTest(AsyncTestCase):
 
 class SecureEntryTest(AsyncTestCase):
     def test_without_secret(self):
-        from osd2f.security.entry_encryption import SecureEntry
+        from osd2f.security.entry_encryption.secure_entry_singleton import SecureEntry
 
         SecureEntry.set_secret("")
 
@@ -66,7 +66,7 @@ class SecureEntryTest(AsyncTestCase):
         self.assertEqual(entry, loaded_entry)
 
     def test_with_secret(self):
-        from osd2f.security.entry_encryption import SecureEntry
+        from osd2f.security.entry_encryption.secure_entry_singleton import SecureEntry
 
         SecureEntry.set_secret("secret")
         entry = {"stuff": "is safe"}
@@ -76,7 +76,7 @@ class SecureEntryTest(AsyncTestCase):
         self.assertEqual(entry, SecureEntry.read_entry_field(encrypted))
 
     def test_consistent_key(self):
-        from osd2f.security.entry_encryption import SecureEntry
+        from osd2f.security.entry_encryption.secure_entry_singleton import SecureEntry
 
         m = {"thing": "to encrypt"}
         SecureEntry.set_secret("secret")
@@ -140,9 +140,6 @@ class DatabaseOperationsTest(AsyncTestCase):
         class MockSecureEntry:
             pass
 
-        MockSecureEntry.read_entry_field = Mock()
-        MockSecureEntry.write_entry_field = Mock()
-
         s = DBSubmission(
             id=5,
             submission_id="id",
@@ -152,6 +149,10 @@ class DatabaseOperationsTest(AsyncTestCase):
             insert_timestamp=datetime.datetime.now(),
             update_timestamp=datetime.datetime.now(),
         )
+
+        MockSecureEntry.read_entry_field = Mock(return_value=s)
+        MockSecureEntry.write_entry_field = Mock()
+
         DBSubmission.all = AsyncMock(return_value=[s])
         with patch("osd2f.database.submissions.SecureEntry", MockSecureEntry), patch(
             "osd2f.database.DBSubmission.all", AsyncMock(return_value=[s])

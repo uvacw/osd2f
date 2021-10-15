@@ -8,12 +8,13 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 
-from ..logger import logger
+from ...logger import logger
 
 
 class SecureEntry:
 
     __encryption_secret: bytes = b""
+    __decrypt_on_read: bool = True
 
     @classmethod
     def set_secret(cls, secret: str):
@@ -21,6 +22,10 @@ class SecureEntry:
             cls.__encryption_secret = b""
         else:
             cls.__encryption_secret = cls.__create_key(secret.encode())
+
+    @classmethod
+    def decrypt_on_read(cls, must_decrypt_on_read: bool):
+        cls.__decrypt_on_read = must_decrypt_on_read
 
     @classmethod
     def write_entry_field(cls, entry_field: Dict[str, Any]) -> Dict[str, Any]:
@@ -31,14 +36,13 @@ class SecureEntry:
 
     @classmethod
     def read_entry_field(cls, entry_field: Dict[str, Any]) -> Dict[str, Any]:
-        if not cls.__encryption_secret:
+        if not cls.__encryption_secret or not cls.__decrypt_on_read:
             return entry_field
         encrypted_content = entry_field.get("encrypted")
 
         if not encrypted_content:
             logger.warning(
-                "Entry encryption was set, but an unencrypted "
-                "entry was retrieved from the database!"
+                "Entry encryption was set, but an unencrypted " "entry was retrieved!"
             )
             return entry_field
         f = Fernet(cls.__encryption_secret)

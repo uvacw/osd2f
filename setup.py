@@ -23,7 +23,7 @@ setup(
             "static/js/libarchive/wasm-gen/*",
         ]
     },
-    scripts=["bin/osd2f"],
+    scripts=["bin/osd2f", "bin/osd2f-decrypt-submissions"],
     install_requires=[
         "asyncpg",
         "azure-keyvault-secrets",
