@@ -123,7 +123,7 @@ def decrypt_file(input_path: pathlib.Path, output_path: pathlib.Path) -> int:
     else:
         raise NotImplementedError(
             f"Unknown OUTPUT file type {output_path.suffix}, "
-            "make sure you unzipped the file."
+            "output should end with `.csv` or `.json`."
         )
 
     touched_entries = 0

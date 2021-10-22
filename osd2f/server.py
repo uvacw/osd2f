@@ -242,7 +242,7 @@ def create_app(
     app_secret_override: typing.Optional[str] = None,
     data_password_override: typing.Optional[str] = None,
     entry_secret_override: typing.Optional[str] = None,
-    entry_decrypt_on_read_override: typing.Optional[bool] = None,
+    entry_decrypt_disable: typing.Optional[bool] = None,
 ) -> Quart:
     """Create a Quart app instance with appropriate configuration and sanity checks."""
     selected_config: config.Config = getattr(config, mode)()
@@ -259,12 +259,11 @@ def create_app(
     if entry_secret_override:
         logger.debug("Using CLI specified Entry encryption secret instead of ENV VAR")
         selected_config.ENTRY_SECRET = security.translate_value(entry_secret_override)
-    if entry_decrypt_on_read_override is not None:
-        logger.debug("Using CLI specified setting for entry decryption on read")
-        selected_config.ENTRY_DECRYPT_READ = entry_decrypt_on_read_override
+
+    read_disabed = entry_decrypt_disable or selected_config.ENTRY_DECRYPT_DISABLE
 
     SecureEntry.set_secret(secret=selected_config.ENTRY_SECRET)
-    SecureEntry.decrypt_on_read(must_decrypt_on_read=selected_config.ENTRY_DECRYPT_READ)
+    SecureEntry.decrypt_on_read(must_decrypt_on_read=not read_disabed)
 
     app.config.from_object(selected_config)
     app.env = mode.lower()
