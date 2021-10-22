@@ -15,10 +15,9 @@ import logging
 import pathlib
 
 from osd2f.logger import logger
-
+from osd2f.security import translate_value
 from osd2f.security.entry_encryption.file_decryption import decrypt_file
 from osd2f.security.entry_encryption.secure_entry_singleton import SecureEntry
-from osd2f.security import translate_value
 
 parser = argparse.ArgumentParser(description=__doc__)
 
@@ -55,6 +54,8 @@ def run_script():
     else:
         print("UNKNOWN LOGLEVEL SPECIFIED")
         level = logging.NOTSET
+    
+    logger.setLevel(level=level)
 
     secret = translate_value(args.secret)
     SecureEntry.set_secret(secret)
