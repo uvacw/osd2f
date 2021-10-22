@@ -77,7 +77,6 @@ class test_local_decryption(AsyncTestCase):
 
     async def test_csv_files(self):
         from osd2f.security.entry_encryption.file_decryption import decrypt_file
-        import json
         from osd2f.database import (
             initialize_database,
             stop_database,

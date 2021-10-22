@@ -54,7 +54,7 @@ def run_script():
     else:
         print("UNKNOWN LOGLEVEL SPECIFIED")
         level = logging.NOTSET
-    
+
     logger.setLevel(level=level)
 
     secret = translate_value(args.secret)

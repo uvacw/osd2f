@@ -2,15 +2,15 @@ import abc
 import csv
 import json
 import pathlib
-from typing import Any, Dict, List, Iterable
+from typing import Any, Dict, Iterable, List
 
-from ...security.entry_encryption.secure_entry_singleton import SecureEntry
-from ...logger import logger
 from ...definitions.submissions import (
     EncryptedEntry,
     EncryptedSubmission,
     OutputSubmission,
 )
+from ...logger import logger
+from ...security.entry_encryption.secure_entry_singleton import SecureEntry
 
 
 class EntryFile(abc.ABC):
@@ -110,7 +110,8 @@ def decrypt_file(input_path: pathlib.Path, output_path: pathlib.Path) -> int:
         input_file = CSVFile(input_path, read_mode=True)
     else:
         raise NotImplementedError(
-            f"Unknown INPUT file type {input_path.suffix}, make sure you unzipped the file."
+            f"Unknown INPUT file type {input_path.suffix}, "
+            "make sure you unzipped the file."
         )
 
     output_file: EntryFile
@@ -121,7 +122,8 @@ def decrypt_file(input_path: pathlib.Path, output_path: pathlib.Path) -> int:
         output_file = CSVFile(output_path, read_mode=False)
     else:
         raise NotImplementedError(
-            f"Unknown OUTPUT file type {output_path.suffix}, make sure you unzipped the file."
+            f"Unknown OUTPUT file type {output_path.suffix}, "
+            "make sure you unzipped the file."
         )
 
     touched_entries = 0
