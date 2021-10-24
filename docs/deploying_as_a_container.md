@@ -35,6 +35,9 @@ You can access the container by running it:
 docker run -it osd2f-test bash
 ```
 
+This is slower to build and contains more dependencies that are normally only used for development. This
+is not the container specification that is meant for production deployments.
+
 ### Building a container for deployment
 
 ```bash
@@ -54,6 +57,17 @@ docker run -it \
     -p 8000:8000 \
     osd2f
 ```
+You should be able to reach the server now at http://localhost:8000/
 
+## Deploying containers to production
 
+Container use in production is strongly related to the solution you will be using. Some deployment platforms enable you to upload the docker image through a CLI tool or as part of a CI/CD interface. Other systems such as [Kubernetes (k8s)](https://kubernetes.io/) require the docker image to be available in a repository.
+
+You can push the container image to a repository of your choosing. The syntax ([as specified by Docker](https://docs.docker.com/docker-hub/repos/)) is the following: 
+
+```bash
+docker push <hub-user>/<repo-name>:<tag>
+```
+
+Whether and which repository to use depends on the the platform you choose to use for the deployment. Note that running the container on a single server will risk limited availability (downtime when this server experiences issues) and comes at considerable operational overhead (configuring security, keeping the systrem up-to-date, backing up data etcetera). 
 
