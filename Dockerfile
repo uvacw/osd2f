@@ -16,5 +16,8 @@ WORKDIR /osd2f
 # setup dependencies
 RUN pip install ./ 
 
+# minimal check to make sure the install works
+RUN osd2f --dry-run
+
 # set the default command for the container (i.e. running production)
 CMD [ "hypercorn", "osd2f.__main__:app", "-b", "0.0.0.0:8000" ]
