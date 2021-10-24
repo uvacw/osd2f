@@ -63,7 +63,7 @@ jobs:
       - name: build Docker image
         uses: docker/build-push-action@v2
         with:
-          file: {context}/OSD2F/Dockerfile
+          file: OSD2F/Dockerfile
           push: false
           load: ${{ github.event_name == 'pull_request' }}
           context: .
