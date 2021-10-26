@@ -1,8 +1,9 @@
 from tortoise import Tortoise, fields
 from tortoise.models import Model
 
-from ..definitions import Submission, SubmissionList
+from ..definitions import OutputSubmission, Submission, SubmissionList
 from ..logger import logger
+from ..security.entry_encryption.secure_entry_singleton import SecureEntry
 
 
 class DBSubmission(Model):
@@ -24,7 +25,7 @@ async def insert_submission(submission: Submission):
         await DBSubmission.create(
             submission_id=submission.submission_id,
             filename=submission.filename,
-            entry=entry,
+            entry=SecureEntry.write_entry_field(entry),
             n_deleted=submission.n_deleted,
         )
 
@@ -32,14 +33,14 @@ async def insert_submission(submission: Submission):
 async def get_submissions():
     submissions = await DBSubmission.all()
     submission_dict = [
-        {
-            "db_id": si.id,
-            "submission_id": si.submission_id,
-            "filename": si.filename,
-            "n_deleted_across_file": si.n_deleted,
-            "insert_timestamp": si.insert_timestamp.isoformat(),
-            "entry": si.entry,
-        }
+        OutputSubmission(
+            db_id=si.id,
+            submission_id=si.submission_id,
+            filename=si.filename,
+            n_deleted_across_file=si.n_deleted,
+            insert_timestamp=si.insert_timestamp.isoformat(),
+            entry=SecureEntry.read_entry_field(dict(si.entry)),
+        ).dict()
         for si in submissions
     ]
     return submission_dict
@@ -61,7 +62,7 @@ async def insert_submission_list(submissionlist: SubmissionList):
                 yield DBSubmission(
                     submission_id=sub.submission_id,
                     filename=sub.filename,
-                    entry=entry,
+                    entry=SecureEntry.write_entry_field(entry),
                     n_deleted=sub.n_deleted,
                 )
 

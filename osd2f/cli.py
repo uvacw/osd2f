@@ -61,6 +61,14 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    "--entry-encryption-secret",
+    type=str,
+    help="Overrides `OSD2F_ENTRY_SECRET` environment variable. "
+    "Encryption key for per-entry encryption/decryption for writing/reading "
+    "from database.",
+)
+
+parser.add_argument(
     "--generate-current-config",
     type=str,
     help="Path to put an current content configuration YAML file.",
@@ -78,6 +86,14 @@ parser.add_argument(
     action="store_true",
     help="test whether endpoints provide 200 code responses,"
     " just to make sure nothing broke.",
+)
+
+parser.add_argument(
+    "--entry-decrypt-on-read-disabled",
+    action="store_true",
+    default=False,
+    help="Keep entries downloaded through the researcher interface encrypted. "
+    "Overrides the `OSD2F_ENTRY_DECRYPT_DISABLE` ENV variable",
 )
 
 
@@ -109,7 +125,12 @@ def parse_and_run():
 
         osd2f.utils.DISK_CONTENT_CONFIG_PATH = args.content_configuration
 
-    app = create_app(mode=args.mode, database_url_override=args.database_url)
+    app = create_app(
+        mode=args.mode,
+        database_url_override=args.database_url,
+        entry_secret_override=args.entry_encryption_secret,
+        entry_decrypt_disable=args.entry_decrypt_on_read_disabled,
+    )
     if not args.dry_run and not args.generate_current_config:
         start_app(app)
 
