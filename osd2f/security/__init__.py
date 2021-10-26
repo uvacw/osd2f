@@ -10,6 +10,7 @@ from functools import wraps
 from .authorization.basic_auth import basic_authentication
 from .authorization.microsoft_msal import microsoft_msal_authentication
 from .authorization.not_confgured import no_authentication
+from .download_encryption.encrypted_zipfile import string_to_zipfile  # noqa
 from .secrets import azure_keyvault  # Environment secret resolvers
 from ..logger import logger  # Global module logger
 

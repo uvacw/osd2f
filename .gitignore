@@ -151,3 +151,8 @@ node_modules/
 
 # IDE specific things
 .vscode
+
+# database files
+*.db 
+*-shm 
+*-wal

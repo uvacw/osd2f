@@ -13,6 +13,10 @@ class Config:
     PORT: int = 5000
     SECRET_KEY: _typing.Optional[str] = None
     DATA_PASSWORD: str = _os.environ.get("OSD2F_DATA_PASSWORD", "")
+    ENTRY_SECRET: str = _os.environ.get("OSD2F_ENTRY_SECRET", "")
+    ENTRY_DECRYPT_DISABLE: bool = (
+        _os.environ.get("OSD2F_ENTRY_DECRYPT_DISABLE", "false").lower() == "true"
+    )
     DB_URL = "sqlite://:memory:"
 
     # Allow for BIG submissions 4*16mb for
