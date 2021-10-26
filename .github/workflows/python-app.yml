@@ -54,3 +54,19 @@ jobs:
       run: pip install ./
     - name: Do a dry run
       run:  osd2f --dry-run
+
+  docker_build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: checkout files 
+        uses: actions/checkout@v2
+      - name: build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          file: Dockerfile
+          push: false
+          load: ${{ github.event_name == 'pull_request' }}
+          context: .
