@@ -70,3 +70,21 @@ jobs:
           push: false
           load: ${{ github.event_name == 'pull_request' }}
           context: .
+
+  docker_test_build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: checkout files 
+        uses: actions/checkout@v2
+      - name: build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          file: Dockerfile-test
+          push: false
+          load: ${{ github.event_name == 'pull_request' }}
+          context: .
+
+          
