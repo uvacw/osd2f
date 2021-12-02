@@ -1,3 +1,35 @@
+# Tests for Python 3.9 compatibilty
+
+FROM python:3.9.7-buster
+
+EXPOSE 8000
+ARG secret 
+
+ENV OSD2F_SECRET=$secret
+ENV OSD2F_MODE="Development"
+ENV OSD2F_DB_URL="sqlite://:memory:"
+
+## make code available
+COPY ./ ./osd2f
+
+## add build-secret to hypercorn config
+
+WORKDIR /osd2f
+
+## setup dependencies
+RUN pip install ./ 
+RUN pip install -r requirements.txt
+RUN pip install -r requirements_dev.txt
+
+## run tests
+RUN flake8 ./
+RUN mypy ./osd2f/ --ignore-missing-imports
+RUN pytest ./
+
+RUN osd2f --dry-run
+
+# Tests for Python 3.8 compatibility
+
 FROM python:3.8.12-buster
 
 EXPOSE 8000
@@ -7,19 +39,19 @@ ENV OSD2F_SECRET=$secret
 ENV OSD2F_MODE="Development"
 ENV OSD2F_DB_URL="sqlite://:memory:"
 
-# make code available
+## make code available
 COPY ./ ./osd2f
 
-# add build-secret to hypercorn config
+## add build-secret to hypercorn config
 
 WORKDIR /osd2f
 
-# setup dependencies
+## setup dependencies
 RUN pip install ./ 
 RUN pip install -r requirements.txt
 RUN pip install -r requirements_dev.txt
 
-# run tests
+## run tests
 RUN flake8 ./
 RUN mypy ./osd2f/ --ignore-missing-imports
 RUN pytest ./

@@ -11,7 +11,8 @@ This documentation is intended to demonstrate how to set up OSD2F as an Azure we
 ```bash
 az login
 az account set --subscription <subscription-to-publish-to>
-export WEBAPPNAME="osd2f-test"
+export AZURE_RESOURCE_GROUP=<your-resource-group>
+export WEBAPPNAME="osd2f-test" # must be globally unique, e.g. unused on Azure
 ```
 
 Doublecheck with:
@@ -24,16 +25,20 @@ az account show
 Using webapp up will setup the webapp, the appservice and the plan required. The app won't work before we also apply the other commands. Make sure to be inside the OSD2F folder (locally) when running this command.
 
 ```bash
+# python 3.9 is in early access on Azure (2021-11-05),
+# you can select it in the Settings > Configuration 
+# panel of the App Service under `Minor version`
 az webapp up  \
     --runtime 'python|3.8' \
     --location "West Europe" \
     --sku F1 \
+    --verbose \
     --name $WEBAPPNAME
 ```
 
 Minor addition for security:
 ```bash
-az webapp identity assign --name $WEBAPPNAME 
+az webapp identity assign --resource-group $AZURE_RESOURCE_GROUP --name $WEBAPPNAME 
 ```
 
 # setting up config with in-memory db
@@ -42,6 +47,7 @@ az webapp identity assign --name $WEBAPPNAME
 
 ```bash
 az webapp config appsettings set --name  $WEBAPPNAME\
+    --resource-group $AZURE_RESOURCE_GROUP \
     --settings \
         OSD2F_SECRET=$RANDOM$RANDOM$RANDOM$RANDOM \
         OSD2F_DB_URL="sqlite://:memory:"  \
@@ -63,6 +69,8 @@ set the custom startup command. We use the hypercorn ASGI server middleware for 
 
 ```bash
 az webapp config set \
+    --resource-group $AZURE_RESOURCE_GROUP \
+    --name $WEBAPPNAME \
     --startup-file "python -m hypercorn osd2f.__main__:app -b 0.0.0.0"
 ```
 
