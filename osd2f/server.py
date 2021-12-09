@@ -100,6 +100,7 @@ async def upload():
             content_settings=content_settings,
             upload_settings=upload_settings,
             sid=request.args.get("sid", "test"),
+            current_page="upload",
         )
     # for data submissions posted by the interface
     elif request.method == "POST":
@@ -141,6 +142,7 @@ async def researcher():
         "formats/researcher_template.html.jinja",
         content_settings=content_settings,
         password_protected=bool(app.config["DATA_PASSWORD"]),
+        current_page="researcher",
     )
 
 
