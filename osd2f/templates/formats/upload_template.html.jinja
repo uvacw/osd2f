@@ -49,6 +49,24 @@
                 
             </div>      
         </div>
+
+        <!-- The "thank you" message (initially hidden!) -->
+        <div class="row justify-content-center invisible" id="thankyou">
+            <h1>{{content_settings.upload_page.thanks_text}}</h1>
+        </div>
+
+        <!-- The Veux component to interact with the uploaded data -->
+        <div class="row justify-content-center p-2">
+            <div id="visualization">
+        
+                <donation-container
+                v-bind:donations="donations"
+                v-bind:content="content"
+                >
+                </donation-container>
+            </div>
+        </div>
+
         <!-- The status messages (generally hidden) -->
         <div id="processing" class="invisible">
             <div class="row p-2 justify-content-center">
@@ -58,23 +76,6 @@
                 <div class="spinner-border text-primary" role="status">
                     <span class="sr-only">Loading...</span>
                 </div>
-            </div>
-        </div>
-
-        <!-- The "thank you" message (initially hidden!) -->
-        <div class="row justify-content-center invisible" id="thankyou">
-            <h1>{{content_settings.upload_page.thanks_text}}</h1>
-        </div>
-
-        <!-- The Veux component to interact with the uploaded data -->
-        <div class="row justify-content-center p-4">
-            <div id="visualization">
-        
-                <donation-container
-                v-bind:donations="donations"
-                v-bind:content="content"
-                >
-                </donation-container>
             </div>
         </div>
     
