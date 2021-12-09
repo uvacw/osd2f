@@ -36,6 +36,11 @@ const objReader = function (spec, o, prev) {
 
   let options = spec.map(p => p.split('.').shift(1))
 
+  // if the object is the endpoint of a spec, 
+  if (Array.isArray(spec) && spec.length === 1 && spec[0] === "") {
+    return o
+  }
+
   let k
   for (k of Object.keys(o)) {
     if (options.filter(o => o == k).length == 0) {
@@ -59,7 +64,7 @@ const objReader = function (spec, o, prev) {
       continue
     }
 
-    flat_obj[newkey] = val
+    flat_obj[k] = val
   }
 
   return flat_obj
