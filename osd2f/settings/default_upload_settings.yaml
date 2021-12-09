@@ -28,9 +28,9 @@ files:
       - timestamp
       - post_title
       - keywords
-      - post_metadata.expanded_url
-      - post_metadata.source
-      - post_text
+      - information.post.post_metadata.expanded_url
+      - information.post.post_metadata.source
+      - information.post.post_text
 
   # these are the likes & reactions of pages
   engagement.json:
