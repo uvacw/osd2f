@@ -1,10 +1,10 @@
-project_title: OSD2F
+project_title: Data Donation Framework
 contact_us_text: "Email to"
 contact_us: email@domain.tld
 static_pages:
   home:
     active: True
-    name: The OSD2F project
+    name: The Data Donation Framework project
     blocks:
       - type: jumbotron
         title: Data donation made easy
@@ -26,7 +26,7 @@ static_pages:
         id: project
         image: "/static/study_cc.jpg"
         image_pos: left
-        title: OSD2F provides a whitelist based collection website
+        title: Data Donation Framework provides a whitelist based collection website
         lines:
           - Under GDPR, everyone should be able to export <br> their data in machine-readable format
           - Many platform provide standardized ways to get this data by <br> exporting it as a set of JSON files
@@ -84,7 +84,7 @@ upload_page:
     explanation:
       - "You can use the file selector to select the zipfile from your platform"
       - "You can also drag the folder into this box"
-  thanks_text: "Thanks for trying osd2f"
+  thanks_text: "Thanks for trying Data Donation Framework"
   processing_text: "processing your donation for preview"
   file_indicator_text: "Entries in your donation: "
   donate_button: "Donate"
