@@ -31,7 +31,7 @@ You can do so by providing a cli flag or environment variable:
 OSD2F_SECRET=secret \
 OSD2F_BASIC_AUTH="user;pass" \
 OSD2F_ENTRY_SECRET=TESTSECRET \
-OSD2F_ENTRY_DECRYPT_ON_READ=false \
+OSD2F_ENTRY_DECRYPT_DISABLE=True \
 osd2f -db sqlite://encryption.db -m Development
 ```
 
