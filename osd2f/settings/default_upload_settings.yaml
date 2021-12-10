@@ -1,82 +1,82 @@
 # Sample Platform upload settings
 files:
-    (^|/|\\)comments.json:
-      # in key is required when the initial level of data
-      # is not a list but an object (e.g. {} instead of [])
-      in_key : "comment_information"
-      anonymizers:
-        - redact_text : ""
-      # accepted_fields to include in the upload
-      # remove a field to filter it out
-      accepted_fields:
-        - timestamp
-        - title
-        - information.comment.comment_text
+  (^|/|\\)comments.json:
+    # in key is required when the initial level of data
+    # is not a list but an object (e.g. {} instead of [])
+    # if keys are nested more than once, use a '.' to separate
+    # the levels of the keys
+    in_key: "comment_information"
+    anonymizers:
+      - redact_text: ""
+    # accepted_fields to include in the upload
+    # remove a field to filter it out
+    accepted_fields:
+      - timestamp
+      - title
+      - information.comment.comment_text
 
-    # posts can be split into multiple files
-    # that end in `_<number>`.
-    posts(_(\d)+).json:
-      # anonymizers are functions applied on the server
-      # that can inspect the content of a potential donation
-      # and apply anonymization accordingly.
-      # the KEY is the function to apply, the VALUE a string-argument
-      anonymizers:
-        - redact_text : ""
-      accepted_fields:
-        - timestamp
-        - post_title 
-        - keywords
-        - post_metadata.expanded_url
-        - post_metadata.source
-        - post_text
+  # posts can be split into multiple files
+  # that end in `_<number>`.
+  posts(_(\d)+).json:
+    # anonymizers are functions applied on the server
+    # that can inspect the content of a potential donation
+    # and apply anonymization accordingly.
+    # the KEY is the function to apply, the VALUE a string-argument
+    anonymizers:
+      - redact_text: ""
+    accepted_fields:
+      - timestamp
+      - post_title
+      - keywords
+      - information.post.post_metadata.expanded_url
+      - information.post.post_metadata.source
+      - information.post.post_text
 
-    # these are the likes & reactions of pages
-    engagement.json:
-      in_key : engagement_info
-      accepted_fields:
-        - engagement_type
-        - object
-        - timestamp
+  # these are the likes & reactions of pages
+  engagement.json:
+    in_key: engagement_info
+    accepted_fields:
+      - engagement_type
+      - object
+      - timestamp
 
-    ## alternative filename for likes & reactions of pages
-    companies_followed.json:
-      in_key : companies_followed
-      accepted_fields:
-        - company_name
-        - timestamp
+  ## alternative filename for likes & reactions of pages
+  companies_followed.json:
+    in_key: companies_followed
+    accepted_fields:
+      - company_name
+      - timestamp
 
+  # these are the likes & reactions of posts & comments
+  profile_interests.json:
+    in_key: profile_interests
+    accepted_fields: []
 
+  # Advertiser interactions file
+  ads_clicked.json:
+    # in_key :
+    accepted_fields:
+      - ad_title
+      - activity
+      - timestamp
 
-    # these are the likes & reactions of posts & comments
-    profile_interests.json:
-      in_key: profile_interests
-      accepted_fields: []
+  # Advertisers who uploaded user information
+  advertisers_who_uploaded_a_contact_list_with_your_information.json:
+    in_key: custom_audiences_v2
+    accepted_fields: []
 
-    # Advertiser interactions file
-    ads_clicked.json:
-      # in_key : 
-      accepted_fields:
-        - ad_title
-        - activity
-        - timestamp
+  # Privacy Checkup
+  privacy_checkup_interactions.json:
+    in_key: privacy_checkup_interactions_v2
+    accepted_fields:
+      - name
+      - started_timestamp
+      - completed_timestamp
 
-    # Advertisers who uploaded user information
-    advertisers_who_uploaded_a_contact_list_with_your_information.json:
-      in_key : custom_audiences_v2
-      accepted_fields: []
-
-    # Privacy Checkup
-    privacy_checkup_interactions.json:
-      in_key : privacy_checkup_interactions_v2
-      accepted_fields: 
-        - name
-        - started_timestamp
-        - completed_timestamp
-
-    account_activity.json:
-      in_key: account_activity_v2
-      accepted_fields:
-        - action
-        - country
-        - site_name
-        - timestamp
+  account_activity.json:
+    in_key: account_activity_v2
+    accepted_fields:
+      - action
+      - country
+      - site_name
+      - timestamp
