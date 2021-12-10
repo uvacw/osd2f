@@ -101,6 +101,7 @@ class UploadPage(BaseModel):
 
 class ContentSettings(BaseModel):
     project_title: str
+    contact_us_text: str
     contact_us: EmailStr
     static_pages: Dict[PageTypeEnum, ContentPage]
     upload_page: UploadPage

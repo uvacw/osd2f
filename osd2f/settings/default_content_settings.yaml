@@ -1,110 +1,109 @@
-project_title : OSD2F
-contact_us : email@domain.tld
-static_pages: 
-  home: 
-    active : True
-    name : The OSD2F project
+project_title: Data Donation Framework
+contact_us_text: "Email to"
+contact_us: email@domain.tld
+static_pages:
+  home:
+    active: True
+    name: The Data Donation Framework project
     blocks:
-      - type : jumbotron
-        title : Data donation made easy
-        id : top
-        image : "/static/skull_phone_cc.jpg"
-        lines : 
-            - A general way of donating data
-            - For JSON based GDPR exports
-            - To use with external survey and analysis tools
-        buttons : 
-            - name : About the project
-              label : "btn-primary"
-              link : "#project"
-            - name: How it works
-              label : "btn-success" 
-              link : "/donate" 
+      - type: jumbotron
+        title: Data donation made easy
+        id: top
+        image: "/static/skull_phone_cc.jpg"
+        lines:
+          - A general way of donating data
+          - For JSON based GDPR exports
+          - To use with external survey and analysis tools
+        buttons:
+          - name: About the project
+            label: "btn-primary"
+            link: "#project"
+          - name: How it works
+            label: "btn-success"
+            link: "/donate"
 
-      - type : two_block_row
-        id : project
+      - type: two_block_row
+        id: project
         image: "/static/study_cc.jpg"
         image_pos: left
-        title : OSD2F provides a whitelist based collection website
-        lines : 
+        title: Data Donation Framework provides a whitelist based collection website
+        lines:
           - Under GDPR, everyone should be able to export <br> their data in machine-readable format
           - Many platform provide standardized ways to get this data by <br> exporting it as a set of JSON files
           - This app allows researchers to easily and safely collect exported data donated by participants in their studies
-        buttons : 
+        buttons:
           - name: About the developers
-            label : "btn-primary"
-            link : "#team"
+            label: "btn-primary"
+            link: "#team"
           - name: Donate now
             label: "btn-success"
             link: "/donate"
 
-      - type : two_block_row
-        id : team
-        title : Open Source Data Donation Framework
-        lines : 
-          - The digital traces that people leave through their use of various online platforms provide tremendous opportunities for studying human behavior. 
-          - However, the collection of these data is hampered by legal, ethical and technical challenges. 
+      - type: two_block_row
+        id: team
+        title: Open Source Data Donation Framework
+        lines:
+          - The digital traces that people leave through their use of various online platforms provide tremendous opportunities for studying human behavior.
+          - However, the collection of these data is hampered by legal, ethical and technical challenges.
           - We present a framework and tool for collecting these data through a data donation platform where consenting participants can securely submit their digital traces.
-        circles_row: 
-            - title : Prof. Dr. Hypothetical collaborator
-              subtitle: this person does not exist
-              image : "https://thispersondoesnotexist.com/image"
-            - title : Sponsored by
-              subtitle: A random image
-              image : "https://picsum.photos/200/300.jpg"
-        buttons : 
+        circles_row:
+          - title: Prof. Dr. Hypothetical collaborator
+            subtitle: this person does not exist
+            image: "https://thispersondoesnotexist.com/image"
+          - title: Sponsored by
+            subtitle: A random image
+            image: "https://picsum.photos/200/300.jpg"
+        buttons:
           - name: About the project
-            label : "btn-primary"
-            link : "#team"
+            label: "btn-primary"
+            link: "#team"
           - name: Donate now
             label: "btn-success"
             link: "/donate"
-
 
   privacy:
-    active : True
-    name : Privacy protection
-    blocks : 
-      - type : jumbotron
-        title : Data donation made easy
-        id : top
-        lines : 
-            - A simple application for donation collection
+    active: True
+    name: Privacy protection
+    blocks:
+      - type: jumbotron
+        title: Data donation made easy
+        id: top
+        lines:
+          - A simple application for donation collection
         buttons: []
 
-
   donate:
-    active : False
-    name : Donation Page
-    blocks : []
+    active: False
+    name: Donation Page
+    blocks: []
 
 upload_page:
-  blocks : []
-  upload_box :
-    header : "Select file(s):"
-    explanation : 
+  blocks: []
+  upload_box:
+    header: "Select file(s):"
+    explanation:
       - "You can use the file selector to select the zipfile from your platform"
       - "You can also drag the folder into this box"
-  thanks_text: "Thanks for trying osd2f"
-  processing_text : "processing your donation for preview"
+  thanks_text: "Thanks for trying Data Donation Framework"
+  processing_text: "processing your donation for preview"
   file_indicator_text: "Entries in your donation: "
-  donate_button : "Donate"
-  inspect_button : "Inspect & edit"
+  donate_button: "Donate"
+  inspect_button: "Inspect & edit"
   preview_component:
     entries_in_file_text: "Entries in this file: "
-    title : "Inspect & Edit your donation"
-    explanation :
+    title: "Inspect & Edit your donation"
+    explanation:
       - The top shows the files in your donation
       - In each file, you can search for content
       - You can remove content by clicking on the rows and pressing "remove selection"
-    remove_rows_button : "remove selected rows"
+    remove_rows_button: "remove selected rows"
     search_prompt: "Search in file"
     search_box_placeholder: "type to search this file"
-    previous_file_button : Previous file
+    previous_file_button: Previous file
     next_file_button: Next file
-  consent_popup :
-    title : "I want to donate my data..."
-    lead : "This box explains the conditions of your donation"
+  consent_popup:
+    title: "I want to donate my data..."
+    lead: "This box explains the conditions of your donation"
     points:
       - how data is secured
       - what the data will be used for

@@ -23,6 +23,7 @@ from osd2f.definitions import (
 
 fake_settings = ContentSettings(
     project_title="test project_title",
+    contact_us_text="mail to",
     contact_us="test@case.nl",
     static_pages={
         "home": ContentPage(
