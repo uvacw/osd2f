@@ -14,11 +14,12 @@ export { server } from './server_interaction'
 
 server.log('INFO', 'loaded js')
 
+// loads the zipfile reading WASM libraries
 Archive.init({ workerUrl: '/static/js/libarchive/worker-bundle.js' })
 
 server.log('INFO', 'initialized archive worker')
 
-// 1. submit handlers
+// folderScanner handles folder uploads.
 const folderScanner = function (webkitEntry, files) {
   if (webkitEntry.isDirectory) {
     let dir = webkitEntry.createReader()
@@ -30,7 +31,8 @@ const folderScanner = function (webkitEntry, files) {
   }
 }
 
-// 2. file-reader
+// objReader recursively parses JSON objects to extract
+// the whitelisted fields and returns a flattened representation.
 const objReader = function (spec, o, prev) {
   let flat_obj = {}
 
@@ -70,6 +72,8 @@ const objReader = function (spec, o, prev) {
   return flat_obj
 }
 
+// fileReader selects the starting point for recursive parsing
+// for each object in the file and returns the resulting objects.
 const fileReader = function (paths, objects, prepath, in_key) {
   // in case the data is nested in an object
   // rather than an array
@@ -114,7 +118,9 @@ const fileReader = function (paths, objects, prepath, in_key) {
   return [objReader(paths, objects)]
 }
 
-// 3. controller
+// fileLoadController checks whether files are in the whitelist, 
+// and parses these files using the fileReader and the appropriate
+// whitelist of fields for that particular file. 
 export const fileLoadController = async function (sid, settings, files) {
   document.getElementById('processing').classList.remove('invisible')
   // we map filenames to the regex format filenames in
@@ -203,6 +209,8 @@ export const fileLoadController = async function (sid, settings, files) {
   visualize(data, content)
 }
 
+// fileSelectHandler is used to detect files uploaded through
+// the file select prompt.
 export async function fileSelectHandler(e) {
   server.log('INFO', 'file select detected', sid)
   var filesSelected = e.target.files
@@ -228,6 +236,8 @@ export async function fileSelectHandler(e) {
 }
 document.getElementById('fileElem').onchange = fileSelectHandler
 
+// fileDropHandler is used to detect files uploaded using 
+// the drag-and-drop interface.
 async function fileDropHandler(e) {
   server.log('INFO', 'file drop detected', sid)
 
