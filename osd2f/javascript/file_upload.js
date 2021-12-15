@@ -31,6 +31,22 @@ const folderScanner = function (webkitEntry, files) {
   }
 }
 
+// reparseAsUTF8 stringifies an object, parses the string as UTF8
+// and returns the JSON parsed result. This removes issues with
+// UTF-8 donations, that JS assumes are UTF-16. 
+const reparseAsUTF8 = function (object) {
+  // drawn from https://stackoverflow.com/questions/52747566/what-encoding-facebook-uses-in-json-files-from-data-export
+  function decode(s) {
+    let d = new TextDecoder;
+    let a = s.split('').map(r => r.charCodeAt());
+    return d.decode(new Uint8Array(a));
+  }
+
+  let stringObj = JSON.stringify(object)
+  let decodedString = decode(stringObj)
+  return JSON.parse(decodedString)
+}
+
 // objReader recursively parses JSON objects to extract
 // the whitelisted fields and returns a flattened representation.
 const objReader = function (spec, o, prev) {
@@ -176,6 +192,9 @@ export const fileLoadController = async function (sid, settings, files) {
         null,
         settings['files'][setmatch[f.name]].in_key
       )
+      server.log('INFO', 'reparsing file to UTF8')
+      fileob = reparseAsUTF8(fileob)
+
       server.log('INFO', 'file send to anonymization', sid, {
         file_match: setmatch[f.name]
       })
