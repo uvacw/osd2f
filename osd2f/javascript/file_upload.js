@@ -47,6 +47,16 @@ const reparseAsUTF8 = function (object) {
   return JSON.parse(decodedString)
 }
 
+// countFileTypes takes a list of filenames and
+// counts the lowercased extensions
+function countFileTypes(arr) {
+  let counts = new Object
+  arr.
+    map(e => e.split(".").pop().toLowerCase()).
+    map(ext => counts[ext] = counts[ext] + 1 || 1)
+  return counts
+}
+
 // objReader recursively parses JSON objects to extract
 // the whitelisted fields and returns a flattened representation.
 const objReader = function (spec, o, prev) {
@@ -138,6 +148,7 @@ const fileReader = function (paths, objects, prepath, in_key) {
 // and parses these files using the fileReader and the appropriate
 // whitelist of fields for that particular file. 
 export const fileLoadController = async function (sid, settings, files) {
+  document.getElementById("empty_selection").classList.add("d-none")
   document.getElementById('processing').classList.remove('invisible')
   // we map filenames to the regex format filenames in
   // provided settings
@@ -162,6 +173,21 @@ export const fileLoadController = async function (sid, settings, files) {
 
   let acceptedFiles
   acceptedFiles = files.filter(f => setmatch[f.name] !== undefined)
+
+  // log the count of selected files, the count of files
+  // matching the whitelist and a frequency table of the
+  // filetypes selected.
+  server.log("INFO", "files selected", sid,
+    {
+      "selected": files.length,
+      "matching_whitelist": acceptedFiles.length,
+      "types": countFileTypes(files.map(f => f.name))
+    })
+
+  if (files.length > 0 && acceptedFiles.length == 0) {
+    document.getElementById("empty_selection").classList.remove("d-none")
+    server.log("ERROR", "empty selection", sid)
+  }
 
   let data = []
 
