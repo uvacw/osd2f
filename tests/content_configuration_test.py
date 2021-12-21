@@ -46,6 +46,7 @@ fake_settings = ContentSettings(
         thanks_text="thanks_text_test",
         file_indicator_text="file indicator test",
         processing_text="proces",
+        empty_selection="no allowed files selected",
         donate_button="donate button test",
         inspect_button="inspect_button_test",
         preview_component=PreviewComponent(
@@ -199,6 +200,8 @@ class ContentConfigurationTest(AsyncTestCase):
                 "explanation test 1",
                 "explanation test 2",
                 "file indicator test",
+                "no allowed files selected",
+                "proces",
                 # test whether the content settings obj is injected
                 fake_settings.json(),
             ]

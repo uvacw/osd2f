@@ -49,15 +49,23 @@
                 
             </div>      
         </div>
+
         <!-- The status messages (generally hidden) -->
         <div id="processing" class="invisible">
             <div class="row p-2 justify-content-center">
-                <h2 class="text-center">{{content_settings.upload_page.processing_text}}</h2>
+                <h2 class="text-center">{{content_settings.upload_page.processing_text | safe}}</h2>
             </div>
             <div class="row p-2 justify-content-center">
                 <div class="spinner-border text-primary" role="status">
                     <span class="sr-only">Loading...</span>
                 </div>
+            </div>
+        </div>
+
+        <!-- Selection without accepted content warning (generally hidden) -->
+        <div id="empty_selection" class="d-none">
+            <div class="row p-2 justify-content-center">
+                <h2 class="text-center">{{content_settings.upload_page.empty_selection | safe}}</h2>
             </div>
         </div>
 

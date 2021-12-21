@@ -93,6 +93,7 @@ class UploadPage(BaseModel):
     thanks_text: str
     file_indicator_text: str
     processing_text: str
+    empty_selection: str
     donate_button: str
     inspect_button: str
     preview_component: PreviewComponent
