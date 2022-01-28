@@ -12,7 +12,7 @@ data under GDPR).
 
 The App aims to be as export agnostic as possible while keeping things feasible to maintain.
 You can specify the files and the whitelist of JSON fields through YAML configuration. 
-As such it supports Data Donation Packages of arbitrary format in JSON files. 
+As such it supports Data Donation Packages of arbitrary format in JSON files (although it assumes they are UTF-8 encoded). 
 
 ## Using OSD2F locally
 
