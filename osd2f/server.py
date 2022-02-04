@@ -100,6 +100,7 @@ async def upload():
             content_settings=content_settings,
             upload_settings=upload_settings,
             sid=request.args.get("sid", "test"),
+            all_links_new_tab=True,
         )
     # for data submissions posted by the interface
     elif request.method == "POST":
