@@ -9,7 +9,7 @@ from osd2f.security.authorization import USER_FIELD
 from osd2f.security.entry_encryption.secure_entry_singleton import SecureEntry
 
 
-from quart import Quart, render_template, redirect, request, session
+from quart import Quart, redirect, render_template, request, session
 from quart.json import jsonify
 from quart.wrappers.response import Response
 
