@@ -34,7 +34,8 @@ def start_logworker():
                 log = clientLogQueue.get_nowait()
                 if log != "STOP":
                     try:
-                        await background_insert_log(**log)
+                        if log is not None:
+                            await background_insert_log(**log)
                     except Exception as e:
                         print("ERROR INSERTING LOG", e)
                 else:
