@@ -23,7 +23,7 @@ test("test array of objects file", () => {
 
 test("test array of objects nested in key", () => {
     json_content = {
-        "master_field": [
+        "main_key": [
             { "name": "obj1" },
             { "name": "obj2" }
         ]
@@ -31,7 +31,7 @@ test("test array of objects nested in key", () => {
 
 
     spec = {
-        in_key: "master_field",
+        in_key: "main_key",
         fields: ["name"]
     }
 
@@ -65,5 +65,25 @@ test("test object with array of values file", () => {
 
     expect(parsed[2].index).toBe(2)
     expect(parsed[2].value).toBe("value3")
+
+})
+
+test("test file with '.' in main_key", () => {
+    json_content = {
+        "main.key": [
+            { name: "obj1" },
+            { name: "obj2" }
+        ]
+    }
+
+    spec = {
+        in_key: "main.key",
+        fields: ["name"]
+    }
+
+    parsed = fileReader(spec.fileds, json_content, undefined, spec.in_key)
+
+    expect(parsed[0].name).toBe("obj1")
+    expect(parsed[1].name).toBe("obj2")
 
 })
