@@ -8,6 +8,7 @@ import { apply_adv_anonymization } from './server_interaction'
 import { visualize } from './visualize'
 import { getFilesFromDataTransferItems } from 'datatransfer-files-promise'
 import { server } from './server_interaction'
+import { objReader } from './parsing/objparsing'
 
 export { visualize as vis } from './visualize'
 export { server } from './server_interaction'
@@ -55,47 +56,6 @@ function countFileTypes(arr) {
     map(e => e.split(".").pop().toLowerCase()).
     map(ext => counts[ext] = counts[ext] + 1 || 1)
   return counts
-}
-
-// objReader recursively parses JSON objects to extract
-// the whitelisted fields and returns a flattened representation.
-const objReader = function (spec, o, prev) {
-  let flat_obj = {}
-
-  let options = spec.map(p => p.split('.').shift(1))
-
-  // if the object is the endpoint of a spec, 
-  if (Array.isArray(spec) && spec.length === 1 && spec[0] === "") {
-    return o
-  }
-
-  let k
-  for (k of Object.keys(o)) {
-    if (options.filter(o => o == k).length == 0) {
-      continue
-    }
-    let newkey = [prev, k].filter(e => typeof e != 'undefined').join('.')
-
-    let val = o[k]
-    let sub_spec = spec
-      .filter(s => s.startsWith(k))
-      .map(s => s.substring(k.length + 1, s.length))
-
-    if (Array.isArray(val)) {
-      flat_obj[newkey] = val.map(c => objReader(sub_spec, c))
-      continue
-    }
-
-    if (typeof val == 'object' && val != null) {
-      flat_obj = Object.assign(flat_obj, objReader(sub_spec, val, k))
-
-      continue
-    }
-
-    flat_obj[k] = val
-  }
-
-  return flat_obj
 }
 
 // fileReader selects the starting point for recursive parsing
@@ -230,6 +190,7 @@ export const fileLoadController = async function (sid, settings, files) {
       })
       data.push(fileob)
     } catch (e) {
+      console.log(e)
       server.log('ERROR', 'file matched, but is not JSON', sid)
       console.log("Unable to parse file because it's not real JSON")
     }
