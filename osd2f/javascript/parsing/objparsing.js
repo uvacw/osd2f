@@ -1,7 +1,6 @@
 // objReader recursively parses JSON objects to extract
 // the whitelisted fields and returns a flattened representation.
 const objReader = function (spec, o, prev) {
-    console.log(spec, o, prev)
     let flat_obj = {}
 
     let options = spec.map(p => p.split('.').shift(1))
