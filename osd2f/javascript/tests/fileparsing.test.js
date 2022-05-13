@@ -81,7 +81,7 @@ test("test file with '.' in main_key", () => {
         fields: ["name"]
     }
 
-    parsed = fileReader(spec.fileds, json_content, undefined, spec.in_key)
+    parsed = fileReader(spec.fields, json_content, undefined, spec.in_key)
 
     expect(parsed[0].name).toBe("obj1")
     expect(parsed[1].name).toBe("obj2")
