@@ -131,6 +131,12 @@ def generate_profile_interests(user: str, n: int = 10):
     f = faker.Faker()
     return {"profile_interests": [f.catch_phrase() for _ in range(n)]}
 
+def generate_short_messages(user: str, n: int = 100):
+    f = faker.Faker()
+    messages = [{'id' : f'{f.unix_time()}{f.random_number(5)}', 'message': f.paragraph(3)} for _ in range(n)]
+
+    return {'messages.collection' : messages}
+
 
 def generate_bundle(
     output_dir: str,
@@ -142,6 +148,7 @@ def generate_bundle(
     n_ads_clicked: int,
     n_profile_interests: int,
     n_post_files: int,
+    n_short_messages: int,
     include_zip_variant=False,
     include_tar_variant=False,
     include_targz_variant=False,
@@ -234,6 +241,16 @@ def generate_bundle(
                 indent=indents,
             )
 
+    if n_short_messages:
+        short_messages_path = os.path.join(output_dir, user_dir, "short_messages")
+        os.makedirs(short_messages_path, exist_ok=True)
+        with open(os.path.join(short_messages_path, "messages.json"), "w") as f:
+            json.dump(
+                generate_short_messages(user=user, n=n_short_messages),
+                f,
+                indent=indents
+            )
+
     if include_zip_variant:
         shutil.make_archive(os.path.join(output_dir, f"{user_dir}"), "zip", output_dir)
 
@@ -314,6 +331,13 @@ if __name__ == "__main__":
         default=10,
     )
     parser.add_argument(
+        "-sm",
+        "--short-messages",
+        type=int,
+        help="the number of short messages to generate",
+        default=50
+    )    
+    parser.add_argument(
         "-z",
         "--include-zip",
         action="store_true",
@@ -353,6 +377,7 @@ if __name__ == "__main__":
         n_ads_clicked=args.ads_clicked,
         n_profile_interests=args.profile_interests,
         n_post_files=args.n_post_files,
+        n_short_messages=args.short_messages,
         include_zip_variant=args.include_zip,
         include_tar_variant=args.tar,
         include_targz_variant=args.tar_gz,
