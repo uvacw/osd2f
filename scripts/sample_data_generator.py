@@ -131,11 +131,15 @@ def generate_profile_interests(user: str, n: int = 10):
     f = faker.Faker()
     return {"profile_interests": [f.catch_phrase() for _ in range(n)]}
 
+
 def generate_short_messages(user: str, n: int = 100):
     f = faker.Faker()
-    messages = [{'id' : f'{f.unix_time()}{f.random_number(5)}', 'message': f.paragraph(3)} for _ in range(n)]
+    messages = [
+        {"id": f"{f.unix_time()}{f.random_number(5)}", "message": f.paragraph(3)}
+        for _ in range(n)
+    ]
 
-    return {'messages.collection' : messages}
+    return {"messages.collection": messages}
 
 
 def generate_bundle(
@@ -248,7 +252,7 @@ def generate_bundle(
             json.dump(
                 generate_short_messages(user=user, n=n_short_messages),
                 f,
-                indent=indents
+                indent=indents,
             )
 
     if include_zip_variant:
@@ -335,8 +339,8 @@ if __name__ == "__main__":
         "--short-messages",
         type=int,
         help="the number of short messages to generate",
-        default=50
-    )    
+        default=50,
+    )
     parser.add_argument(
         "-z",
         "--include-zip",
