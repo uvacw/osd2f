@@ -52,7 +52,7 @@ class SecureEntry:
     @staticmethod
     def __create_key(password: bytes) -> bytes:
         random.seed(len(password))
-        salt = bytes(random.randint(0, 10 ** 6))
+        salt = bytes(random.randint(0, 10**6))
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,

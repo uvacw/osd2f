@@ -1,5 +1,6 @@
+import asyncio
+
 from tortoise import Tortoise
-from tortoise.contrib.quart import register_tortoise
 
 from .configuration import *  # noqa
 from .logs import *  # noqa
@@ -13,6 +14,6 @@ async def initialize_database(db_url: str):
 
 
 async def stop_database():
-    await asyncio.sleep(0.1) # to avoid start/stop race-conditions during tests
+    await asyncio.sleep(0.1)  # to avoid start/stop race-conditions during tests
     await Tortoise.close_connections()
     stop_logworker()  # noqa
