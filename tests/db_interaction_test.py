@@ -141,7 +141,7 @@ class LogInsertTest(AsyncTestCase):
             r = c.execute("SELECT * FROM osd2f_logs").fetchall()
             if len(r) == 4:
                 break
-            await asyncio.sleep(0.05)
+            await asyncio.sleep(0.01)
 
         assert r, ValueError("No(t all) records returned")
 
