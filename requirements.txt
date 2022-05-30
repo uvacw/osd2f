@@ -93,8 +93,10 @@ pycryptodomex==3.14.1
     # via pyzipper
 pydantic[email]==1.9.0
     # via OSD2F (setup.py)
-pyjwt[crypto]==2.3.0
-    # via msal
+pyjwt[crypto]==2.4.0
+    # via
+    #   OSD2F (setup.py)
+    #   msal
 pypika-tortoise==0.1.4
     # via tortoise-orm
 pytz==2022.1
