@@ -74,3 +74,11 @@ most recently edited version is used between the database and the file.*
 5. [Using Microsoft Authentication via SSO](docs/microsoft_authentication.md)
 6. [Setting password on researcher downloads](docs/protecting_downloads.md)
 7. [Adding additional (server side) anonymizers](docs/adding_new_anonymizers.md)
+
+## Credits:
+
+If you use this tool, please cite the paper:
+Araujo, T., Ausloos, J., van Atteveldt, W., Loecherbach, F., Moeller, J., Ohme, J., Trilling, D., van de Velde, B., de Vreese, C., & Welbers, K. (2021). OSD2F: An Open-Source Data Donation Framework. *Computational Communication Research*, https://osf.io/preprints/socarxiv/xjk6t/
+
+
+This tool is inspired in earlier approaches that enable researchers to partner with individuals willing to donate their data for academic research, including [Web Historian](https://github.com/erickaakcire/webhistorian) (Menchen-Trevino, 2016), among others.
