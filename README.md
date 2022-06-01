@@ -78,17 +78,21 @@ most recently edited version is used between the database and the file.*
 ## Credits:
 
 If you use this tool, please cite the paper:
+
 *APA:*
+
 Araujo, T., Ausloos, J., van Atteveldt, W., Loecherbach, F., Moeller, J., Ohme, J., Trilling, D., van de Velde, B., de Vreese, C., & Welbers, K. (Forthcoming). OSD2F: An Open-Source Data Donation Framework. *Computational Communication Research*, https://osf.io/preprints/socarxiv/xjk6t/
 
 *Bibtex:* 
-@article{osd2f,
+
+```@article{osd2f,
  title={OSD2F: An Open-Source Data Donation Framework},
  DOI={10.31235/osf.io/xjk6t},
  author={Araujo, Theo and Ausloos, Jef and {van Atteveldt}, Wouter and Loecherbach, Felicia and Moeller, Judith and Ohme, Jakob and Trilling, Damian and {van de Velde}, Bob and {de Vreese}, Claes and Welbers, Kasper},
  year={forthcoming},
  journal = {Computational Communication Research}
 }
+```
 
 
 This tool is inspired in earlier approaches that enable researchers to partner with individuals willing to donate their data for academic research, including [Web Historian](https://github.com/erickaakcire/webhistorian) (Menchen-Trevino, 2016), among others.
