@@ -85,7 +85,8 @@ Araujo, T., Ausloos, J., van Atteveldt, W., Loecherbach, F., Moeller, J., Ohme, 
 
 *Bibtex:* 
 
-```@article{osd2f,
+```
+@article{osd2f,
  title={OSD2F: An Open-Source Data Donation Framework},
  DOI={10.31235/osf.io/xjk6t},
  author={Araujo, Theo and Ausloos, Jef and {van Atteveldt}, Wouter and Loecherbach, Felicia and Moeller, Judith and Ohme, Jakob and Trilling, Damian and {van de Velde}, Bob and {de Vreese}, Claes and Welbers, Kasper},
