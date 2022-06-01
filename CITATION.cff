@@ -22,7 +22,33 @@ authors:
 - family-names: "Welbers"
   given-names: "Kasper"
 title: "OSD2F: Open Source Data Donation Framework"
-journal: "Computational Communication Research"
-year:"forthcoming"
 doi: 10.31235/osf.io/xjk6t
 url: "https://github.com/uvacw/osd2f"
+
+references:
+  - authors:
+      - family-names: "Araujo"
+        given-names: "Theo"
+      - family-names: "Ausloos"
+        given-names: "Jef"
+      - family-names: "van Atteveldt"
+        given-names: "Wouter"
+      - family-names: "Loecherbach"
+        given-names: "Felicia"  
+      - family-names: "Moeller"
+        given-names: "Judith"
+      - family-names: "Ohme"
+        given-names: "Jakob"
+      - family-names: "Trilling"
+        given-names: "Damian"
+      - family-names: "van de Velde"
+        given-names: "Bob"
+      - family-names: "de Vreese"
+        given-names: "Claes"
+      - family-names: "Welbers"
+        given-names: "Kasper"
+    doi: 10.31235/osf.io/xjk6t
+    journal: "Computational Communication Research"
+    title: "OSD2F: Open Source Data Donation Framework"
+    type: article
+    year: Forthcoming
