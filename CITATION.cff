@@ -22,5 +22,7 @@ authors:
 - family-names: "Welbers"
   given-names: "Kasper"
 title: "OSD2F: Open Source Data Donation Framework"
+journal: "Computational Communication Research"
+year:"forthcoming"
 doi: 10.31235/osf.io/xjk6t
 url: "https://github.com/uvacw/osd2f"
