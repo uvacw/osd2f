@@ -25,6 +25,11 @@ const objReader = function (spec, o, prev) {
             .map(s => s.substring(k.length + 1, s.length))
 
         if (Array.isArray(val)) {
+            if (sub_spec == "") {
+                flat_obj[newkey] = val
+                continue
+            }
+
             flat_obj[newkey] = val.map(c => objReader(sub_spec, c))
             continue
         }
