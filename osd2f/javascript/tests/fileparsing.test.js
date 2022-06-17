@@ -87,3 +87,21 @@ test("test file with '.' in main_key", () => {
     expect(parsed[1].name).toBe("obj2")
 
 })
+
+test("test file with array of values obj", () => {
+    json_content = [
+        {
+            "keywords": ["keyword A", "keyword B"]
+        }
+    ]
+
+    spec = {
+        fields: ["keywords"]
+    }
+
+    parsed = fileReader(spec.fields, json_content)
+
+    expect(parsed[0].keywords.length).toBe(2)
+    expect(parsed[0].keywords[0]).toBe("keyword A")
+    expect(parsed[0].keywords[1]).toBe("keyword B")
+})
