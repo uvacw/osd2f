@@ -1,5 +1,3 @@
-var jp = require('jsonpath')
-
 // objReader recursively parses JSON objects to extract
 // the whitelisted fields and returns a flattened representation.
 const objReader = function (spec, o, prev) {
