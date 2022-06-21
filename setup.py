@@ -34,6 +34,7 @@ setup(
         "pyyaml",
         "pydantic",
         "pydantic[email]",
+        "pyjwt>=2.4.0",  # dependency of MSAL, insecure < 2.4.0
         "pyzipper",
         "quart",
         "tortoise-orm",

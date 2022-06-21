@@ -53,7 +53,7 @@ def start_logworker():
 
 
 def stop_logworker():
-    clientLogQueue.put("STOP")
+    clientLogQueue.put("STOP", block=True)
     time.sleep(0.2)
 
 
