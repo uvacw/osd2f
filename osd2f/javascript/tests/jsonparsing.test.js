@@ -20,6 +20,6 @@ test("test regular JSON array", () => {
 test("bad (twitter) JSON", () => {
     text_content = 'content = [ { "key" : "value" } ]'
     content = ParseJSON(text_content)
-    console.log(content)
+
     expect(content.content[0].key).toBe("value")
 })
