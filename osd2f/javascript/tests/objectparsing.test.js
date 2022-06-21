@@ -48,3 +48,17 @@ test("Parsing simple data", () => {
 
 })
 
+test("Empty nested array which is a parent key should not show up as it's own witelisted field", () => {
+    data = {
+        key: []
+    }
+
+    spec = {
+        fields: ["key.subfield"]
+    }
+
+    r = objparsing.objReader(spec.fields, data)
+
+    expect(r.key).toBe(undefined)
+
+})

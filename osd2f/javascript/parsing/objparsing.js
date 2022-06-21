@@ -28,7 +28,13 @@ const objReader = function (spec, o, prev) {
                 continue
             }
 
-            flat_obj[newkey] = val.map(c => objReader(sub_spec, c))
+            var ac
+            ac = val.map(c => objReader(sub_spec, c))
+
+            // only append array values if they are not empty
+            if (ac.length > 0) {
+                flat_obj[newkey] = ac
+            }
             continue
         }
 
@@ -37,6 +43,7 @@ const objReader = function (spec, o, prev) {
 
             continue
         }
+
 
         flat_obj[newkey] = val
     }

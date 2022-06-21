@@ -129,7 +129,7 @@ export const fileLoadController = async function (sid, settings, files) {
       })
       fileob['entries'] = fileReader(
         settings['files'][setmatch[f.name]].accepted_fields,
-        ParseJSON(content), // custom to support malformed JSON
+        ParseJSON(content), // custom to support malformed
         null,
         settings['files'][setmatch[f.name]].in_key
       )
