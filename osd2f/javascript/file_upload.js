@@ -9,6 +9,7 @@ import { visualize } from './visualize'
 import { getFilesFromDataTransferItems } from 'datatransfer-files-promise'
 import { server } from './server_interaction'
 import { fileReader } from './parsing/fileparser'
+import { ParseJSON } from './parsing/jsonparsing'
 
 export { visualize as vis } from './visualize'
 export { server } from './server_interaction'
@@ -128,7 +129,7 @@ export const fileLoadController = async function (sid, settings, files) {
       })
       fileob['entries'] = fileReader(
         settings['files'][setmatch[f.name]].accepted_fields,
-        JSON.parse(content),
+        ParseJSON(content), // custom to support malformed JSON
         null,
         settings['files'][setmatch[f.name]].in_key
       )
