@@ -13,6 +13,8 @@ const ParseJSON = function (text_content) {
 
 
 // parseTwitterJSON parses malformed JSON delivered by Twitter
+// it's actually javascript, but we deem an `eval` call too
+// insecure (it would allow for arbitrary code injection)
 const parseTwitterJSON = function (text_content) {
 
     // assume it's the first, global, key that is malformed
