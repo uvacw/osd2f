@@ -27,9 +27,6 @@ const parseTwitterJSON = function (text_content) {
 
     fixed_content.replace('\\', '\\\\')
 
-    console.log(text_content)
-    console.log(fixed_content, typeof fixed_content)
-
     return JSON.parse(fixed_content)
 }
 
