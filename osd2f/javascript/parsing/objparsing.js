@@ -39,7 +39,7 @@ const objReader = function (spec, o, prev) {
         }
 
         if (typeof val == 'object' && val != null) {
-            flat_obj = Object.assign(flat_obj, objReader(sub_spec, val, k))
+            flat_obj = Object.assign(flat_obj, objReader(sub_spec, val, newkey))
 
             continue
         }
