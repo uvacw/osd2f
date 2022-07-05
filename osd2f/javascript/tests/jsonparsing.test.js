@@ -23,3 +23,11 @@ test("bad (twitter) JSON", () => {
 
     expect(content.content[0].key).toBe("value")
 })
+
+test("twitter data with unescaped '\'", () => {
+    text_content = String.raw`content = [ { "text_with_slashes" : "new \n line \n!"}]`
+    content = ParseJSON(text_content)
+
+    expect(content.content[0].text_with_slashes).toBe("new \n line \n!")
+
+})
