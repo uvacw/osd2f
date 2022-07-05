@@ -45,7 +45,18 @@ const reparseAsUTF8 = function (object) {
   }
 
   let stringObj = JSON.stringify(object)
+
+
   let decodedString = decode(stringObj)
+
+  // check whether translation did not introduce bad characters
+  // that signal it was already UTF-16, in which case we return
+  // the original, supposedly UTF16 object
+  if (decodedString.search("�") > 0) {
+    return object
+  }
+
+  // return the UTF8->UTF16 decoded object instead
   return JSON.parse(decodedString)
 }
 
@@ -137,7 +148,7 @@ export const fileLoadController = async function (sid, settings, files) {
       try {
         fileob = reparseAsUTF8(fileob)
       } catch {
-        server.log("INFO", "file could not be reparsed, might be UTF16 already")
+        server.log("INFO", "file could not be reparsed, might be UTF16 already", window.sid)
       }
 
       server.log('INFO', 'file send to anonymization', sid, {
