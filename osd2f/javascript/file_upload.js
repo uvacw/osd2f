@@ -134,7 +134,11 @@ export const fileLoadController = async function (sid, settings, files) {
         settings['files'][setmatch[f.name]].in_key
       )
       server.log('INFO', 'reparsing file to UTF8')
-      fileob = reparseAsUTF8(fileob)
+      try {
+        fileob = reparseAsUTF8(fileob)
+      } catch {
+        server.log("INFO", "file could not be reparsed, might be UTF16 already")
+      }
 
       server.log('INFO', 'file send to anonymization', sid, {
         file_match: setmatch[f.name]
