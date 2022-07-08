@@ -119,3 +119,17 @@ test("test file with heavily nested values", () => {
     expect(parsed[0]["one.two.three"][0].nested).toBe("obj")
     expect(Array.isArray(parsed)).toBe(true)
 })
+
+test("fields that result in object value", () => {
+    json_content = { "window.YTD.stuff": [{ "one": { "two": { "three": [{ "nested": "obj" }] } } }, { "one": { "two": { "three": [{ "nested": "obj_two" }] } } }] }
+
+    spec = {
+        in_key: "window.YTD.stuff",
+        fields: ["one.two"]
+    }
+
+    parsed = fileReader(spec.fields, json_content, undefined, spec.in_key)
+
+    console.log(parsed)
+    expect(Array.isArray(parsed[0]["one.two"].three)).toBe(true)
+})
