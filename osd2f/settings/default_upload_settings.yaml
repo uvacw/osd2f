@@ -5,9 +5,9 @@ files:
     # is not a list but an object (e.g. {} instead of [])
     # if keys are nested more than once, use a '.' to separate
     # the levels of the keys
-    in_key: "comment_information"
+    in_key: 'comment_information'
     anonymizers:
-      - redact_text: ""
+      - redact_text: ''
     # accepted_fields to include in the upload
     # remove a field to filter it out
     accepted_fields:
@@ -23,7 +23,7 @@ files:
     # and apply anonymization accordingly.
     # the KEY is the function to apply, the VALUE a string-argument
     anonymizers:
-      - redact_text: ""
+      - redact_text: ''
     accepted_fields:
       - timestamp
       - post_title
@@ -73,6 +73,7 @@ files:
       - started_timestamp
       - completed_timestamp
 
+  # activity of an account
   account_activity.json:
     in_key: account_activity_v2
     accepted_fields:
@@ -80,3 +81,10 @@ files:
       - country
       - site_name
       - timestamp
+
+  # short messages with a '.' in the in-key
+  messages.json:
+    in_key: messages.collection
+    accepted_fields:
+      - id
+      - message

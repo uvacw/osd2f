@@ -8,6 +8,8 @@ import { apply_adv_anonymization } from './server_interaction'
 import { visualize } from './visualize'
 import { getFilesFromDataTransferItems } from 'datatransfer-files-promise'
 import { server } from './server_interaction'
+import { fileReader } from './parsing/fileparser'
+import { ParseJSON } from './parsing/jsonparsing'
 
 export { visualize as vis } from './visualize'
 export { server } from './server_interaction'
@@ -43,7 +45,18 @@ const reparseAsUTF8 = function (object) {
   }
 
   let stringObj = JSON.stringify(object)
+
+
   let decodedString = decode(stringObj)
+
+  // check whether translation did not introduce bad characters
+  // that signal it was already UTF-16, in which case we return
+  // the original, supposedly UTF16 object
+  if (decodedString.search("�") > 0) {
+    return object
+  }
+
+  // return the UTF8->UTF16 decoded object instead
   return JSON.parse(decodedString)
 }
 
@@ -55,93 +68,6 @@ function countFileTypes(arr) {
     map(e => e.split(".").pop().toLowerCase()).
     map(ext => counts[ext] = counts[ext] + 1 || 1)
   return counts
-}
-
-// objReader recursively parses JSON objects to extract
-// the whitelisted fields and returns a flattened representation.
-const objReader = function (spec, o, prev) {
-  let flat_obj = {}
-
-  let options = spec.map(p => p.split('.').shift(1))
-
-  // if the object is the endpoint of a spec, 
-  if (Array.isArray(spec) && spec.length === 1 && spec[0] === "") {
-    return o
-  }
-
-  let k
-  for (k of Object.keys(o)) {
-    if (options.filter(o => o == k).length == 0) {
-      continue
-    }
-    let newkey = [prev, k].filter(e => typeof e != 'undefined').join('.')
-
-    let val = o[k]
-    let sub_spec = spec
-      .filter(s => s.startsWith(k))
-      .map(s => s.substring(k.length + 1, s.length))
-
-    if (Array.isArray(val)) {
-      flat_obj[newkey] = val.map(c => objReader(sub_spec, c))
-      continue
-    }
-
-    if (typeof val == 'object' && val != null) {
-      flat_obj = Object.assign(flat_obj, objReader(sub_spec, val, k))
-
-      continue
-    }
-
-    flat_obj[k] = val
-  }
-
-  return flat_obj
-}
-
-// fileReader selects the starting point for recursive parsing
-// for each object in the file and returns the resulting objects.
-const fileReader = function (paths, objects, prepath, in_key) {
-  // in case the data is nested in an object
-  // rather than an array
-  if (typeof in_key !== 'undefined' && in_key !== null) {
-    // If this is a nested key (using '.' notation, e.g. "level1key.level2key")
-    if (in_key.search("\\.") > 0) {
-      let key_array = in_key.split(".")
-      in_key = key_array.shift(1)
-      let next_key = key_array.join(".")
-
-      // if there is already a prepath
-      if (typeof prepath !== undefined || prepath !== null) {
-        return fileReader(paths, objects[in_key], prepath + "." + in_key, next_key)
-      }
-      return fileReader(paths, objects[in_key], in_key, next_key)
-    }
-    return fileReader(paths, objects[in_key], prepath)
-  }
-
-  if (Array.isArray(objects)) {
-    // in case the contents is just one array of values,
-    // instead of an array of objects
-    if (paths.length == 0) {
-      let entries = []
-      let i = 0
-      while (i < objects.length) {
-        entries.push({
-          index: i,
-          value: objects[i]
-        })
-        i++
-      }
-      return entries
-    } else {
-      // extract the whitelisted paths from all objects
-      // in the array contained in the file
-      return objects.map(obj => objReader(paths, obj))
-    }
-  }
-
-  // If the objects is actually one object (not an array)
-  return [objReader(paths, objects)]
 }
 
 // fileLoadController checks whether files are in the whitelist, 
@@ -214,12 +140,16 @@ export const fileLoadController = async function (sid, settings, files) {
       })
       fileob['entries'] = fileReader(
         settings['files'][setmatch[f.name]].accepted_fields,
-        JSON.parse(content),
+        ParseJSON(content), // custom to support malformed
         null,
         settings['files'][setmatch[f.name]].in_key
       )
       server.log('INFO', 'reparsing file to UTF8')
-      fileob = reparseAsUTF8(fileob)
+      try {
+        fileob = reparseAsUTF8(fileob)
+      } catch {
+        server.log("INFO", "file could not be reparsed, might be UTF16 already", window.sid)
+      }
 
       server.log('INFO', 'file send to anonymization', sid, {
         file_match: setmatch[f.name]
@@ -230,6 +160,7 @@ export const fileLoadController = async function (sid, settings, files) {
       })
       data.push(fileob)
     } catch (e) {
+      console.log(e)
       server.log('ERROR', 'file matched, but is not JSON', sid)
       console.log("Unable to parse file because it's not real JSON")
     }

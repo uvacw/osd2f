@@ -5,63 +5,61 @@ name: Python application
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   development_build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install -r requirements_dev.txt
-    - name: Lint with flake8
-      run: flake8 ./
-    - name: mypy
-      run: mypy ./osd2f/ --ignore-missing-imports
-    - name: Test with pytest
-      run: pytest ./
-    - name: Install & do a dry run
-      run: |
-        pip install -e ./
-        osd2f --dry-run
-    - name: Check config generation functionality
-      run: |
-        osd2f --generate-current-config cc.yaml
-        [ -s cc.yaml ] #check whether the file is not empty
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements_dev.txt
+      - name: Lint with flake8
+        run: flake8 ./
+      - name: mypy
+        run: mypy ./osd2f/ --ignore-missing-imports
+      - name: Test with pytest
+        run: pytest ./
+      - name: Install & do a dry run
+        run: |
+          pip install -e ./
+          osd2f --dry-run
+      - name: Check config generation functionality
+        run: |
+          osd2f --generate-current-config cc.yaml
+          [ -s cc.yaml ] #check whether the file is not empty
+      - name: Run Jest
+        uses: stefanoeb/jest-action@1.0.3
 
   release_build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-    - name: Install with plain pip
-      run: pip install ./
-    - name: Do a dry run
-      run:  osd2f --dry-run
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install with plain pip
+        run: pip install ./
+      - name: Do a dry run
+        run: osd2f --dry-run
 
   docker_build:
-
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: checkout files 
+      - name: checkout files
         uses: actions/checkout@v2
       - name: build Docker image
         uses: docker/build-push-action@v2
@@ -72,12 +70,10 @@ jobs:
           context: .
 
   docker_test_build:
-
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: checkout files 
+      - name: checkout files
         uses: actions/checkout@v2
       - name: build Docker image
         uses: docker/build-push-action@v2
@@ -86,5 +82,3 @@ jobs:
           push: false
           load: ${{ github.event_name == 'pull_request' }}
           context: .
-
-          

@@ -43,6 +43,7 @@ class MinimalSampleGeneratorTest(TestCase):
             n_post_files=2,
             n_profile_interests=10,
             n_posts=10,
+            n_short_messages=10,
         )
 
         self.assertTrue(glob.glob("temp_test_data/README.md"))
@@ -52,6 +53,9 @@ class MinimalSampleGeneratorTest(TestCase):
         self.assertTrue(glob.glob("temp_test_data/sample-*/posts/posts_0.json"))
         self.assertTrue(glob.glob("temp_test_data/sample-*/posts/posts_1.json"))
         self.assertTrue(glob.glob("temp_test_data/sample-*/engagement/engagement.json"))
+        self.assertTrue(
+            glob.glob("temp_test_data/sample-*/short_messages/messages.json")
+        )
         self.assertTrue(
             glob.glob(
                 "temp_test_data/sample-*/profile_interests/profile_interests.json"
@@ -89,6 +93,7 @@ class MinimalSampleGeneratorTest(TestCase):
             n_post_files=2,
             n_profile_interests=10,
             n_posts=10,
+            n_short_messages=10,
         )
 
         sample_mockdata_paths = glob.glob("mockdata/sample/**", recursive=True)
