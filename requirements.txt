@@ -81,7 +81,7 @@ msal==1.17.0
     #   msal-extensions
 msrest==0.6.21
     # via azure-keyvault-secrets
-oauthlib==3.2.0
+oauthlib==3.2.1
     # via requests-oauthlib
 portalocker==2.4.0
     # via msal-extensions
