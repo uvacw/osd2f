@@ -22,7 +22,7 @@ azure-keyvault-secrets==4.4.0
     # via OSD2F (setup.py)
 blinker==1.4
     # via quart
-certifi==2021.10.8
+certifi==2022.12.7
     # via
     #   msrest
     #   requests
