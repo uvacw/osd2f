@@ -133,7 +133,7 @@ typing-extensions==4.1.1
     #   pydantic
 urllib3==1.26.9
     # via requests
-werkzeug==2.1.1
+werkzeug==2.2.3
     # via quart
 wsproto==1.1.0
     # via hypercorn
