@@ -32,7 +32,7 @@ charset-normalizer==2.0.12
     # via requests
 click==8.1.2
     # via quart
-cryptography==36.0.2
+cryptography==40.0.1
     # via
     #   OSD2F (setup.py)
     #   azure-identity
@@ -73,7 +73,7 @@ markupsafe==2.1.1
     #   jinja2
     #   quart
     #   werkzeug
-msal==1.17.0
+msal==1.21.0
     # via
     #   OSD2F (setup.py)
     #   azure-identity
