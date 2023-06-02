@@ -32,7 +32,7 @@ charset-normalizer==2.0.12
     # via requests
 click==8.1.2
     # via quart
-cryptography==40.0.1
+cryptography==41.0.0
     # via
     #   OSD2F (setup.py)
     #   azure-identity
