@@ -38,7 +38,7 @@
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.2",
     "jest": "^27.5.1",
-    "postcss": "^8.2.15",
+    "postcss": "^8.4.31",
     "style-loader": "^2.0.0",
     "vue-loader": "^17.0.1",
     "vue-template-compiler": "^2.6.12",
