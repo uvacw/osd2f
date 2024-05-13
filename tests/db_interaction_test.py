@@ -3,6 +3,7 @@
 We don't want to test our ORM package, so these tests target the convenvience
 functions used.
 """
+
 import asyncio
 import os
 import sqlite3
@@ -92,7 +93,7 @@ class UploadSubmissionTest(AsyncTestCase):
         nentries = 10
 
         submissions = SubmissionList(
-            __root__=[
+            [
                 Submission(
                     submission_id=f"testing-{i}",
                     filename=f"testing_{i}.json",
@@ -107,7 +108,7 @@ class UploadSubmissionTest(AsyncTestCase):
             from osd2f import server
 
             testclient = server.app.test_client()
-            r = await testclient.post("/upload", data=submissions.json())
+            r = await testclient.post("/upload", data=submissions.model_dump_json())
             assert r.status_code == 200
 
             sublist_db_mock.assert_called_once_with(submissionlist=submissions)

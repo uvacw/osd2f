@@ -140,7 +140,7 @@ def parse_and_run():
         asyncio.run(app.startup())
         settings = asyncio.run(load_content_settings(use_cache=False))
         with open(args.generate_current_config, "w") as outputfile:
-            yaml.dump(settings.dict(by_alias=True), outputfile)
+            yaml.dump(settings.model_dump(by_alias=True), outputfile)
         asyncio.run(app.shutdown())
 
     else:

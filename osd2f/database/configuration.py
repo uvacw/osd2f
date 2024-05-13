@@ -28,11 +28,11 @@ async def get_content_config() -> typing.Optional[DBConfigurationBlobs]:
 
 async def set_content_config(user: str, content: ContentSettings):
     await DBConfigurationBlobs.create(
-        insert_user=user, config_type="content", config_blob=content.json()
+        insert_user=user, config_type="content", config_blob=content.model_dump_json()
     )
 
 
 async def set_upload_config(user: str, content: UploadSettings):
     await DBConfigurationBlobs.create(
-        insert_user=user, config_type="upload", config_blob=content.json()
+        insert_user=user, config_type="upload", config_blob=content.model_dump_json()
     )

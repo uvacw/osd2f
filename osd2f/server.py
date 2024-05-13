@@ -105,7 +105,7 @@ async def upload():
     elif request.method == "POST":
         data = await request.get_data()
         try:
-            submissionlist = SubmissionList.parse_raw(data)
+            submissionlist = SubmissionList.model_validate_json(data)
             logger.info("Received the donation!")
             await database.insert_submission_list(submissionlist=submissionlist)
         except ValueError:
@@ -195,7 +195,7 @@ async def adv_anonymize_file():
     logger.debug(f"[anonymization] received: {data}")
     settings = utils.load_upload_settings(force_disk=app.debug)
     try:
-        submission = Submission.parse_raw(data)
+        submission = Submission.model_validate_json(data)
     except ValueError as e:
         logger.debug(f"file anonymization failed: {e}")
         await database.insert_log(
@@ -214,7 +214,7 @@ async def adv_anonymize_file():
         user_agent_string=request.headers["User-Agent"],
     )
     submission = await anonymize_submission(submission=submission, settings=settings)
-    return jsonify({"error": "", "data": submission.dict()}), 200
+    return jsonify({"error": "", "data": submission.model_dump()}), 200
 
 
 @app.route("/log")

@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 
 class FileSetting(BaseModel):
@@ -52,8 +52,7 @@ class ContentBlock(BaseModel):
     image_pos: Optional[ImagePositionEnum] = None
     circles_row: Optional[List[CirclesRowCircle]] = None
 
-    class Config:
-        use_enum_values = True
+    model_config = ConfigDict(use_enum_values=True)
 
 
 class ContentPage(BaseModel):
@@ -106,5 +105,4 @@ class ContentSettings(BaseModel):
     static_pages: Dict[PageTypeEnum, ContentPage]
     upload_page: UploadPage
 
-    class Config:
-        use_enum_values = True
+    model_config = ConfigDict(use_enum_values=True)

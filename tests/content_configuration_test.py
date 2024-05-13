@@ -6,6 +6,7 @@
  - app config non-DEBUG in content call
  - static pages take arbitrary content
 """
+
 import os
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -75,7 +76,7 @@ class ContentConfigurationTest(AsyncTestCase):
     async def test_config_load_database_side_effect(self):
         get_content_config_mock = AsyncMock(return_value=None)
         set_content_config_mock = AsyncMock()
-        yaml_load_mock = Mock(return_value=fake_settings.dict())
+        yaml_load_mock = Mock(return_value=fake_settings.model_dump())
 
         with patch("osd2f.utils.get_content_config", get_content_config_mock), patch(
             "osd2f.utils.set_content_config", set_content_config_mock
@@ -92,7 +93,7 @@ class ContentConfigurationTest(AsyncTestCase):
     async def test_config_load_with_cache(self):
         get_content_config_mock = AsyncMock(return_value=None)
         set_content_config_mock = AsyncMock()
-        yaml_load_mock = Mock(return_value=fake_settings.dict())
+        yaml_load_mock = Mock(return_value=fake_settings.model_dump())
 
         with patch("osd2f.utils.get_content_config", get_content_config_mock), patch(
             "osd2f.utils.set_content_config", set_content_config_mock
@@ -116,7 +117,7 @@ class ContentConfigurationTest(AsyncTestCase):
     async def test_config_load_without_cache(self):
         get_content_config_mock = AsyncMock(return_value=None)
         set_content_config_mock = AsyncMock()
-        yaml_load_mock = Mock(return_value=fake_settings.dict())
+        yaml_load_mock = Mock(return_value=fake_settings.model_dump())
 
         with patch("osd2f.utils.get_content_config", get_content_config_mock), patch(
             "osd2f.utils.set_content_config", set_content_config_mock
@@ -203,7 +204,7 @@ class ContentConfigurationTest(AsyncTestCase):
                 "no allowed files selected",
                 "proces",
                 # test whether the content settings obj is injected
-                fake_settings.json(),
+                fake_settings.model_dump_json(),
             ]
             for snippet in expected_present:
                 assert body.find(snippet)
@@ -231,7 +232,7 @@ class ContentConfigurationTest(AsyncTestCase):
         assert len(open(test_file_path).read()) > 0
 
         sys.argv = sargv
-        ContentSettings.parse_obj(yaml.safe_load(open(test_file_path)))
+        ContentSettings.model_validate(yaml.safe_load(open(test_file_path)))
         os.remove(test_file_path)
 
     def test_cli_content_file_override(self):

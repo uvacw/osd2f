@@ -35,7 +35,7 @@ async def microsoft_msal_authentication(func, *args, **kwargs):
         return await func(*args, **kwargs)
 
     msal_auth = os.environ.get("MSAL_CONFIG")
-    config = MSALConfiguration.parse_raw(msal_auth)
+    config = MSALConfiguration.model_validate_json(msal_auth)
 
     authorizer = msal.ConfidentialClientApplication(
         config.client_id,

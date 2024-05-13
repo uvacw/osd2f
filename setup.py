@@ -32,7 +32,7 @@ setup(
         "hypercorn",
         "msal",
         "pyyaml",
-        "pydantic",
+        "pydantic==2.7.0",
         "pydantic[email]",
         "pyjwt>=2.4.0",  # dependency of MSAL, insecure < 2.4.0
         "pyzipper",

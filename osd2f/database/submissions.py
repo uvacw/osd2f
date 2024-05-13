@@ -1,3 +1,5 @@
+from typing import List
+
 from tortoise import Tortoise, fields
 from tortoise.models import Model
 
@@ -30,34 +32,39 @@ async def insert_submission(submission: Submission):
         )
 
 
-async def get_submissions():
+async def get_submissions() -> List[OutputSubmission]:
     submissions = await DBSubmission.all()
-    submission_dict = [
-        OutputSubmission(
-            db_id=si.id,
-            submission_id=si.submission_id,
-            filename=si.filename,
-            n_deleted_across_file=si.n_deleted,
-            insert_timestamp=si.insert_timestamp.isoformat(),
-            entry=SecureEntry.read_entry_field(dict(si.entry)),
-        ).dict()
-        for si in submissions
-    ]
+    submission_dict: List[OutputSubmission] = []
+
+    for si in submissions:
+        entry = SecureEntry.read_entry_field(si.entry)
+        sub = OutputSubmission.model_validate(
+            dict(
+                db_id=si.id,
+                submission_id=si.submission_id,
+                filename=si.filename,
+                n_deleted_across_file=si.n_deleted,
+                insert_timestamp=si.insert_timestamp.isoformat(),
+                entry=dict(entry),
+            ),
+        )
+        submission_dict.append(sub)
+
     return submission_dict
 
 
 async def insert_submission_list(submissionlist: SubmissionList):
-    if len(submissionlist.__root__) < 1:
+    if len(submissionlist.root) < 1:
         logger.info("Empty submissionlist")
         return
 
     logger.debug(
-        f"Inserting {len(submissionlist.__root__)} files of data for submission "
-        f"'{submissionlist.__root__[0].submission_id}'"
+        f"Inserting {len(submissionlist.root)} files of data for submission "
+        f"'{submissionlist.root[0].submission_id}'"
     )
 
     def subgenerator():
-        for sub in submissionlist.__root__:
+        for sub in submissionlist.root:
             for entry in sub.entries:
                 yield DBSubmission(
                     submission_id=sub.submission_id,

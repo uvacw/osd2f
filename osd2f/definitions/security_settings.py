@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 
 
 class MSALConfiguration(BaseModel):
@@ -13,6 +13,6 @@ class MSALConfiguration(BaseModel):
     authority: Optional[str] = None
     scope: List[str] = ["User.Read"]
 
-    @validator("authority", pre=True, always=True)
+    @field_validator("authority", mode="before", check_fields=True)
     def set_authority(cls, v, *, values, **kwargs):
         return f"https://login.microsoftonline.com/{values['tenant_id']}"

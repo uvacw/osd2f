@@ -53,18 +53,18 @@ class JSONFile(EntryFile):
 
     def read_entries(self) -> Iterable[OutputSubmission]:
         for raw_submission in json.load(self.file_obj):
-            submission = EncryptedSubmission.parse_obj(raw_submission)
+            submission = EncryptedSubmission.model_validate(raw_submission)
             try:
-                EncryptedEntry.parse_obj(submission.entry)
+                EncryptedEntry.model_validate(submission.entry)
             except ValueError:
                 logger.warning("Encountered an unencrypted entry!")
-                yield OutputSubmission.parse_obj(raw_submission)
-            decrypted_sub = OutputSubmission.parse_obj(raw_submission)
+                yield OutputSubmission.model_validate(raw_submission)
+            decrypted_sub = OutputSubmission.model_validate(raw_submission)
             decrypted_sub.entry = SecureEntry.read_entry_field(decrypted_sub.entry)
             yield decrypted_sub
 
     def append(self, entry: OutputSubmission) -> None:
-        self.entries.append(entry.dict())
+        self.entries.append(entry.model_dump())
 
     def __del__(self):
         if (
@@ -81,7 +81,7 @@ class CSVFile(EntryFile):
     def __init__(self, filename: pathlib.Path, read_mode: bool):
         super().__init__(filename, read_mode)
         if not read_mode:
-            headers = OutputSubmission.__fields__.keys()
+            headers = OutputSubmission.model_fields.keys()
             self.writer = csv.DictWriter(self.file_obj, fieldnames=headers)
             self.writer.writeheader()
 
@@ -92,11 +92,11 @@ class CSVFile(EntryFile):
         for e in reader:
             re: Dict[str, Any] = {k: v for k, v in e.items() if k != "entry"}
             re["entry"] = SecureEntry.read_entry_field(eval(e["entry"]))
-            yield OutputSubmission.parse_obj(re)
+            yield OutputSubmission.model_validate(re)
 
     def append(self, entry: OutputSubmission) -> None:
 
-        self.writer.writerow(entry.dict())
+        self.writer.writerow(entry.model_dump())
 
 
 def decrypt_file(input_path: pathlib.Path, output_path: pathlib.Path) -> int:
