@@ -147,7 +147,7 @@ async def researcher():
 @app.route("/researcher/<items>.<filetype>.<zipext>")
 @app.route("/researcher/<items>.<filetype>")
 @security.authorization_required
-async def downloads(items: str = None, filetype: str = None, zipext: str = None):
+async def downloads(items: str = "", filetype: str = "None", zipext: str = ""):
 
     if not items:
         return redirect("/researcher")
@@ -172,7 +172,7 @@ async def downloads(items: str = None, filetype: str = None, zipext: str = None)
         fields = {key for item in data for key in item}
         dw = csv.DictWriter(st, fieldnames=sorted(fields))
         dw.writeheader()
-        dw.writerows(data)
+        dw.writerows(data)  # type: ignore
     else:
         return "Unknown filetype", 404
 

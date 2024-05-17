@@ -13,6 +13,6 @@ class MSALConfiguration(BaseModel):
     authority: Optional[str] = None
     scope: List[str] = ["User.Read"]
 
-    @field_validator("authority", mode="before", check_fields=True)
+    @field_validator("authority", mode="before", check_fields=True)  # type: ignore
     def set_authority(cls, v, *, values, **kwargs):
         return f"https://login.microsoftonline.com/{values['tenant_id']}"

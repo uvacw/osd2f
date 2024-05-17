@@ -62,7 +62,7 @@ async def background_insert_log(
     log_level: str,
     log_position: str,
     log_sid: typing.Optional[str] = None,
-    entry: typing.Dict = None,
+    entry: typing.Optional[typing.Dict] = None,
     user_agent_string: typing.Optional[str] = None,
 ):
 
@@ -83,7 +83,7 @@ async def insert_log(
     log_level: str,
     log_position: str,
     log_sid: typing.Optional[str] = None,
-    entry: typing.Dict = None,
+    entry: typing.Optional[typing.Dict] = None,
     user_agent_string: typing.Optional[str] = None,
 ):
     clientLogQueue.put(

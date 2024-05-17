@@ -7,7 +7,7 @@ from collections.abc import MutableMapping
 
 import pytz
 
-import yaml
+import yaml  # type: ignore
 
 from .database import get_content_config, set_content_config
 from .definitions import ContentSettings, UploadSettings
