@@ -152,7 +152,10 @@ async def downloads(items: str = "", filetype: str = "None", zipext: str = ""):
     if not items:
         return redirect("/researcher")
     elif items == "osd2f_completed_submissions":
-        data = await database.get_submissions()
+        base_data = await database.get_submissions()
+        data: typing.List[typing.Dict[str, typing.Any]] = [
+            d.model_dump() for d in base_data
+        ]
     elif items == "osd2f_pending_participants":
         data = await database.get_pending_participants()
     elif items == "osd2f_activity_logs":
