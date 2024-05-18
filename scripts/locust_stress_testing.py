@@ -34,7 +34,7 @@ class SampleParticipant(FastHttpUser):
         self.entries = {
             "comments.json": flatmap(
                 sample_data_generator.generate_comments(user=self.user, n=1000),
-                "comments",
+                "comment_information",
             ),
             f"your_posts_{self.user}_1.json": flatmap(
                 sample_data_generator.generate_posts(self.user, n=100)
@@ -47,10 +47,9 @@ class SampleParticipant(FastHttpUser):
                 sample_data_generator.generate_companies_followed(self.user, 100),
                 "companies_followed",
             ),
-            "ads_clicked.json": flatmap(
+            "ads_clicked.json": 
                 sample_data_generator.generate_ads_clicked(self.user, 50),
-                "ads_clicked",
-            ),
+            
             "profile_interests.json": [
                 {"entry": e}
                 for e in flatmap(
