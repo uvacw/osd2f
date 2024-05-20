@@ -1,6 +1,6 @@
 from typing import Any, Dict, List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, RootModel
 
 
 class Submission(BaseModel):
@@ -34,8 +34,8 @@ class EncryptedSubmission(BaseModel):
     entry: EncryptedEntry
 
 
-class SubmissionList(BaseModel):
+class SubmissionList(RootModel):
     """Submissions as send from the webbrowser.
     Basically, a list of file submissions as one List."""
 
-    __root__: List[Submission]
+    root: List[Submission]

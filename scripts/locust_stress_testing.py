@@ -2,7 +2,7 @@
 
 Run headless using:
 
-locust --host http://localhost:5000 -f scripts/locust_stress_test.py \
+locust --host 'http://localhost:5000' -f 'scripts/locust_stress_testing.py' \
     --headless --users 100 -t 60sec
 
 Run with web interface:
@@ -13,6 +13,7 @@ NOTE: it's recommended to use a ASGI tool such as hypercorn in production,
       you should also test with such a framework to get realistic performance.
 
 """
+
 import faker
 
 from locust import between, task
@@ -34,7 +35,7 @@ class SampleParticipant(FastHttpUser):
         self.entries = {
             "comments.json": flatmap(
                 sample_data_generator.generate_comments(user=self.user, n=1000),
-                "comments",
+                "comment_information",
             ),
             f"your_posts_{self.user}_1.json": flatmap(
                 sample_data_generator.generate_posts(self.user, n=100)
@@ -47,9 +48,8 @@ class SampleParticipant(FastHttpUser):
                 sample_data_generator.generate_companies_followed(self.user, 100),
                 "companies_followed",
             ),
-            "ads_clicked.json": flatmap(
-                sample_data_generator.generate_ads_clicked(self.user, 50),
-                "ads_clicked",
+            "ads_clicked.json": sample_data_generator.generate_ads_clicked(
+                self.user, 50
             ),
             "profile_interests.json": [
                 {"entry": e}

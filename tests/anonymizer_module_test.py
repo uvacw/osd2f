@@ -44,16 +44,16 @@ class test_anonymizer_package_interface(AsyncTestCase):
             }
         )
         submission_list = SubmissionList(
-            __root__=[
+            [
                 Submission(
-                    entries=[{}], filename="file_2.json", submission_id=1, n_deleted=2
+                    entries=[{}], filename="file_2.json", submission_id="1", n_deleted=2
                 )
             ]
         )
         await anonymizers.anonymize_submission_list(
             submission_list=submission_list, settings=settings
         )
-        self.assertEqual(submission_list.__root__[0].entries[0], {"a": "a", "b": "b"})
+        self.assertEqual(submission_list.root[0].entries[0], {"a": "a", "b": "b"})
 
     async def test_broken_anonymizer(self):
         from osd2f import anonymizers
@@ -77,11 +77,11 @@ class test_anonymizer_package_interface(AsyncTestCase):
             }
         )
         submission_list = SubmissionList(
-            __root__=[
+            [
                 Submission(
                     entries=entries,
                     filename="file_2.json",
-                    submission_id=1,
+                    submission_id="1",
                     n_deleted=6,
                 )
             ]
@@ -91,4 +91,4 @@ class test_anonymizer_package_interface(AsyncTestCase):
         )
 
         # check that all but one entry remains
-        self.assertEqual(len(submission_list.__root__[0].entries), 10)
+        self.assertEqual(len(submission_list.root[0].entries), 10)

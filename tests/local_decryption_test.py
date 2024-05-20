@@ -1,6 +1,7 @@
 import csv
 import os
 import shutil
+from typing import List
 
 from aiounittest.case import AsyncTestCase
 
@@ -31,7 +32,7 @@ class test_local_decryption(AsyncTestCase):
         import pathlib
 
         subs = SubmissionList(
-            __root__=[
+            [
                 Submission(
                     submission_id=f"s_{i}",
                     filename=f"file_{i}",
@@ -56,18 +57,18 @@ class test_local_decryption(AsyncTestCase):
         encrypted_file = pathlib.Path("tmp/enc.json")
         decrypted_file = pathlib.Path("tmp/decr.json")
 
-        json.dump(esubs, open(encrypted_file, "w"))
+        json.dump([s.model_dump() for s in esubs], open(encrypted_file, "w"))
 
         # enable decryption again
         SecureEntry.decrypt_on_read(must_decrypt_on_read=True)
         decrypt_file(encrypted_file, decrypted_file)
 
         decrypted_subs = [
-            OutputSubmission.parse_obj(s) for s in json.load(open(decrypted_file))
+            OutputSubmission.model_validate(s) for s in json.load(open(decrypted_file))
         ]
 
         original_values = {
-            entry["content"] for sub in subs.__root__ for entry in sub.entries
+            entry["content"] for sub in subs.root for entry in sub.entries
         }
         decrypted_values = {s.entry["content"] for s in decrypted_subs}
 
@@ -87,7 +88,7 @@ class test_local_decryption(AsyncTestCase):
         import pathlib
 
         subs = SubmissionList(
-            __root__=[
+            [
                 Submission(
                     submission_id=f"s_{i}",
                     filename=f"file_{i}",
@@ -113,9 +114,9 @@ class test_local_decryption(AsyncTestCase):
         decrypted_file = pathlib.Path("tmp/decr.csv")
 
         with open(encrypted_file, "w") as f:
-            dr = csv.DictWriter(f, fieldnames=OutputSubmission.__fields__.keys())
+            dr = csv.DictWriter(f, fieldnames=OutputSubmission.model_fields.keys())
             dr.writeheader()
-            dr.writerows(esubs)
+            dr.writerows([s.model_dump() for s in esubs])
 
         # enable decryption again
         SecureEntry.decrypt_on_read(must_decrypt_on_read=True)
@@ -123,15 +124,20 @@ class test_local_decryption(AsyncTestCase):
 
         with open(decrypted_file) as f:
             h = f.readline().strip().split(csv.excel.delimiter)
-            decrypted_subs = []
+            decrypted_subs: List[OutputSubmission] = []
             for s in csv.DictReader(f, fieldnames=h):
                 s["entry"] = eval(s["entry"])
-                decrypted_subs.append(OutputSubmission.parse_obj(s))
+                decrypted_subs.append(OutputSubmission(**s))
+
+        print(open(encrypted_file).read())
 
         original_values = {
-            entry["content"] for sub in subs.__root__ for entry in sub.entries
+            entry["content"] for sub in subs.root for entry in sub.entries
         }
         decrypted_values = {s.entry["content"] for s in decrypted_subs}
+
+        print("original", original_values)
+        print("decrypted", decrypted_values)
 
         self.assertFalse(original_values.difference(decrypted_values))
 
@@ -150,7 +156,7 @@ class test_local_decryption(AsyncTestCase):
         import pathlib
 
         subs = SubmissionList(
-            __root__=[
+            [
                 Submission(
                     submission_id=f"s_{i}",
                     filename=f"file_{i}",
@@ -175,7 +181,7 @@ class test_local_decryption(AsyncTestCase):
         encrypted_file = pathlib.Path("tmp/enc.json")
         decrypted_file = pathlib.Path("tmp/decr.csv")
 
-        json.dump(esubs, open(encrypted_file, "w"))
+        json.dump([s.model_dump() for s in esubs], open(encrypted_file, "w"))
 
         # enable decryption again
         SecureEntry.decrypt_on_read(must_decrypt_on_read=True)
@@ -186,10 +192,10 @@ class test_local_decryption(AsyncTestCase):
             decrypted_subs = []
             for s in csv.DictReader(f, fieldnames=h):
                 s["entry"] = eval(s["entry"])
-                decrypted_subs.append(OutputSubmission.parse_obj(s))
+                decrypted_subs.append(OutputSubmission(**s))
 
         original_values = {
-            entry["content"] for sub in subs.__root__ for entry in sub.entries
+            entry["content"] for sub in subs.root for entry in sub.entries
         }
         decrypted_values = {s.entry["content"] for s in decrypted_subs}
 
@@ -210,7 +216,7 @@ class test_local_decryption(AsyncTestCase):
         import pathlib
 
         subs = SubmissionList(
-            __root__=[
+            [
                 Submission(
                     submission_id=f"s_{i}",
                     filename=f"file_{i}",
@@ -236,20 +242,20 @@ class test_local_decryption(AsyncTestCase):
         decrypted_file = pathlib.Path("tmp/decr.json")
 
         with open(encrypted_file, "w") as f:
-            dr = csv.DictWriter(f, fieldnames=OutputSubmission.__fields__.keys())
+            dr = csv.DictWriter(f, fieldnames=OutputSubmission.model_fields.keys())
             dr.writeheader()
-            dr.writerows(esubs)
+            dr.writerows([s.model_dump() for s in esubs])
 
         # enable decryption again
         SecureEntry.decrypt_on_read(must_decrypt_on_read=True)
         decrypt_file(encrypted_file, decrypted_file)
 
         decrypted_subs = [
-            OutputSubmission.parse_obj(s) for s in json.load(open(decrypted_file))
+            OutputSubmission.model_validate(s) for s in json.load(open(decrypted_file))
         ]
 
         original_values = {
-            entry["content"] for sub in subs.__root__ for entry in sub.entries
+            entry["content"] for sub in subs.root for entry in sub.entries
         }
         decrypted_values = {s.entry["content"] for s in decrypted_subs}
 

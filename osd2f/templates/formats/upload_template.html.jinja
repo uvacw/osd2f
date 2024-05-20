@@ -93,8 +93,8 @@
     <script src="/static/js/main.js"></script>
     <!-- page functionality related to presentation -->
     <script>
-        let settings = {{ upload_settings.json()|safe }};
-        let content = {{ content_settings.json()|safe }};
+        let settings = {{ upload_settings.model_dump_json()|safe }};
+        let content = {{ content_settings.model_dump_json()|safe }};
         let sid = {{sid|tojson|safe}};
         window.sid = sid;
 

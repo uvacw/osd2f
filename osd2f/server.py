@@ -105,7 +105,7 @@ async def upload():
     elif request.method == "POST":
         data = await request.get_data()
         try:
-            submissionlist = SubmissionList.parse_raw(data)
+            submissionlist = SubmissionList.model_validate_json(data)
             logger.info("Received the donation!")
             await database.insert_submission_list(submissionlist=submissionlist)
         except ValueError:
@@ -147,12 +147,15 @@ async def researcher():
 @app.route("/researcher/<items>.<filetype>.<zipext>")
 @app.route("/researcher/<items>.<filetype>")
 @security.authorization_required
-async def downloads(items: str = None, filetype: str = None, zipext: str = None):
+async def downloads(items: str = "", filetype: str = "None", zipext: str = ""):
 
     if not items:
         return redirect("/researcher")
     elif items == "osd2f_completed_submissions":
-        data = await database.get_submissions()
+        base_data = await database.get_submissions()
+        data: typing.List[typing.Dict[str, typing.Any]] = [
+            d.model_dump() for d in base_data
+        ]
     elif items == "osd2f_pending_participants":
         data = await database.get_pending_participants()
     elif items == "osd2f_activity_logs":
@@ -172,7 +175,7 @@ async def downloads(items: str = None, filetype: str = None, zipext: str = None)
         fields = {key for item in data for key in item}
         dw = csv.DictWriter(st, fieldnames=sorted(fields))
         dw.writeheader()
-        dw.writerows(data)
+        dw.writerows(data)  # type: ignore
     else:
         return "Unknown filetype", 404
 
@@ -195,7 +198,7 @@ async def adv_anonymize_file():
     logger.debug(f"[anonymization] received: {data}")
     settings = utils.load_upload_settings(force_disk=app.debug)
     try:
-        submission = Submission.parse_raw(data)
+        submission = Submission.model_validate_json(data)
     except ValueError as e:
         logger.debug(f"file anonymization failed: {e}")
         await database.insert_log(
@@ -214,7 +217,7 @@ async def adv_anonymize_file():
         user_agent_string=request.headers["User-Agent"],
     )
     submission = await anonymize_submission(submission=submission, settings=settings)
-    return jsonify({"error": "", "data": submission.dict()}), 200
+    return jsonify({"error": "", "data": submission.model_dump()}), 200
 
 
 @app.route("/log")
@@ -266,7 +269,6 @@ def create_app(
     SecureEntry.decrypt_on_read(must_decrypt_on_read=not read_disabed)
 
     app.config.from_object(selected_config)
-    app.env = mode.lower()
 
     # Check to make sure the application is never in production with a vacant key
     in_production_mode = mode == "Production"

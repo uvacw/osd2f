@@ -24,4 +24,4 @@ def azure_keyvault_replace(value: str) -> str:
     cred = DefaultAzureCredential()
     client = SecretClient(keyvault_url, cred)
     secret = client.get_secret(secret_name).value
-    return secret
+    return secret or ""

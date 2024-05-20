@@ -1,6 +1,12 @@
 ![Python application](https://github.com/uvacw/osd2f/workflows/Python%20application/badge.svg?branch=main)
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-# OSD2F: Open Source Data Donation Framework
+# OSD2F: Open Source Data Donation Framework (No longer maintained)
+
+## ⚠️ Update: this repository is archived ⚠️
+
+This repository is being archived as is. The code can be reused by others as specified in the license, yet security updates and maintenance are not currently being done. Those interested in using the code must therefore consider performing any relevant security updates priot to using the tool. The OSD2F authors are now working on a new data donation infrastructure, which can be found here: [https://datadonation.eu](https://datadonation.eu). This infrastructure contains a stand-alone tool (PORT) which is actively maintained and updated.
+
+
 
 ## Goal
 

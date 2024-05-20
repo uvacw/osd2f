@@ -7,7 +7,7 @@ from collections.abc import MutableMapping
 
 import pytz
 
-import yaml
+import yaml  # type: ignore
 
 from .database import get_content_config, set_content_config
 from .definitions import ContentSettings, UploadSettings
@@ -29,12 +29,12 @@ def _cached_load_settings() -> UploadSettings:
 def _load_settings_from_disk() -> UploadSettings:
     settings_dir = pathlib.Path(__file__).parent.joinpath("settings")
     try:
-        settings = UploadSettings.parse_obj(
+        settings = UploadSettings.model_validate(
             yaml.safe_load(open(settings_dir.joinpath("upload_settings.yaml")))
         )
     except FileNotFoundError:
         logger.warning("No user provided `upload_settings.yaml` found, using defaults.")
-        settings = UploadSettings.parse_obj(
+        settings = UploadSettings.model_validate(
             yaml.safe_load(open(settings_dir.joinpath("default_upload_settings.yaml")))
         )
     return settings
@@ -71,7 +71,7 @@ async def load_content_settings(use_cache: bool) -> ContentSettings:
     # if no database config exists, insert disk version in database and
     # use disk version
     if not db_config:
-        config = ContentSettings.parse_obj(disk_config)
+        config = ContentSettings.model_validate(disk_config)
         await set_content_config(user="default", content=config)
         return config
 
@@ -81,7 +81,7 @@ async def load_content_settings(use_cache: bool) -> ContentSettings:
     else:
         last_config = disk_config
 
-    config = ContentSettings.parse_obj(last_config)
+    config = ContentSettings.model_validate(last_config)
 
     return config
 

@@ -130,7 +130,7 @@ class DatabaseOperationsTest(AsyncTestCase):
                 entries=[{"thing": "here"}],
                 n_deleted=0,
             )
-            await insert_submission_list(SubmissionList(__root__=[s]))
+            await insert_submission_list(SubmissionList([s]))
             MockSecureEntry.write_entry_field.assert_called_once_with(s.entries[0])
 
     async def test_get_submission(self):

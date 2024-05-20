@@ -78,7 +78,7 @@ async def anonymize_submission(submission: Submission, settings: UploadSettings)
 async def anonymize_submission_list(
     submission_list: SubmissionList, settings: UploadSettings
 ) -> SubmissionList:
-    for i, submission in enumerate(submission_list.__root__):
+    for i, submission in enumerate(submission_list.root):
         logger.debug(f"at submission {i}")
         await anonymize_submission(submission, settings)
     return submission_list

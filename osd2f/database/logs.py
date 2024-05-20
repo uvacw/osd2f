@@ -1,8 +1,8 @@
 import asyncio
-import logging
 import queue
 import time
 import typing
+from logging.handlers import QueueHandler
 
 from tortoise import fields
 from tortoise.models import Model
@@ -62,7 +62,7 @@ async def background_insert_log(
     log_level: str,
     log_position: str,
     log_sid: typing.Optional[str] = None,
-    entry: typing.Dict = None,
+    entry: typing.Optional[typing.Dict] = None,
     user_agent_string: typing.Optional[str] = None,
 ):
 
@@ -83,7 +83,7 @@ async def insert_log(
     log_level: str,
     log_position: str,
     log_sid: typing.Optional[str] = None,
-    entry: typing.Dict = None,
+    entry: typing.Optional[typing.Dict] = None,
     user_agent_string: typing.Optional[str] = None,
 ):
     clientLogQueue.put(
@@ -142,7 +142,7 @@ def add_database_logging() -> queue.SimpleQueue:
                 await asyncio.sleep(0.1)
 
     logQueue: queue.SimpleQueue = queue.SimpleQueue()
-    h = logging.handlers.QueueHandler(logQueue)
+    h = QueueHandler(logQueue)
     h.setLevel(logger.level)
     print(h.level)
     logger.addHandler(h)

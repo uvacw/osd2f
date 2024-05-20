@@ -1,13 +1,13 @@
 from enum import Enum
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 
 class FileSetting(BaseModel):
-    in_key: Optional[str]
+    in_key: Optional[str] = None
     accepted_fields: List[str]
-    anonymizers: Optional[List[Dict[str, str]]]
+    anonymizers: Optional[List[Dict[str, str]]] = None
 
 
 class UploadSettings(BaseModel):
@@ -38,22 +38,21 @@ class PageTypeEnum(str, Enum):
 
 class CirclesRowCircle(BaseModel):
     image: str
-    title: Optional[str]
-    subtitle: Optional[str]
+    title: Optional[str] = None
+    subtitle: Optional[str] = None
 
 
 class ContentBlock(BaseModel):
     type: BlockTypeEnum
     id: str
-    title: Optional[str]
+    title: Optional[str] = None
     lines: List[str]
     buttons: List[ContentButton]
-    image: Optional[str]
-    image_pos: Optional[ImagePositionEnum]
-    circles_row: Optional[List[CirclesRowCircle]]
+    image: Optional[str] = None
+    image_pos: Optional[ImagePositionEnum] = None
+    circles_row: Optional[List[CirclesRowCircle]] = None
 
-    class Config:
-        use_enum_values = True
+    model_config = ConfigDict(use_enum_values=True)
 
 
 class ContentPage(BaseModel):
@@ -63,7 +62,7 @@ class ContentPage(BaseModel):
 
 
 class UploadBox(BaseModel):
-    header: Optional[str]
+    header: Optional[str] = None
     explanation: List[str]
 
 
@@ -81,7 +80,7 @@ class PreviewComponent(BaseModel):
 class ConsentPopup(BaseModel):
     title: str
     lead: str
-    points: Optional[List[str]]
+    points: Optional[List[str]] = None
     end_text: str
     decline_button: str
     accept_button: str
@@ -106,5 +105,4 @@ class ContentSettings(BaseModel):
     static_pages: Dict[PageTypeEnum, ContentPage]
     upload_page: UploadPage
 
-    class Config:
-        use_enum_values = True
+    model_config = ConfigDict(use_enum_values=True)

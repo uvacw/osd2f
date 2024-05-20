@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 setup(
     name="OSD2F",
     python_requires=">3.8",
-    version="0.1.1",
+    version="0.1.2",
     description="Open Source Data Donation Framework",
     author="Bob van de Velde",
     author_email="osd2f@bob-as-a-service.com",
@@ -32,7 +32,7 @@ setup(
         "hypercorn",
         "msal",
         "pyyaml",
-        "pydantic",
+        "pydantic~=2.6",
         "pydantic[email]",
         "pyjwt>=2.4.0",  # dependency of MSAL, insecure < 2.4.0
         "pyzipper",
