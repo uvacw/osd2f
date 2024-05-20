@@ -269,7 +269,6 @@ def create_app(
     SecureEntry.decrypt_on_read(must_decrypt_on_read=not read_disabed)
 
     app.config.from_object(selected_config)
-    app.env = mode.lower()
 
     # Check to make sure the application is never in production with a vacant key
     in_production_mode = mode == "Production"
