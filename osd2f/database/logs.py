@@ -1,8 +1,8 @@
 import asyncio
-import logging
 import queue
 import time
 import typing
+from logging.handlers import QueueHandler
 
 from tortoise import fields
 from tortoise.models import Model
@@ -142,7 +142,7 @@ def add_database_logging() -> queue.SimpleQueue:
                 await asyncio.sleep(0.1)
 
     logQueue: queue.SimpleQueue = queue.SimpleQueue()
-    h = logging.handlers.QueueHandler(logQueue)
+    h = QueueHandler(logQueue)
     h.setLevel(logger.level)
     print(h.level)
     logger.addHandler(h)
