@@ -2,7 +2,7 @@
 
 Run headless using:
 
-locust --host http://localhost:5000 -f scripts/locust_stress_testing.py \
+locust --host 'http://localhost:5000' -f 'scripts/locust_stress_testing.py' \
     --headless --users 100 -t 60sec
 
 Run with web interface:
