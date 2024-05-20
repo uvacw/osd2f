@@ -2,7 +2,7 @@
 
 Run headless using:
 
-locust --host http://localhost:5000 -f scripts/locust_stress_test.py \
+locust --host http://localhost:5000 -f scripts/locust_stress_testing.py \
     --headless --users 100 -t 60sec
 
 Run with web interface:
@@ -13,6 +13,7 @@ NOTE: it's recommended to use a ASGI tool such as hypercorn in production,
       you should also test with such a framework to get realistic performance.
 
 """
+
 import faker
 
 from locust import between, task
