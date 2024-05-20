@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, Dict, List
 
 from tortoise import Tortoise, fields
 from tortoise.models import Model
@@ -15,7 +15,7 @@ class DBSubmission(Model):
     n_deleted = fields.IntField()
     insert_timestamp = fields.DatetimeField(auto_now_add=True)
     update_timestamp = fields.DatetimeField(auto_now=True)
-    entry = fields.JSONField()
+    entry: Dict[str, Any] = fields.JSONField()
 
     class Meta:
         table = "submissions"
