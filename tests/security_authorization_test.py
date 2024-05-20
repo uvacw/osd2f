@@ -47,6 +47,8 @@ class MockMSALNoToken:
 
 class MSALAuthTest(AsyncTestCase):
     async def test_known_email(self):
+        from osd2f.definitions import OutputSubmission
+
         mock_config = {
             "client_id": "f4k3-1D",
             "secret": "53CR37",
@@ -58,14 +60,16 @@ class MSALAuthTest(AsyncTestCase):
 
         subMock = AsyncMock(
             return_value=[
-                {
-                    "db_id": "a",
-                    "submission_id": "test_sid",
-                    "filename": "testfilename",
-                    "n_deleted_across_file": 0,
-                    "insert_timestamp": "2020-04-08T23:30",
-                    "entry": {},
-                }
+                OutputSubmission(
+                    **{
+                        "db_id": 1,
+                        "submission_id": "test_sid",
+                        "filename": "testfilename",
+                        "n_deleted_across_file": 0,
+                        "insert_timestamp": "2020-04-08T23:30",
+                        "entry": {},
+                    }
+                )
             ]
         )
 
@@ -103,6 +107,8 @@ class MSALAuthTest(AsyncTestCase):
             await stop_database()
 
     async def test_known_email_of_multiple(self):
+        from osd2f.definitions import OutputSubmission
+
         mock_config = {
             "client_id": "f4k3-1D",
             "secret": "53CR37",
@@ -115,14 +121,16 @@ class MSALAuthTest(AsyncTestCase):
 
         subMock = AsyncMock(
             return_value=[
-                {
-                    "db_id": "a",
-                    "submission_id": "test_sid",
-                    "filename": "testfilename",
-                    "n_deleted_across_file": 0,
-                    "insert_timestamp": "2020-04-08T23:30",
-                    "entry": {},
-                }
+                OutputSubmission(
+                    **{
+                        "db_id": 1,
+                        "submission_id": "test_sid",
+                        "filename": "testfilename",
+                        "n_deleted_across_file": 0,
+                        "insert_timestamp": "2020-04-08T23:30",
+                        "entry": {},
+                    }
+                )
             ]
         )
 
@@ -156,6 +164,8 @@ class MSALAuthTest(AsyncTestCase):
             await stop_database()
 
     async def test_unknown_email(self):
+        from osd2f.definitions import OutputSubmission
+
         mock_config = {
             "client_id": "f4k3-1D",
             "secret": "53CR37",
@@ -167,14 +177,16 @@ class MSALAuthTest(AsyncTestCase):
 
         subMock = AsyncMock(
             return_value=[
-                {
-                    "db_id": "a",
-                    "submission_id": "test_sid",
-                    "filename": "testfilename",
-                    "n_deleted_across_file": 0,
-                    "insert_timestamp": "2020-04-08T23:30",
-                    "entry": {},
-                }
+                OutputSubmission(
+                    **{
+                        "db_id": 1,
+                        "submission_id": "test_sid",
+                        "filename": "testfilename",
+                        "n_deleted_across_file": 0,
+                        "insert_timestamp": "2020-04-08T23:30",
+                        "entry": {},
+                    }
+                )
             ]
         )
 
