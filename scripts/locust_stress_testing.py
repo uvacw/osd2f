@@ -47,9 +47,9 @@ class SampleParticipant(FastHttpUser):
                 sample_data_generator.generate_companies_followed(self.user, 100),
                 "companies_followed",
             ),
-            "ads_clicked.json": 
-                sample_data_generator.generate_ads_clicked(self.user, 50),
-            
+            "ads_clicked.json": sample_data_generator.generate_ads_clicked(
+                self.user, 50
+            ),
             "profile_interests.json": [
                 {"entry": e}
                 for e in flatmap(
